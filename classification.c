@@ -153,9 +153,9 @@ static void build_mangle_rule(char *rule, enum class_table table, const char *ch
 
     if (!strcmp(target->type, CLASS_TARGET_MARK))
     {
-        if (!strcmp(target->obj.mark.action, "--set-mark"))
+        if (!strcmp(target->obj.mark.action, "--set-class"))
         {
-            len += snprintf(&rule[len], CLASS_RULE_SIZE - len, " -j MARK %s %u",
+            len += snprintf(&rule[len], CLASS_RULE_SIZE - len, " -j CLASSIFY %s 1:1%u",
                 target->obj.mark.action, param->traffic_class);
         }
     }
@@ -269,7 +269,7 @@ static void init_target_mark(struct iptables_target *target, uint32_t value, uin
     if (target)
     {
         init_target(target, CLASS_TARGET_MARK);
-        strncpy(target->obj.mark.action, "--set-mark", CLASS_TARGET_NAME_SIZE - 1);
+        strncpy(target->obj.mark.action, "--set-class", CLASS_TARGET_NAME_SIZE - 1);
         target->obj.mark.action[CLASS_TARGET_NAME_SIZE - 1] = '\0';
         target->obj.mark.value = value;
         target->obj.mark.mask = mask;
