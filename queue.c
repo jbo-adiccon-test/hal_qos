@@ -32,76 +32,6 @@
 static int queue_exists =  0;
 static int index_wrr = 0;
 
-int qos_addQueue(int index, struct qos_queue *queue)
-{
-    char buf[512] = {0};
-    unsigned shaping_rate = queue->shaping_rate != -1 ? queue->shaping_rate :
-        QUEUE_DEFAULT_BANDWIDTH;
-
-    // initial classes
-    if (!index && !queue_exists)
-    {
-        sprintf(buf, "tc qdisc add dev %s root handle 1:0 htb default 18", queue->device_name);
-
-        if (system(buf))
-        {
-            printf("Execution failed: [%s]\n", buf);
-            return -1;
-        }
-
-        sprintf(buf, "tc class add dev %s parent 1:0 classid 1:1 htb rate %uMbit",
-            queue->device_name, shaping_rate);
-
-        if (system(buf))
-        {
-            printf("Execution failed: [%s]\n", buf);
-            return -1;
-        }
-
-        sprintf(buf, "tc class add dev %s parent 1:1 classid 1:18 htb prio "
-            "7 rate %uMbit ceil %uMbit", queue->device_name, QUEUE_DEFAULT_BE_RATE,
-            QUEUE_DEFAULT_CEIL);
-
-        if (system(buf))
-        {
-            printf("Execution failed: [%s]\n", buf);
-            return -1;
-        }
-
-        sprintf(buf, "tc qdisc add dev %s parent 1:18 sfq" , queue->device_name);
-
-        if (system(buf))
-        {
-            printf("Execution failed: [%s]\n", buf);
-            return -1;
-        }
-
-        printf("Added initial classes to device %s\n",  queue->device_name);
-    }
-
-    sprintf(buf, "tc class add dev %s parent 1:1 classid 1:1%u htb prio "
-        "%u rate %uMbit ceil %uMbit", queue->device_name, queue->priority,
-        queue->priority - 1, shaping_rate, QUEUE_DEFAULT_CEIL);
-
-    if (system(buf))
-    {
-        printf("Execution failed: [%s]\n", buf);
-        return -1;
-    }
-
-    sprintf(buf, "tc qdisc add dev %s parent 1:1%u sfq" , queue->device_name,
-        queue->priority);
-
-    if (system(buf))
-    {
-        printf("Execution failed: [%s]\n", buf);
-        return -1;
-    }
-
-    queue_exists = 1;
-    return 0;
-}
-
 int qos_removeQueue(struct qos_queue *queue)
 {
     char buf[512] = {0};
@@ -123,5 +53,43 @@ int qos_removeQueue(struct qos_queue *queue)
     printf("Stopped queues on %s\n", queue->device_name);
 
     index_wrr = 0;
+    queue_exists = 0;
+    return 0;
+}
+
+int qos_addQueue(int index, struct qos_queue *queue)
+{
+    char buf[512] = {0};
+    unsigned shaping_rate = queue->shaping_rate != -1 ? queue->shaping_rate :
+        QUEUE_DEFAULT_BANDWIDTH;
+
+    qos_removeQueue(queue);
+
+    // initial classes
+    if (!index && !queue_exists)
+    {
+        sprintf(buf, "tc qdisc add dev %s root cake bandwith %uMbit overhead 0 mpu 0 diffserv4", queue->device_name, shaping_rate);
+
+        if (system(buf))
+        {
+            printf("Execution failed: [%s]\n", buf);
+            return -1;
+        }
+
+
+
+        printf("Added initial classes to device %s\n",  queue->device_name);
+    }
+
+    sprintf(buf, "tc qdisc change dev %s root cake bandwith %uMbit overhead 0 mpu 0 diffserv4"
+        , queue->device_name, shaping_rate);
+
+    if (system(buf))
+    {
+        printf("Execution failed: [%s]\n", buf);
+        return -1;
+    }
+
+    queue_exists = 1;
     return 0;
 }
