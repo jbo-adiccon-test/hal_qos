@@ -68,7 +68,7 @@ int qos_addQueue(int index, struct qos_queue *queue)
     // initial classes
     if (!index && !queue_exists)
     {
-        sprintf(buf, "tc qdisc add dev %s root cake bandwith %uMbit overhead 0 mpu 0 diffserv4", queue->device_name, shaping_rate);
+        sprintf(buf, "tc qdisc add dev %s root cake bandwidth %uMbit overhead 0 mpu 0 diffserv4", queue->device_name, shaping_rate);
 
         if (system(buf))
         {
