@@ -10,9 +10,9 @@ parameters:
  
 configuration with dmcli 
  
- dmcli eRT addtable Device.QoS.Queue. 
- dmcli eRT setv Device.QoS.Queue.1.Interface string "erouter0" 
- dmcli eRT setv Device.QoS.Queue.1.ShapingRate int 25 
- dmcli eRT setv Device.QoS.Queue.1.Enable bool true 
+ dmcli eRT addtable Device.QoS.Queue.  
+ dmcli eRT setv Device.QoS.Queue.1.Interface string "erouter0"  
+ dmcli eRT setv Device.QoS.Queue.1.ShapingRate int 25  
+ dmcli eRT setv Device.QoS.Queue.1.Enable bool true  
   
  This is simple code without any error procedures etc. 
