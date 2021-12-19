@@ -4,9 +4,8 @@ Use "cake" instead of htb prioritiy and class
 tc qdisc add dev erouter0 root cake bandwidth 25Mbit overhead 0 mpu 0 diffserv4 
 
 parameters: 
-- interface: erouter0 
-- 
-- bandwith:  <N> 
+- interface: erouter0   
+- bandwith:  <N>  
  
 configuration with dmcli 
  
