@@ -81,7 +81,7 @@ int qos_addQueue(int index, struct qos_queue *queue)
         printf("Added initial classes to device %s\n",  queue->device_name);
     }
 
-    sprintf(buf, "tc qdisc change dev %s root cake bandwith %uMbit overhead 0 mpu 0 diffserv4"
+    sprintf(buf, "tc qdisc change dev %s root cake bandwidth %uMbit overhead 0 mpu 0 diffserv4"
         , queue->device_name, shaping_rate);
 
     if (system(buf))
