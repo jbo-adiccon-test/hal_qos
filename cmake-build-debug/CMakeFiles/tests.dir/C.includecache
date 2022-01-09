@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.c
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+limits.h
+-
+sys/stat.h
+-
+errno.h
+-
+classification.h
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.h
+
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.h
+net/if.h
+-
+arpa/inet.h
+-
+

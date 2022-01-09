@@ -17,6 +17,7 @@
  * limitations under the License.
 */
 
+#pragma once
 #ifndef __QOS_CLASSIFICATION_HAL_H__
 #define __QOS_CLASSIFICATION_HAL_H__
 

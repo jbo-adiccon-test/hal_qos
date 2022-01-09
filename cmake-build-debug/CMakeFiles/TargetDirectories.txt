@@ -1,0 +1,3 @@
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/cmake-build-debug/CMakeFiles/tests.dir
