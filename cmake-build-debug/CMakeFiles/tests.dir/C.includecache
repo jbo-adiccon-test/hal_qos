@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.c
+/mnt/c/Users/limberg/CLionProjects/hal_qos/classification.c
 stdio.h
 -
 string.h
@@ -20,9 +20,9 @@ sys/stat.h
 errno.h
 -
 classification.h
-/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.h
+/mnt/c/Users/limberg/CLionProjects/hal_qos/classification.h
 
-/mnt/c/Users/artemisvenari/Code/CPlusPlus/hal_qos/classification.h
+/mnt/c/Users/limberg/CLionProjects/hal_qos/classification.h
 net/if.h
 -
 arpa/inet.h
