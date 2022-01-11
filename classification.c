@@ -541,7 +541,7 @@ typedef struct
  * @param class
  * @return
  */
-qos_struct initQosClass(struct qos_class *class)
+qos_struct initQosClass(const struct qos_class *class)
 {
 
     qos_struct *data = malloc(sizeof(qos_struct));
