@@ -646,9 +646,13 @@ int qos_addClass(const struct qos_class *param)
         system(exec5);
         free(exec5);
 
+        if(!append_to_fw()) {
+            printf("Failed to set iptables rules via firewall");
+            return -1;
+        }
     } else {
         printf("STD QoS Class add");
-        qos_addClass2(param);
+        //qos_addClass2(param);
     }
 
     return 0;
