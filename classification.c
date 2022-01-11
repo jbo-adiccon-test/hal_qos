@@ -595,6 +595,9 @@ int main()
 int qos_addClass(const struct qos_class *param)
 {
     qos_struct obj = initQosClass(param);
+
+    printf("Parameters: %d, %s, %d", obj.data->dscp_mark, obj.data->mac_src_addr, obj.data->traffic_class);
+
     if (obj.data->port_src_range_end == -1 &&
         obj.data->port_src_range_start == -1 &&
         obj.data->port_dst_range_end == -1 &&
