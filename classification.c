@@ -532,7 +532,7 @@ int qos_addClass2(const struct qos_class *param)
  */
 typedef struct
 {
-    struct qos_class *data;
+    const struct qos_class *data;
     size_t size;
 } qos_struct;
 
@@ -562,7 +562,6 @@ int dealloc_testclass(qos_struct *class)
     if(!class)
         return -1;
 
-    free(class->data);
     free(class);
     return 0;
 }
@@ -615,34 +614,34 @@ int qos_addClass(const struct qos_class *param)
         char *exec1 = (char *) malloc(255);
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
         exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
-        //printf("%s --> %lu\n", exec1, strlen(exec1));
+        printf("%s \n", exec1);
         system(exec1);
         free(exec1);
 
         char *exec2 = (char *) malloc(255);
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
-        //printf("%s --> %lu\n", exec2, strlen(exec2));
+        printf("%s \n", exec2);
         system(exec2);
         free(exec2);
 
         char *exec3 = (char *) malloc(255);
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char ));
-        //printf("%s --> %lu\n", exec3, strlen(exec3));
+        printf("%s \n", exec3);
         system(exec3);
         free(exec3);
 
         char *exec4 = (char *) malloc(255);
         snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
-        //printf("%s --> %lu\n", exec4, strlen(exec4));
+        printf("%s \n", exec4);
         system(exec4);
         free(exec4);
 
         char *exec5 = (char *) malloc(255);
         snprintf(exec5, 200, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
-        //printf("%s --> %lu\n", exec5, strlen(exec5));
+        printf("%s \n", exec5);
         system(exec5);
         free(exec5);
 
