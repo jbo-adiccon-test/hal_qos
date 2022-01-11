@@ -607,6 +607,8 @@ int qos_addClass(const struct qos_class *param)
         obj.data->dscp_mark != 0
             )
     {
+        printf("NEW mark Categ add");
+
         char *exec1 = (char *) malloc(255);
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
         exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
@@ -642,6 +644,7 @@ int qos_addClass(const struct qos_class *param)
         free(exec5);
 
     } else {
+        printf("STD QoS Class add");
         qos_addClass2(param);
     }
 
