@@ -44,7 +44,7 @@ qos_struct initQosClass(const struct qos_class *class)
  *
  * @return
  */
-static int append_to_fw()
+/**static int append_to_fw()
 {
     FILE *fp;
     char *line = NULL;
@@ -66,6 +66,7 @@ static int append_to_fw()
     fclose(fp);
     return 0;
 }
+*/
 
 /**
  * Sets the space free of qos_struct
