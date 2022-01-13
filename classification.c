@@ -41,34 +41,6 @@ qos_struct initQosClass(const struct qos_class *class)
 }
 
 /**
- *
- * @return
- */
-/**static int append_to_fw()
-{
-    FILE *fp;
-    char *line = NULL;
-    size_t len = 0;
-
-    if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+")))
-    {
-        printf("Cannot open file "CLASS_FW_RELOAD_FILENAME": %s\n", strerror(errno));
-        return -1;
-    }
-
-    while (getline(&line, &len, fp) != -1)
-    {
-        if (strstr(line, CLASS_FW_FILENAME))
-            return 0;
-    }
-
-    fprintf(fp, "%s\n", CLASS_FW_FILENAME);
-    fclose(fp);
-    return 0;
-}
-*/
-
-/**
  * Sets the space free of qos_struct
  * @param class
  * @return
