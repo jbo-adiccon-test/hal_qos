@@ -98,8 +98,6 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     }
 
-    fseek(fp, 0, SEEK_SET);
-
     while (getline(&line, &len, fp) != -1) {
         /// run command in shell
         line[20] = 'D';
@@ -110,6 +108,13 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     /// Delete all classes before
     qos_removeAllClasses();
+
+    fclose(fp);
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
+    {
+        printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
 
     /// alloc space for rule command
     char *tmp = (char *) malloc(255);
