@@ -100,22 +100,24 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     /// alloc space for rule command
     char *tmp = (char *) malloc(255);
+    char *exec = (char *) malloc(255);
     strcpy(tmp, rule);
     /// append newline
-    snprintf(tmp, strlen(tmp) + 5,"%s\n", tmp);
-    /// realloc space for tmp
-    tmp = realloc(tmp, strlen(tmp)* sizeof( char ));
+    snprintf(exec, strlen(tmp) + 5,"%s\n", tmp);
+    /// realloc space for exec
+    exec = realloc(exec, strlen(exec)* sizeof( char ));
 
-    tmp[20] = add_opt;
-    fprintf(fp, "%s", tmp);
+    exec[20] = add_opt;
+    fprintf(fp, "%s", exec);
 
     /// run command in shell
-    if (system(tmp))
+    if (system(exec))
     {
-        printf("Failed to execute [%s]\n", rule);
+        printf("Failed to execute [%s]\n", exec);
     }
 
     free(tmp);
+    free(exec);
     fclose(fp);
 
     return 0;
