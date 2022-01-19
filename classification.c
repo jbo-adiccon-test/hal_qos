@@ -69,8 +69,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     size_t len = 0;
     char *line = NULL;
 
-    /// Delete all classes before
-    qos_removeAllClasses();
+
 
     if (!rule)
     {
@@ -96,14 +95,27 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
             fclose(fp);
             return 0;
         }
+
+        /// run command in shell
+        line[20] = 'D';
+        if (system(line))
+        {
+            printf("Failed to execute [%s]\n", line);
+        }
     }
+
+    /// Delete all classes before
+    qos_removeAllClasses();
 
     /// alloc space for rule command
     char *tmp = (char *) malloc(255);
     char *exec = (char *) malloc(255);
+
     strcpy(tmp, rule);
     /// append newline
     snprintf(exec, strlen(tmp) + 5,"%s\n", tmp);
+    free(tmp);
+
     /// realloc space for exec
     exec = realloc(exec, strlen(exec)* sizeof( char ));
 
@@ -116,7 +128,6 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
         printf("Failed to execute [%s]\n", exec);
     }
 
-    free(tmp);
     free(exec);
     fclose(fp);
 
