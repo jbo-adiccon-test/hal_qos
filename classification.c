@@ -65,7 +65,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 {
     FILE *fp = NULL;
     char add_opt = (char) 'I';
-    char del_opt = (char) 'X';
+    //char del_opt = (char) 'X';
     size_t len = 0;
     char *line = NULL;
 
