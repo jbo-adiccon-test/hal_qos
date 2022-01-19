@@ -96,10 +96,14 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
             return 0;
         }
 
+    }
+
+    fseek(fp, 0, SEEK_SET);
+
+    while (getline(&line, &len, fp) != -1) {
         /// run command in shell
         line[20] = 'D';
-        if (system(line))
-        {
+        if (system(line)) {
             printf("Failed to execute [%s]\n", line);
         }
     }
