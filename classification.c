@@ -53,6 +53,34 @@ static int append_to_fw()
     return 0;
 }
 
+static int revert_rules(){
+    FILE *fp = NULL;
+    size_t len = 0;
+    char *line = NULL;
+
+    /// deleting rule before adding to avoid duplicates
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
+    {
+        printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
+
+    /// Check file permissions
+    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
+        printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
+
+    while (getline(&line, &len, fp) != -1) {
+        /// run command in shell
+        line[20] = 'D';
+        if (system(line)) {
+            printf("Failed to execute [%s]\n", line);
+        }
+    }
+
+    fclose(fp);
+    return 0;
+}
+
 /**
  * Here the magic takes place. The function deletes all classes for qos. After that the firewall file is opened.
  * The files will be checked and terminates the func if data has no integrity(should be empty if there is only one instance).
@@ -65,7 +93,6 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 {
     FILE *fp = NULL;
     char add_opt = (char) 'I';
-    //char del_opt = (char) 'X';
     size_t len = 0;
     char *line = NULL;
 
@@ -96,24 +123,6 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
             return 0;
         }
 
-    }
-
-    while (getline(&line, &len, fp) != -1) {
-        /// run command in shell
-        line[20] = 'D';
-        if (system(line)) {
-            printf("Failed to execute [%s]\n", line);
-        }
-    }
-
-    /// Delete all classes before
-    qos_removeAllClasses();
-
-    fclose(fp);
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
-    {
-        printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
-        return -1;
     }
 
     /// alloc space for rule command
@@ -255,6 +264,10 @@ int qos_addClass(const struct qos_class *param)
             )
     {
         printf("NEW mark Categ add");
+
+        /// Delete all classes before
+        revert_rules();
+        qos_removeAllClasses();
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
