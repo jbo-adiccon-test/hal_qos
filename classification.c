@@ -86,6 +86,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     char *tmp = (char *) malloc(255);
     strcpy(tmp, rule);
+    snprintf(tmp, strlen(tmp) + 5,"%s\n", tmp);
     tmp = realloc(tmp, strlen(tmp)* sizeof( char ));
 
     tmp[20] = add_opt;
