@@ -57,15 +57,12 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     size_t len = 0;
     char *line = NULL;
 
+    qos_removeAllClasses();
+
     if (!rule)
     {
         printf("Invalid arguments\n");
         return -1;
-    }
-
-    if (system(rule))
-    {
-        printf("Failed to execute [%s]\n", rule);
     }
 
     //deleting rule before adding to avoid duplicates
@@ -89,12 +86,15 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     char *tmp = (char *) malloc(255);
     strcpy(tmp, rule);
-
-    tmp[20] = del_opt;
-    fprintf(fp, "%s", tmp);
+    tmp = realloc(tmp, strlen(tmp)* sizeof( char ));
 
     tmp[20] = add_opt;
     fprintf(fp, "%s", tmp);
+
+    if (system(tmp))
+    {
+        printf("Failed to execute [%s]\n", rule);
+    }
 
     free(tmp);
     fclose(fp);
