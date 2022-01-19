@@ -26,6 +26,10 @@ enum class_table
     IPTABLES_IPV6 = (1 << 1),
 };
 
+/**
+ * If not exsists append qos-firewall file to utopia firewall
+ * @return 0 SUCCESS -1 FAIL
+ */
 static int append_to_fw()
 {
     FILE *fp;
@@ -49,6 +53,14 @@ static int append_to_fw()
     return 0;
 }
 
+/**
+ * Here the magic takes place. The function deletes all classes for qos. After that the firewall file is opened.
+ * The files will be checked and terminates the func if data has no integrity(should be empty if there is only one instance).
+ * Write the file and run command
+ * @param table
+ * @param rule
+ * @return status 0 SUCCESS -1 FAIL
+ */
 static int add_mangle_rule_str(enum class_table table, const char *rule)
 {
     FILE *fp = NULL;
@@ -57,6 +69,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     size_t len = 0;
     char *line = NULL;
 
+    /// Delete all classes before
     qos_removeAllClasses();
 
     if (!rule)
@@ -65,13 +78,14 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
         return -1;
     }
 
-    //deleting rule before adding to avoid duplicates
+    /// deleting rule before adding to avoid duplicates
     if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
     {
         printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
 
+    /// Check file permissions
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
@@ -84,14 +98,18 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
         }
     }
 
+    /// alloc space for rule command
     char *tmp = (char *) malloc(255);
     strcpy(tmp, rule);
+    /// append newline
     snprintf(tmp, strlen(tmp) + 5,"%s\n", tmp);
+    /// realloc space for tmp
     tmp = realloc(tmp, strlen(tmp)* sizeof( char ));
 
     tmp[20] = add_opt;
     fprintf(fp, "%s", tmp);
 
+    /// run command in shell
     if (system(tmp))
     {
         printf("Failed to execute [%s]\n", rule);
@@ -104,7 +122,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 }
 
 /**
- * A Type to alloc the qos class in an heap elem
+ * A Type to alloc the qos class in an type
  */
 typedef struct
 {
@@ -115,7 +133,7 @@ typedef struct
 /**
  * Allocates the data of qos_class
  * @param class
- * @return
+ * @return qos_struct of class
  */
 qos_struct initQosClass(const struct qos_class *class)
 {
@@ -131,7 +149,7 @@ qos_struct initQosClass(const struct qos_class *class)
 /**
  * Sets the space free of qos_struct
  * @param class
- * @return
+ * @return 0 SUCCESS -1 FAIL
  */
 int dealloc_testclass(qos_struct *class)
 {
@@ -142,6 +160,10 @@ int dealloc_testclass(qos_struct *class)
     return 0;
 }
 
+/**
+ * Test main func with a debug struct in main to add an set to add (pseudo) classification
+ * @return 0 SUCCESS -1 FAIL
+ */
 int main()
 {
     struct qos_class *test_class = malloc(sizeof(struct qos_class));
@@ -167,6 +189,31 @@ int main()
     return EXIT_SUCCESS;
 }
 
+/**
+ * API function
+ * checks the data in classification struct from .h file. Then build the dscp_mark iptables in that kind:
+ *
+ * dmcli eRT addtable Device.QoS.Classification.
+ * dmcli eRT setv Device.QoS.Classification.1.SourcePort int -1
+ * dmcli eRT setv Device.QoS.Classification.1.SourcePortRangeMax int -1
+ * dmcli eRT setv Device.QoS.Classification.1.DestPort int -1
+ * dmcli eRT setv Device.QoS.Classification.1.DestPortRangeMax int -1
+ * dmcli eRT setv Device.QoS.Classification.1.Protocol int -1
+ *
+ * dmcli eRT setv Device.QoS.Classification.1.TrafficClass int 2
+ * dmcli eRT setv Device.QoS.Classification.1.ChainName string "postrouting_qos"
+ *
+ * dmcli eRT setv Device.QoS.Classification.1.IfaceOut string "erouter0"
+ * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32
+ * dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string "00:e0:4c:81:c8:40"
+ * dmcli eRT setv Device.QoS.Classification.1.IfaceIn string "brlan0"
+ * dmcli eRT setv Device.QoS.Classification.1.Enable bool true
+ *
+ * The Parameter must be set
+ *
+ * @param param
+ * @return 0 SUCCESS -1 FAIL
+ */
 int qos_addClass(const struct qos_class *param)
 {
     qos_struct obj = initQosClass(param);
@@ -187,12 +234,17 @@ int qos_addClass(const struct qos_class *param)
     {
         printf("NEW mark Categ add");
 
+        /// Alloc space for command
         char *exec1 = (char *) malloc(255);
+        /// Set iptables command in exec
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
+        /// Realloc space
         exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
         printf("%s \n", exec1);
         //system(exec1);
+        /// Input exec into firewall and iptables
         add_mangle_rule_str(IPTABLES_IPV4, exec1);
+        /// dealloc space
         free(exec1);
 
         char *exec2 = (char *) malloc(255);
@@ -225,6 +277,7 @@ int qos_addClass(const struct qos_class *param)
         add_mangle_rule_str(IPTABLES_IPV4, exec5);
         free(exec5);
 
+        /// Integrate qos-firewall file into firewall
         if(!append_to_fw()) {
             printf("Failed to set iptables rules via firewall");
             return -1;
