@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classification_8c" xml:lang="en-US">
+<title>classification.c File Reference</title>
+<indexterm><primary>classification.c</primary></indexterm>
+<programlisting linenumbering="unnumbered">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;errno.h&gt;
+#include &quot;classification.h&quot;
+</programlisting><simplesect>
+    <title>Data Structures    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_structqos__struct">qos_struct</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para>#define <link linkend="_classification_8c_1aac44c69433c499f8f6b289be48d15586">CLASS_MASK_IPV4</link>   32</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1ab68ef077d811c3905bca07df9889a818">CLASS_MASK_IPV6</link>   128</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1a7562d6fb7949c4e14a05fcbcc38fbf64">CLASS_FW_FILENAME</link>   &quot;/tmp/qos_rules.sh&quot;</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1a0036c19278e6b8c0eea72c195f9efcd0">CLASS_FW_DEBUG</link>   &quot;/home/tester/qos_rules.sh&quot;</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1a1cb9a98219b89cd96775287b7109ae2f">CLASS_FW_RELOAD_FILENAME</link>   &quot;/etc/utopia/service.d/firewall_log_handle.sh&quot;</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1a95e8153ae3cb6a746a8a9f7a5700270e">CLASS_FW_RELOAD_DEBUG</link>   &quot;/home/tester/firewall_log_handle.sh&quot;</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8c_1a157effcdb39a9359a985714593fa0870">CLASS_IPTABLES_MANGLE_CMD</link>   &quot;iptables -t mangle&quot;</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Enumerations    </title>
+        <itemizedlist>
+            <listitem><para>enum <link linkend="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1db">class_table</link> { <link linkend="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1dba781b1fdbefbe39fc6edf90430244c503">IPTABLES_IPV4</link> = (1 &lt;&lt; 0)
+, <link linkend="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1dbab4889de7d1672b8b83e5460efbca2db0">IPTABLES_IPV6</link> = (1 &lt;&lt; 1)
+ }</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para><link linkend="_structqos__struct">qos_struct</link> <link linkend="_classification_8c_1a152a8b24830cb6d60e74a264ce9787d6">initQosClass</link> (const struct <link linkend="_structqos__class">qos_class</link> *class)</para>
+</listitem>
+            <listitem><para>int <link linkend="_classification_8c_1a0db1aa13c019518d9b6ca22ddb19b9f9">dealloc_testclass</link> (<link linkend="_structqos__struct">qos_struct</link> *class)</para>
+</listitem>
+            <listitem><para>int <link linkend="_classification_8c_1ae66f6b31b5ad750f1fe042a706a4e3d4">main</link> ()</para>
+</listitem>
+            <listitem><para>int <link linkend="_classification_8c_1a2f2af0ce3ad3f1c2878c30c12df8795c">qos_addClass</link> (const struct <link linkend="_structqos__class">qos_class</link> *param)</para>
+</listitem>
+            <listitem><para>int <link linkend="_classification_8c_1a733ca25bba1c57325e812bd4c01e0b95">qos_removeAllClasses</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Macro Definition Documentation</title>
+<anchor xml:id="_classification_8c_1a0036c19278e6b8c0eea72c195f9efcd0"/><section>
+    <title>CLASS_FW_DEBUG</title>
+<indexterm><primary>CLASS_FW_DEBUG</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_FW_DEBUG</secondary></indexterm>
+<para><computeroutput>#define CLASS_FW_DEBUG   &quot;/home/tester/qos_rules.sh&quot;</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00018">18</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a7562d6fb7949c4e14a05fcbcc38fbf64"/><section>
+    <title>CLASS_FW_FILENAME</title>
+<indexterm><primary>CLASS_FW_FILENAME</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_FW_FILENAME</secondary></indexterm>
+<para><computeroutput>#define CLASS_FW_FILENAME   &quot;/tmp/qos_rules.sh&quot;</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00017">17</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a95e8153ae3cb6a746a8a9f7a5700270e"/><section>
+    <title>CLASS_FW_RELOAD_DEBUG</title>
+<indexterm><primary>CLASS_FW_RELOAD_DEBUG</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_FW_RELOAD_DEBUG</secondary></indexterm>
+<para><computeroutput>#define CLASS_FW_RELOAD_DEBUG   &quot;/home/tester/firewall_log_handle.sh&quot;</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00020">20</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a1cb9a98219b89cd96775287b7109ae2f"/><section>
+    <title>CLASS_FW_RELOAD_FILENAME</title>
+<indexterm><primary>CLASS_FW_RELOAD_FILENAME</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_FW_RELOAD_FILENAME</secondary></indexterm>
+<para><computeroutput>#define CLASS_FW_RELOAD_FILENAME   &quot;/etc/utopia/service.d/firewall_log_handle.sh&quot;</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00019">19</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a157effcdb39a9359a985714593fa0870"/><section>
+    <title>CLASS_IPTABLES_MANGLE_CMD</title>
+<indexterm><primary>CLASS_IPTABLES_MANGLE_CMD</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_IPTABLES_MANGLE_CMD</secondary></indexterm>
+<para><computeroutput>#define CLASS_IPTABLES_MANGLE_CMD   &quot;iptables -t mangle&quot;</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00021">21</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1aac44c69433c499f8f6b289be48d15586"/><section>
+    <title>CLASS_MASK_IPV4</title>
+<indexterm><primary>CLASS_MASK_IPV4</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_MASK_IPV4</secondary></indexterm>
+<para><computeroutput>#define CLASS_MASK_IPV4   32</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00014">14</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1ab68ef077d811c3905bca07df9889a818"/><section>
+    <title>CLASS_MASK_IPV6</title>
+<indexterm><primary>CLASS_MASK_IPV6</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>CLASS_MASK_IPV6</secondary></indexterm>
+<para><computeroutput>#define CLASS_MASK_IPV6   128</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00015">15</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+</section>
+<section>
+<title>Enumeration Type Documentation</title>
+<anchor xml:id="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1db"/><section>
+    <title>class_table</title>
+<indexterm><primary>class_table</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>class_table</secondary></indexterm>
+<para><computeroutput>enum <link linkend="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1db">class_table</link></computeroutput></para><informaltable frame="all">
+<title>Enumerator</title>
+    <tgroup cols="2" align="left" colsep="1" rowsep="1">
+      <colspec colname='c1'/>
+      <colspec colname='c2'/>
+<tbody>
+<row><entry><indexterm><primary>IPTABLES_IPV4</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>IPTABLES_IPV4</secondary></indexterm>
+<anchor xml:id="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1dba781b1fdbefbe39fc6edf90430244c503"/>IPTABLES_IPV4</entry><entry></entry></row><row><entry><indexterm><primary>IPTABLES_IPV6</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>IPTABLES_IPV6</secondary></indexterm>
+<anchor xml:id="_classification_8c_1a9e6af64356c2d601cdb49b676d4fe1dbab4889de7d1672b8b83e5460efbca2db0"/>IPTABLES_IPV6</entry><entry></entry></row>    </tbody>
+    </tgroup>
+</informaltable>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00023">23</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="_classification_8c_1a0db1aa13c019518d9b6ca22ddb19b9f9"/><section>
+    <title>dealloc_testclass()</title>
+<indexterm><primary>dealloc_testclass</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>dealloc_testclass</secondary></indexterm>
+<para><computeroutput>int dealloc_testclass (<link linkend="_structqos__struct">qos_struct</link> * class)</computeroutput></para>
+<para>Sets the space free of <link linkend="_structqos__struct">qos_struct</link> 
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>class</entry><entry>
+<para></para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>0 SUCCESS -1 FAIL </para>
+</formalpara>
+</para>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00187">187</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a152a8b24830cb6d60e74a264ce9787d6"/><section>
+    <title>initQosClass()</title>
+<indexterm><primary>initQosClass</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>initQosClass</secondary></indexterm>
+<para><computeroutput><link linkend="_structqos__struct">qos_struct</link> initQosClass (const struct <link linkend="_structqos__class">qos_class</link> * class)</computeroutput></para>
+<para>Allocates the data of <link linkend="_structqos__class">qos_class</link> 
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>class</entry><entry>
+<para></para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para><link linkend="_structqos__struct">qos_struct</link> of class </para>
+</formalpara>
+</para>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00171">171</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1ae66f6b31b5ad750f1fe042a706a4e3d4"/><section>
+    <title>main()</title>
+<indexterm><primary>main</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>main</secondary></indexterm>
+<para><computeroutput>int main ( )</computeroutput></para>
+<para>Test main func with a debug struct in main to add an set to add (pseudo) classification <formalpara><title>Returns</title>
+
+<para>0 SUCCESS -1 FAIL </para>
+</formalpara>
+</para>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00200">200</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a2f2af0ce3ad3f1c2878c30c12df8795c"/><section>
+    <title>qos_addClass()</title>
+<indexterm><primary>qos_addClass</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>qos_addClass</secondary></indexterm>
+<para><computeroutput>int qos_addClass (const struct <link linkend="_structqos__class">qos_class</link> * param)</computeroutput></para>
+<para>API function checks the data in classification struct from .h file. Then build the dscp_mark iptables in that kind:</para>
+
+<para>dmcli eRT addtable Device.QoS.Classification. dmcli eRT setv Device.QoS.Classification.1.SourcePort int -1 dmcli eRT setv Device.QoS.Classification.1.SourcePortRangeMax int -1 dmcli eRT setv Device.QoS.Classification.1.DestPort int -1 dmcli eRT setv Device.QoS.Classification.1.DestPortRangeMax int -1 dmcli eRT setv Device.QoS.Classification.1.Protocol int -1</para>
+
+<para>dmcli eRT setv Device.QoS.Classification.1.TrafficClass int 2 dmcli eRT setv Device.QoS.Classification.1.ChainName string &quot;postrouting_qos&quot;</para>
+
+<para>dmcli eRT setv Device.QoS.Classification.1.IfaceOut string &quot;erouter0&quot; dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32 dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string &quot;00:e0:4c:81:c8:40&quot; dmcli eRT setv Device.QoS.Classification.1.IfaceIn string &quot;brlan0&quot; dmcli eRT setv Device.QoS.Classification.1.Enable bool true</para>
+
+<para>The Parameter must be set</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>param</entry><entry>
+<para></para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>0 SUCCESS -1 FAIL </para>
+</formalpara>
+</para>
+
+<para>Delete all classes before</para>
+
+<para>Alloc space for command</para>
+
+<para>Set iptables command in exec</para>
+
+<para>Realloc space</para>
+
+<para>Input exec into firewall and iptables</para>
+
+<para>dealloc space</para>
+
+<para>Integrate qos-firewall file into firewall</para>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00250">250</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8c_1a733ca25bba1c57325e812bd4c01e0b95"/><section>
+    <title>qos_removeAllClasses()</title>
+<indexterm><primary>qos_removeAllClasses</primary><secondary>classification.c</secondary></indexterm>
+<indexterm><primary>classification.c</primary><secondary>qos_removeAllClasses</secondary></indexterm>
+<para><computeroutput>int qos_removeAllClasses ( )</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00329">329</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+</section>
+</section>

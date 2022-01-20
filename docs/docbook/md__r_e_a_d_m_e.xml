@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_md__r_e_a_d_m_e" xml:lang="en-US">
+
+<para>Use &quot;cake&quot; instead of htb prioritiy and class</para>
+
+<para>tc qdisc add dev erouter0 root cake bandwidth 25Mbit overhead 0 mpu 0 diffserv4</para>
+
+<para>parameters:<itemizedlist>
+<listitem>
+<para>interface: erouter0 
+<literallayout>&#160;&#xa;</literallayout>
+</para>
+</listitem><listitem>
+<para>bandwith: &lt;N&gt; 
+<literallayout>&#160;&#xa;</literallayout>
+</para>
+</listitem></itemizedlist>
+</para>
+
+<para>configuration with dmcli</para>
+
+<para>dmcli eRT addtable Device.QoS.Queue. 
+<literallayout>&#160;&#xa;</literallayout>
+ dmcli eRT setv Device.QoS.Queue.1.Interface string &quot;erouter0&quot; 
+<literallayout>&#160;&#xa;</literallayout>
+ dmcli eRT setv Device.QoS.Queue.1.ShapingRate int 25 
+<literallayout>&#160;&#xa;</literallayout>
+ dmcli eRT setv Device.QoS.Queue.1.Enable bool true 
+<literallayout>&#160;&#xa;</literallayout>
+</para>
+
+<para>This is simple code without any error procedures etc. </para>
+</section>

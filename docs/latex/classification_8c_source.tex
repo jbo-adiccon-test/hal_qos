@@ -1,0 +1,269 @@
+\doxysection{classification.\+c}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{comment}{//}}
+\DoxyCodeLine{00002 \textcolor{comment}{// Created by limberg on 12.01.2022.}}
+\DoxyCodeLine{00003 \textcolor{comment}{//}}
+\DoxyCodeLine{00004 }
+\DoxyCodeLine{00005 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{00006 \textcolor{preprocessor}{\#include <string.h>}}
+\DoxyCodeLine{00007 \textcolor{preprocessor}{\#include <stdlib.h>}}
+\DoxyCodeLine{00008 \textcolor{preprocessor}{\#include <limits.h>}}
+\DoxyCodeLine{00009 \textcolor{preprocessor}{\#include <sys/stat.h>}}
+\DoxyCodeLine{00010 \textcolor{preprocessor}{\#include <errno.h>}}
+\DoxyCodeLine{00011 }
+\DoxyCodeLine{00012 \textcolor{preprocessor}{\#include "{}classification.h"{}}}
+\DoxyCodeLine{00013 }
+\DoxyCodeLine{00014 \textcolor{preprocessor}{\#define CLASS\_MASK\_IPV4 32}}
+\DoxyCodeLine{00015 \textcolor{preprocessor}{\#define CLASS\_MASK\_IPV6 128}}
+\DoxyCodeLine{00016 }
+\DoxyCodeLine{00017 \textcolor{preprocessor}{\#define CLASS\_FW\_FILENAME "{}/tmp/qos\_rules.sh"{}}}
+\DoxyCodeLine{00018 \textcolor{preprocessor}{\#define CLASS\_FW\_DEBUG "{}/home/tester/qos\_rules.sh"{}}}
+\DoxyCodeLine{00019 \textcolor{preprocessor}{\#define CLASS\_FW\_RELOAD\_FILENAME "{}/etc/utopia/service.d/firewall\_log\_handle.sh"{}}}
+\DoxyCodeLine{00020 \textcolor{preprocessor}{\#define CLASS\_FW\_RELOAD\_DEBUG "{}/home/tester/firewall\_log\_handle.sh"{}}}
+\DoxyCodeLine{00021 \textcolor{preprocessor}{\#define CLASS\_IPTABLES\_MANGLE\_CMD "{}iptables -\/t mangle"{}}}
+\DoxyCodeLine{00022 }
+\DoxyCodeLine{00023 \textcolor{keyword}{enum class}\_table}
+\DoxyCodeLine{00024 \{}
+\DoxyCodeLine{00025     IPTABLES\_IPV4 = (1 << 0),}
+\DoxyCodeLine{00026     IPTABLES\_IPV6 = (1 << 1),}
+\DoxyCodeLine{00027 \};}
+\DoxyCodeLine{00028 }
+\DoxyCodeLine{00033 \textcolor{keyword}{static} \textcolor{keywordtype}{int} append\_to\_fw()}
+\DoxyCodeLine{00034 \{}
+\DoxyCodeLine{00035     FILE *fp;}
+\DoxyCodeLine{00036     \textcolor{keywordtype}{char} *line = NULL;}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{size\_t} len = 0;}
+\DoxyCodeLine{00038 }
+\DoxyCodeLine{00039     \textcolor{keywordflow}{if} (!(fp = fopen(CLASS\_FW\_RELOAD\_FILENAME, \textcolor{stringliteral}{"{}a+"{}})))}
+\DoxyCodeLine{00040     \{}
+\DoxyCodeLine{00041         printf(\textcolor{stringliteral}{"{}Cannot open file "{}}CLASS\_FW\_RELOAD\_FILENAME\textcolor{stringliteral}{"{}: \%s\(\backslash\)n"{}}, strerror(errno));}
+\DoxyCodeLine{00042         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00043     \}}
+\DoxyCodeLine{00044 }
+\DoxyCodeLine{00045     \textcolor{keywordflow}{while} (getline(\&line, \&len, fp) != -\/1)}
+\DoxyCodeLine{00046     \{}
+\DoxyCodeLine{00047         \textcolor{keywordflow}{if} (strstr(line, CLASS\_FW\_FILENAME))}
+\DoxyCodeLine{00048             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00049     \}}
+\DoxyCodeLine{00050 }
+\DoxyCodeLine{00051     fprintf(fp, \textcolor{stringliteral}{"{}\%s\(\backslash\)n"{}}, CLASS\_FW\_FILENAME);}
+\DoxyCodeLine{00052     fclose(fp);}
+\DoxyCodeLine{00053     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00054 \}}
+\DoxyCodeLine{00055 }
+\DoxyCodeLine{00060 \textcolor{keyword}{static} \textcolor{keywordtype}{int} revert\_rules()\{}
+\DoxyCodeLine{00061     FILE *fp = NULL;}
+\DoxyCodeLine{00062     \textcolor{keywordtype}{size\_t} len = 0;}
+\DoxyCodeLine{00063     \textcolor{keywordtype}{char} *line = NULL;}
+\DoxyCodeLine{00064 }
+\DoxyCodeLine{00066     \textcolor{keywordflow}{if} (!(fp = fopen(CLASS\_FW\_FILENAME, \textcolor{stringliteral}{"{}a+"{}})))}
+\DoxyCodeLine{00067     \{}
+\DoxyCodeLine{00068         printf(\textcolor{stringliteral}{"{}Cannot open "{}}CLASS\_FW\_FILENAME\textcolor{stringliteral}{"{}: \%s\(\backslash\)n"{}}, strerror(errno));}
+\DoxyCodeLine{00069         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00070     \}}
+\DoxyCodeLine{00071 }
+\DoxyCodeLine{00073     \textcolor{keywordflow}{if} (chmod(CLASS\_FW\_FILENAME, S\_IRWXU | S\_IRWXG | S\_IRWXO))}
+\DoxyCodeLine{00074         printf(\textcolor{stringliteral}{"{}Cannot change "{}}CLASS\_FW\_FILENAME\textcolor{stringliteral}{"{} permissions: \%s\(\backslash\)n"{}}, strerror(errno));}
+\DoxyCodeLine{00075 }
+\DoxyCodeLine{00076     \textcolor{keywordflow}{while} (getline(\&line, \&len, fp) != -\/1) \{}
+\DoxyCodeLine{00078         line[20] = \textcolor{charliteral}{'D'};}
+\DoxyCodeLine{00079         \textcolor{keywordflow}{if} (system(line)) \{}
+\DoxyCodeLine{00080             printf(\textcolor{stringliteral}{"{}Failed to execute [\%s]\(\backslash\)n"{}}, line);}
+\DoxyCodeLine{00081         \}}
+\DoxyCodeLine{00082     \}}
+\DoxyCodeLine{00083 }
+\DoxyCodeLine{00084     fclose(fp);}
+\DoxyCodeLine{00085     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00086 \}}
+\DoxyCodeLine{00087 }
+\DoxyCodeLine{00096 \textcolor{keyword}{static} \textcolor{keywordtype}{int} add\_mangle\_rule\_str(\textcolor{keyword}{enum} class\_table table, \textcolor{keyword}{const} \textcolor{keywordtype}{char} *rule)}
+\DoxyCodeLine{00097 \{}
+\DoxyCodeLine{00098     FILE *fp = NULL;}
+\DoxyCodeLine{00099     \textcolor{keywordtype}{char} add\_opt = (char) \textcolor{charliteral}{'I'};}
+\DoxyCodeLine{00100     \textcolor{keywordtype}{size\_t} len = 0;}
+\DoxyCodeLine{00101     \textcolor{keywordtype}{char} *line = NULL;}
+\DoxyCodeLine{00102 }
+\DoxyCodeLine{00103     \textcolor{keywordflow}{if} (!rule)}
+\DoxyCodeLine{00104     \{}
+\DoxyCodeLine{00105         printf(\textcolor{stringliteral}{"{}Invalid arguments\(\backslash\)n"{}});}
+\DoxyCodeLine{00106         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00107     \}}
+\DoxyCodeLine{00108 }
+\DoxyCodeLine{00110     \textcolor{keywordflow}{if} (!(fp = fopen(CLASS\_FW\_FILENAME, \textcolor{stringliteral}{"{}a+"{}})))}
+\DoxyCodeLine{00111     \{}
+\DoxyCodeLine{00112         printf(\textcolor{stringliteral}{"{}Cannot open "{}}CLASS\_FW\_FILENAME\textcolor{stringliteral}{"{}: \%s\(\backslash\)n"{}}, strerror(errno));}
+\DoxyCodeLine{00113         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00114     \}}
+\DoxyCodeLine{00115 }
+\DoxyCodeLine{00117     \textcolor{keywordflow}{if} (chmod(CLASS\_FW\_FILENAME, S\_IRWXU | S\_IRWXG | S\_IRWXO))}
+\DoxyCodeLine{00118         printf(\textcolor{stringliteral}{"{}Cannot change "{}}CLASS\_FW\_FILENAME\textcolor{stringliteral}{"{} permissions: \%s\(\backslash\)n"{}}, strerror(errno));}
+\DoxyCodeLine{00119 }
+\DoxyCodeLine{00120     \textcolor{keywordflow}{while} (getline(\&line, \&len, fp) != -\/1)}
+\DoxyCodeLine{00121     \{}
+\DoxyCodeLine{00122         \textcolor{keywordflow}{if} (strstr(line, rule))}
+\DoxyCodeLine{00123         \{}
+\DoxyCodeLine{00124             fclose(fp);}
+\DoxyCodeLine{00125             \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00126         \}}
+\DoxyCodeLine{00127 }
+\DoxyCodeLine{00128     \}}
+\DoxyCodeLine{00129 }
+\DoxyCodeLine{00131     \textcolor{keywordtype}{char} *tmpd = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00132     \textcolor{keywordtype}{char} *exec = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00133 }
+\DoxyCodeLine{00134     strcpy(tmpd, rule);}
+\DoxyCodeLine{00136     snprintf(exec, strlen(tmpd) + 1,\textcolor{stringliteral}{"{}\%s\(\backslash\)n"{}}, tmpd);}
+\DoxyCodeLine{00137     free(tmpd);}
+\DoxyCodeLine{00138 }
+\DoxyCodeLine{00140     exec = realloc(exec, strlen(exec)* \textcolor{keyword}{sizeof}( \textcolor{keywordtype}{char} ));}
+\DoxyCodeLine{00141 }
+\DoxyCodeLine{00142     exec[20] = add\_opt;}
+\DoxyCodeLine{00143     fprintf(fp, \textcolor{stringliteral}{"{}\%s"{}}, exec);}
+\DoxyCodeLine{00144 }
+\DoxyCodeLine{00146     \textcolor{keywordflow}{if} (system(exec))}
+\DoxyCodeLine{00147     \{}
+\DoxyCodeLine{00148         printf(\textcolor{stringliteral}{"{}Failed to execute [\%s]\(\backslash\)n"{}}, exec);}
+\DoxyCodeLine{00149     \}}
+\DoxyCodeLine{00150 }
+\DoxyCodeLine{00151     free(exec);}
+\DoxyCodeLine{00152     fclose(fp);}
+\DoxyCodeLine{00153 }
+\DoxyCodeLine{00154     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00155 \}}
+\DoxyCodeLine{00156 }
+\DoxyCodeLine{00160 \textcolor{keyword}{typedef} \textcolor{keyword}{struct}}
+\DoxyCodeLine{00161 \{}
+\DoxyCodeLine{00162     \textcolor{keyword}{const} \textcolor{keyword}{struct }qos\_class *data;}
+\DoxyCodeLine{00163     \textcolor{keywordtype}{size\_t} size;}
+\DoxyCodeLine{00164 \} qos\_struct;}
+\DoxyCodeLine{00165 }
+\DoxyCodeLine{00171 qos\_struct initQosClass(\textcolor{keyword}{const} \textcolor{keyword}{struct} qos\_class *\textcolor{keyword}{class})}
+\DoxyCodeLine{00172 \{}
+\DoxyCodeLine{00173 }
+\DoxyCodeLine{00174     qos\_struct *data = malloc(\textcolor{keyword}{sizeof}(qos\_struct));}
+\DoxyCodeLine{00175 }
+\DoxyCodeLine{00176     data-\/>size = \textcolor{keyword}{sizeof}(qos\_struct);}
+\DoxyCodeLine{00177     data-\/>data = malloc(\textcolor{keyword}{sizeof}(\textcolor{keyword}{struct} qos\_class));}
+\DoxyCodeLine{00178     data-\/>data = \textcolor{keyword}{class};}
+\DoxyCodeLine{00179     \textcolor{keywordflow}{return} *data;}
+\DoxyCodeLine{00180 \}}
+\DoxyCodeLine{00181 }
+\DoxyCodeLine{00187 \textcolor{keywordtype}{int} dealloc\_testclass(qos\_struct *\textcolor{keyword}{class})}
+\DoxyCodeLine{00188 \{}
+\DoxyCodeLine{00189     \textcolor{keywordflow}{if}(!\textcolor{keyword}{class})}
+\DoxyCodeLine{00190         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00191 }
+\DoxyCodeLine{00192     free(\textcolor{keyword}{class});}
+\DoxyCodeLine{00193     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00194 \}}
+\DoxyCodeLine{00195 }
+\DoxyCodeLine{00200 \textcolor{keywordtype}{int} main()}
+\DoxyCodeLine{00201 \{}
+\DoxyCodeLine{00202     \textcolor{keyword}{struct }qos\_class *test\_class = malloc(\textcolor{keyword}{sizeof}(\textcolor{keyword}{struct} qos\_class));}
+\DoxyCodeLine{00203 }
+\DoxyCodeLine{00204     test\_class-\/>port\_dst\_range\_start = -\/1;}
+\DoxyCodeLine{00205     test\_class-\/>port\_dst\_range\_end = -\/1;}
+\DoxyCodeLine{00206     test\_class-\/>port\_src\_range\_start = -\/1;}
+\DoxyCodeLine{00207     test\_class-\/>port\_src\_range\_end = -\/1;}
+\DoxyCodeLine{00208 }
+\DoxyCodeLine{00209     test\_class-\/>protocol = -\/1;}
+\DoxyCodeLine{00210 }
+\DoxyCodeLine{00211     test\_class-\/>traffic\_class = 2;}
+\DoxyCodeLine{00212     strcpy(test\_class-\/>chain\_name, \textcolor{stringliteral}{"{}postrouting\_qos"{}});}
+\DoxyCodeLine{00213     strcpy(test\_class-\/>iface\_out, \textcolor{stringliteral}{"{}erouter0"{}});}
+\DoxyCodeLine{00214     strcpy(test\_class-\/>iface\_in, \textcolor{stringliteral}{"{}brlan0"{}});}
+\DoxyCodeLine{00215     test\_class-\/>dscp\_mark = 32;}
+\DoxyCodeLine{00216 }
+\DoxyCodeLine{00217     strcpy(test\_class-\/>mac\_src\_addr, \textcolor{stringliteral}{"{}00:e0:4c:81:c8:41"{}});}
+\DoxyCodeLine{00218 }
+\DoxyCodeLine{00219     \textcolor{keywordflow}{if}(qos\_addClass(test\_class) == -\/1)}
+\DoxyCodeLine{00220         \textcolor{keywordflow}{return} EXIT\_FAILURE;}
+\DoxyCodeLine{00221 }
+\DoxyCodeLine{00222     \textcolor{keywordflow}{return} EXIT\_SUCCESS;}
+\DoxyCodeLine{00223 \}}
+\DoxyCodeLine{00224 }
+\DoxyCodeLine{00250 \textcolor{keywordtype}{int} qos\_addClass(\textcolor{keyword}{const} \textcolor{keyword}{struct} qos\_class *param)}
+\DoxyCodeLine{00251 \{}
+\DoxyCodeLine{00252     qos\_struct obj = initQosClass(param);}
+\DoxyCodeLine{00253 }
+\DoxyCodeLine{00254     printf(\textcolor{stringliteral}{"{}Parameters: \%d, \%s, \%d"{}}, obj.data-\/>dscp\_mark, obj.data-\/>mac\_src\_addr, obj.data-\/>traffic\_class);}
+\DoxyCodeLine{00255 }
+\DoxyCodeLine{00256     \textcolor{keywordflow}{if} (obj.data-\/>port\_src\_range\_end == -\/1 \&\&}
+\DoxyCodeLine{00257         obj.data-\/>port\_src\_range\_start == -\/1 \&\&}
+\DoxyCodeLine{00258         obj.data-\/>port\_dst\_range\_end == -\/1 \&\&}
+\DoxyCodeLine{00259         obj.data-\/>port\_dst\_range\_start == -\/1 \&\&}
+\DoxyCodeLine{00260         obj.data-\/>protocol == -\/1 \&\&}
+\DoxyCodeLine{00261         obj.data-\/>traffic\_class != 0 \&\&}
+\DoxyCodeLine{00262         obj.data-\/>chain\_name[0] != \textcolor{charliteral}{'\(\backslash\)0'} \&\&}
+\DoxyCodeLine{00263         obj.data-\/>iface\_in[0] != \textcolor{charliteral}{'\(\backslash\)0'} \&\&}
+\DoxyCodeLine{00264         obj.data-\/>iface\_out[0] != \textcolor{charliteral}{'\(\backslash\)0'} \&\&}
+\DoxyCodeLine{00265         obj.data-\/>dscp\_mark != 0}
+\DoxyCodeLine{00266             )}
+\DoxyCodeLine{00267     \{}
+\DoxyCodeLine{00268         printf(\textcolor{stringliteral}{"{}NEW mark Categ add"{}});}
+\DoxyCodeLine{00269 }
+\DoxyCodeLine{00271         revert\_rules();}
+\DoxyCodeLine{00272         qos\_removeAllClasses();}
+\DoxyCodeLine{00273 }
+\DoxyCodeLine{00275         \textcolor{keywordtype}{char} *exec1 = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00277         snprintf(exec1, 255, \textcolor{stringliteral}{"{}\%s -\/I \%s -\/o \%s -\/m mark -\/-\/mark 4444 -\/j DSCP -\/-\/set-\/dscp \%d"{}}, CLASS\_IPTABLES\_MANGLE\_CMD, obj.data-\/>chain\_name, obj.data-\/>iface\_out, obj.data-\/>dscp\_mark);}
+\DoxyCodeLine{00279         exec1 = realloc(exec1, strlen(exec1)* \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char} ));}
+\DoxyCodeLine{00280         printf(\textcolor{stringliteral}{"{}\%s \(\backslash\)n"{}}, exec1);}
+\DoxyCodeLine{00281         \textcolor{comment}{//system(exec1);}}
+\DoxyCodeLine{00283 \textcolor{comment}{}        add\_mangle\_rule\_str(IPTABLES\_IPV4, exec1);}
+\DoxyCodeLine{00285         free(exec1);}
+\DoxyCodeLine{00286 }
+\DoxyCodeLine{00287         \textcolor{keywordtype}{char} *exec2 = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00288         snprintf(exec2, 255, \textcolor{stringliteral}{"{}\%s -\/I \%s -\/o \%s -\/m mark -\/-\/mark 4444 -\/j DSCP -\/-\/set-\/dscp \%d"{}}, CLASS\_IPTABLES\_MANGLE\_CMD, obj.data-\/>chain\_name, obj.data-\/>iface\_in, obj.data-\/>dscp\_mark);}
+\DoxyCodeLine{00289         exec2 = realloc(exec2, strlen(exec2)* \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char} ));}
+\DoxyCodeLine{00290         printf(\textcolor{stringliteral}{"{}\%s \(\backslash\)n"{}}, exec2);}
+\DoxyCodeLine{00291         add\_mangle\_rule\_str(IPTABLES\_IPV4, exec2);}
+\DoxyCodeLine{00292         free(exec2);}
+\DoxyCodeLine{00293 }
+\DoxyCodeLine{00294         \textcolor{keywordtype}{char} *exec3 = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00295         snprintf(exec3, 255, \textcolor{stringliteral}{"{}\%s -\/I \%s -\/o \%s -\/m state -\/-\/state ESTABLISHED,RELATED -\/j CONNMARK -\/-\/restore-\/mark"{}}, CLASS\_IPTABLES\_MANGLE\_CMD, obj.data-\/>chain\_name, obj.data-\/>iface\_in);}
+\DoxyCodeLine{00296         exec3 = realloc(exec3, strlen(exec3) * \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char} ));}
+\DoxyCodeLine{00297         printf(\textcolor{stringliteral}{"{}\%s \(\backslash\)n"{}}, exec3);}
+\DoxyCodeLine{00298         \textcolor{comment}{//system(exec3);}}
+\DoxyCodeLine{00299         add\_mangle\_rule\_str(IPTABLES\_IPV4, exec3);}
+\DoxyCodeLine{00300         free(exec3);}
+\DoxyCodeLine{00301 }
+\DoxyCodeLine{00302         \textcolor{keywordtype}{char} *exec4 = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00303         snprintf(exec4, 255, \textcolor{stringliteral}{"{}\%s -\/I \%s -\/o \%s -\/m state -\/-\/state NEW -\/m mac -\/-\/mac-\/source \%s -\/j CONNMARK -\/-\/save-\/mark"{}}, CLASS\_IPTABLES\_MANGLE\_CMD, obj.data-\/>chain\_name, obj.data-\/>iface\_in, obj.data-\/>mac\_src\_addr);}
+\DoxyCodeLine{00304         exec4 = realloc(exec4, strlen(exec4) * \textcolor{keyword}{sizeof}(\textcolor{keywordtype}{char} ));}
+\DoxyCodeLine{00305         printf(\textcolor{stringliteral}{"{}\%s \(\backslash\)n"{}}, exec4);}
+\DoxyCodeLine{00306         \textcolor{comment}{//system(exec4);}}
+\DoxyCodeLine{00307         add\_mangle\_rule\_str(IPTABLES\_IPV4, exec4);}
+\DoxyCodeLine{00308         free(exec4);}
+\DoxyCodeLine{00309 }
+\DoxyCodeLine{00310         \textcolor{keywordtype}{char} *exec5 = (\textcolor{keywordtype}{char} *) malloc(255);}
+\DoxyCodeLine{00311         snprintf(exec5, 200, \textcolor{stringliteral}{"{}\%s -\/I \%s -\/o \%s -\/m state -\/-\/state NEW -\/m mac -\/-\/mac-\/source \%s -\/j MARK -\/-\/set-\/mark 4444"{}}, CLASS\_IPTABLES\_MANGLE\_CMD, obj.data-\/>chain\_name, obj.data-\/>iface\_in, obj.data-\/>mac\_src\_addr);}
+\DoxyCodeLine{00312         printf(\textcolor{stringliteral}{"{}\%s \(\backslash\)n"{}}, exec5);}
+\DoxyCodeLine{00313         \textcolor{comment}{//system(exec5);}}
+\DoxyCodeLine{00314         add\_mangle\_rule\_str(IPTABLES\_IPV4, exec5);}
+\DoxyCodeLine{00315         free(exec5);}
+\DoxyCodeLine{00316 }
+\DoxyCodeLine{00318         \textcolor{keywordflow}{if}(!append\_to\_fw()) \{}
+\DoxyCodeLine{00319             printf(\textcolor{stringliteral}{"{}Failed to set iptables rules via firewall"{}});}
+\DoxyCodeLine{00320             \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00321         \}}
+\DoxyCodeLine{00322     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{00323         printf(\textcolor{stringliteral}{"{}STD QoS Class add"{}});}
+\DoxyCodeLine{00324     \}}
+\DoxyCodeLine{00325 }
+\DoxyCodeLine{00326     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00327 \}}
+\DoxyCodeLine{00328 }
+\DoxyCodeLine{00329 \textcolor{keywordtype}{int} qos\_removeAllClasses()}
+\DoxyCodeLine{00330 \{}
+\DoxyCodeLine{00331     \textcolor{keywordflow}{if} (remove(CLASS\_FW\_FILENAME) == -\/1)}
+\DoxyCodeLine{00332     \{}
+\DoxyCodeLine{00333         printf(\textcolor{stringliteral}{"{}Failed to remove "{}}CLASS\_FW\_FILENAME\textcolor{stringliteral}{"{}: \%s"{}}, strerror(errno));}
+\DoxyCodeLine{00334         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{00335     \}}
+\DoxyCodeLine{00336 }
+\DoxyCodeLine{00337     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{00338 \}}
+
+\end{DoxyCode}

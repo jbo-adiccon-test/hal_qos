@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_structqos__class" xml:lang="en-US">
+<title>qos_class Struct Reference</title>
+<indexterm><primary>qos_class</primary></indexterm>
+<para>
+<computeroutput>#include &lt;classification.h&gt;</computeroutput>
+</para>
+<simplesect>
+    <title>Data Fields    </title>
+        <itemizedlist>
+            <listitem><para>unsigned <link linkend="_structqos__class_1a50d6aa2bf63622320919cf7b4a294939">id</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1a027232db91aaa16ed881f8c2c346a8b6">traffic_class</link></para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1afe07e58af3480c344fa6336194405f20">chain_name</link> [<link linkend="_classification_8h_1a9d4b1a80988269a931dc14637a43a13b">CLASS_CHAIN_NAME_SIZE</link>]</para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1ab97cecfa4da3088f30c4bc263b47bee8">dscp_mark</link></para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1ab47b524511e925a416f40f401fb736f0">iface_in</link> [IFNAMSIZ]</para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1aac0ca8abb088579b646d489f553b8fb2">iface_out</link> [IFNAMSIZ]</para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1a7130e1ade1f7f226ad259c47edeec494">ip_src_addr</link> [INET6_ADDRSTRLEN]</para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1af97d1e6badbde720b084841497bcf104">ip_src_mask</link></para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1a7cfcefa454c116feaaf206c3b2d203f3">ip_dst_addr</link> [INET6_ADDRSTRLEN]</para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1ab43e840caae053ca3cca1ddd7bd3876b">ip_dst_mask</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1ab30e8d7e05ae904d3248e0d51255c005">protocol</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1a8d5d9e349e89e6ba9821079a8fc7e82b">port_src_range_start</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1a3df65ce0201e7fd13c4baa1f5d327518">port_src_range_end</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1ae7809a8252225b159dd50fa8bed8c6ea">port_dst_range_start</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1a3d6feeca05393fcec6e0e1231723848f">port_dst_range_end</link></para>
+</listitem>
+            <listitem><para>char <link linkend="_structqos__class_1a9c3c1418ce5a5c9c588cef92da7409cd">mac_src_addr</link> [<link linkend="_classification_8h_1a565a4f95defccf54fd9c97fdb0482560">CLASS_MAC_SIZE</link>]</para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1a7a291af722b04d5a7b8aa5d455c4a947">tcp_flags</link></para>
+</listitem>
+            <listitem><para>int <link linkend="_structqos__class_1af7cee06510f4c6318b78dd2a0cb5d2cc">tcp_psh</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Detailed Description</title>
+<para>
+Definition at line <link linkend="_classification_8h_source_1l00030">30</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<section>
+<title>Field Documentation</title>
+<anchor xml:id="_structqos__class_1afe07e58af3480c344fa6336194405f20"/><section>
+    <title>chain_name</title>
+<indexterm><primary>chain_name</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>chain_name</secondary></indexterm>
+<para><computeroutput>char chain_name[<link linkend="_classification_8h_1a9d4b1a80988269a931dc14637a43a13b">CLASS_CHAIN_NAME_SIZE</link>]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00037">37</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1ab97cecfa4da3088f30c4bc263b47bee8"/><section>
+    <title>dscp_mark</title>
+<indexterm><primary>dscp_mark</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>dscp_mark</secondary></indexterm>
+<para><computeroutput>int dscp_mark</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00039">39</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a50d6aa2bf63622320919cf7b4a294939"/><section>
+    <title>id</title>
+<indexterm><primary>id</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>id</secondary></indexterm>
+<para><computeroutput>unsigned id</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00033">33</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1ab47b524511e925a416f40f401fb736f0"/><section>
+    <title>iface_in</title>
+<indexterm><primary>iface_in</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>iface_in</secondary></indexterm>
+<para><computeroutput>char iface_in[IFNAMSIZ]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00041">41</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1aac0ca8abb088579b646d489f553b8fb2"/><section>
+    <title>iface_out</title>
+<indexterm><primary>iface_out</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>iface_out</secondary></indexterm>
+<para><computeroutput>char iface_out[IFNAMSIZ]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00043">43</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a7cfcefa454c116feaaf206c3b2d203f3"/><section>
+    <title>ip_dst_addr</title>
+<indexterm><primary>ip_dst_addr</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>ip_dst_addr</secondary></indexterm>
+<para><computeroutput>char ip_dst_addr[INET6_ADDRSTRLEN]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00049">49</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1ab43e840caae053ca3cca1ddd7bd3876b"/><section>
+    <title>ip_dst_mask</title>
+<indexterm><primary>ip_dst_mask</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>ip_dst_mask</secondary></indexterm>
+<para><computeroutput>int ip_dst_mask</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00051">51</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a7130e1ade1f7f226ad259c47edeec494"/><section>
+    <title>ip_src_addr</title>
+<indexterm><primary>ip_src_addr</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>ip_src_addr</secondary></indexterm>
+<para><computeroutput>char ip_src_addr[INET6_ADDRSTRLEN]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00045">45</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1af97d1e6badbde720b084841497bcf104"/><section>
+    <title>ip_src_mask</title>
+<indexterm><primary>ip_src_mask</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>ip_src_mask</secondary></indexterm>
+<para><computeroutput>int ip_src_mask</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00047">47</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a9c3c1418ce5a5c9c588cef92da7409cd"/><section>
+    <title>mac_src_addr</title>
+<indexterm><primary>mac_src_addr</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>mac_src_addr</secondary></indexterm>
+<para><computeroutput>char mac_src_addr[<link linkend="_classification_8h_1a565a4f95defccf54fd9c97fdb0482560">CLASS_MAC_SIZE</link>]</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00063">63</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a3d6feeca05393fcec6e0e1231723848f"/><section>
+    <title>port_dst_range_end</title>
+<indexterm><primary>port_dst_range_end</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>port_dst_range_end</secondary></indexterm>
+<para><computeroutput>int port_dst_range_end</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00061">61</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1ae7809a8252225b159dd50fa8bed8c6ea"/><section>
+    <title>port_dst_range_start</title>
+<indexterm><primary>port_dst_range_start</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>port_dst_range_start</secondary></indexterm>
+<para><computeroutput>int port_dst_range_start</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00059">59</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a3df65ce0201e7fd13c4baa1f5d327518"/><section>
+    <title>port_src_range_end</title>
+<indexterm><primary>port_src_range_end</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>port_src_range_end</secondary></indexterm>
+<para><computeroutput>int port_src_range_end</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00057">57</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a8d5d9e349e89e6ba9821079a8fc7e82b"/><section>
+    <title>port_src_range_start</title>
+<indexterm><primary>port_src_range_start</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>port_src_range_start</secondary></indexterm>
+<para><computeroutput>int port_src_range_start</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00055">55</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1ab30e8d7e05ae904d3248e0d51255c005"/><section>
+    <title>protocol</title>
+<indexterm><primary>protocol</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>protocol</secondary></indexterm>
+<para><computeroutput>int protocol</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00053">53</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a7a291af722b04d5a7b8aa5d455c4a947"/><section>
+    <title>tcp_flags</title>
+<indexterm><primary>tcp_flags</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>tcp_flags</secondary></indexterm>
+<para><computeroutput>int tcp_flags</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00065">65</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1af7cee06510f4c6318b78dd2a0cb5d2cc"/><section>
+    <title>tcp_psh</title>
+<indexterm><primary>tcp_psh</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>tcp_psh</secondary></indexterm>
+<para><computeroutput>int tcp_psh</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00067">67</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_structqos__class_1a027232db91aaa16ed881f8c2c346a8b6"/><section>
+    <title>traffic_class</title>
+<indexterm><primary>traffic_class</primary><secondary>qos_class</secondary></indexterm>
+<indexterm><primary>qos_class</primary><secondary>traffic_class</secondary></indexterm>
+<para><computeroutput>int traffic_class</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00035">35</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<para>
+The documentation for this struct was generated from the following file:</para>
+<link linkend="_classification_8h">classification.h</link></section>
+</section>

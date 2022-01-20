@@ -1,0 +1,86 @@
+.TH "queue.c" 3 "Thu Jan 20 2022" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+queue.c
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include 'stdlib\&.h'\fP
+.br
+\fC#include 'queue\&.h'\fP
+.br
+
+.SS "Macros"
+
+.in +1c
+.ti -1c
+.RI "#define \fBQUEUE_DEFAULT_BANDWIDTH\fP   2"
+.br
+.ti -1c
+.RI "#define \fBQUEUE_TOTAL_WEIGHT\fP   12"
+.br
+.ti -1c
+.RI "#define \fBQUEUE_TRAFFIC_CLASS_MASK\fP   0xFF"
+.br
+.ti -1c
+.RI "#define \fBQUEUE_MAX\fP   8"
+.br
+.ti -1c
+.RI "#define \fBQUEUE_DEFAULT_CEIL\fP   20"
+.br
+.ti -1c
+.RI "#define \fBQUEUE_DEFAULT_BE_RATE\fP   1"
+.br
+.in -1c
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "int \fBqos_removeQueue\fP (struct \fBqos_queue\fP *queue)"
+.br
+.ti -1c
+.RI "int \fBqos_addQueue\fP (int index, struct \fBqos_queue\fP *queue)"
+.br
+.in -1c
+.SH "Macro Definition Documentation"
+.PP 
+.SS "#define QUEUE_DEFAULT_BANDWIDTH   2"
+
+.PP
+Definition at line \fB25\fP of file \fBqueue\&.c\fP\&.
+.SS "#define QUEUE_DEFAULT_BE_RATE   1"
+
+.PP
+Definition at line \fB30\fP of file \fBqueue\&.c\fP\&.
+.SS "#define QUEUE_DEFAULT_CEIL   20"
+
+.PP
+Definition at line \fB29\fP of file \fBqueue\&.c\fP\&.
+.SS "#define QUEUE_MAX   8"
+
+.PP
+Definition at line \fB28\fP of file \fBqueue\&.c\fP\&.
+.SS "#define QUEUE_TOTAL_WEIGHT   12"
+
+.PP
+Definition at line \fB26\fP of file \fBqueue\&.c\fP\&.
+.SS "#define QUEUE_TRAFFIC_CLASS_MASK   0xFF"
+
+.PP
+Definition at line \fB27\fP of file \fBqueue\&.c\fP\&.
+.SH "Function Documentation"
+.PP 
+.SS "int qos_addQueue (int index, struct \fBqos_queue\fP * queue)"
+
+.PP
+Definition at line \fB60\fP of file \fBqueue\&.c\fP\&.
+.SS "int qos_removeQueue (struct \fBqos_queue\fP * queue)"
+
+.PP
+Definition at line \fB35\fP of file \fBqueue\&.c\fP\&.
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

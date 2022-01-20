@@ -133,7 +133,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
 
     strcpy(tmpd, rule);
     /// append newline
-    snprintf(exec, strlen(tmpd) + 1,"%s\n", tmpd);
+    snprintf(exec, strlen(tmpd) + 5,"%s\n", tmpd);
     free(tmpd);
 
     /// realloc space for exec

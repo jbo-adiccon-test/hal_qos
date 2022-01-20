@@ -1,0 +1,111 @@
+\doxysection{classification.\+h File Reference}
+\label{classification_8h}\index{classification.h@{classification.h}}
+{\ttfamily \#include $<$net/if.\+h$>$}\newline
+{\ttfamily \#include $<$arpa/inet.\+h$>$}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ qos\+\_\+class}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ \+\_\+\+\_\+\+QOS\+\_\+\+CLASSIFICATION\+\_\+\+HAL\+\_\+\+H\+\_\+\+\_\+}
+\item 
+\#define \textbf{ CLASS\+\_\+\+MAC\+\_\+\+SIZE}~18
+\item 
+\#define \textbf{ CLASS\+\_\+\+CHAIN\+\_\+\+NAME\+\_\+\+SIZE}~16
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \textbf{ qos\+\_\+add\+Class} (const struct \textbf{ qos\+\_\+class} $\ast$param)
+\item 
+int \textbf{ qos\+\_\+remove\+All\+Classes} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\label{classification_8h_a8d6d58f87eb10c769982d775d3c5210d}} 
+\index{classification.h@{classification.h}!\_\_QOS\_CLASSIFICATION\_HAL\_H\_\_@{\_\_QOS\_CLASSIFICATION\_HAL\_H\_\_}}
+\index{\_\_QOS\_CLASSIFICATION\_HAL\_H\_\_@{\_\_QOS\_CLASSIFICATION\_HAL\_H\_\_}!classification.h@{classification.h}}
+\doxysubsubsection{\_\_QOS\_CLASSIFICATION\_HAL\_H\_\_}
+{\footnotesize\ttfamily \#define \+\_\+\+\_\+\+QOS\+\_\+\+CLASSIFICATION\+\_\+\+HAL\+\_\+\+H\+\_\+\+\_\+}
+
+
+
+Definition at line \textbf{ 22} of file \textbf{ classification.\+h}.
+
+\mbox{\label{classification_8h_a9d4b1a80988269a931dc14637a43a13b}} 
+\index{classification.h@{classification.h}!CLASS\_CHAIN\_NAME\_SIZE@{CLASS\_CHAIN\_NAME\_SIZE}}
+\index{CLASS\_CHAIN\_NAME\_SIZE@{CLASS\_CHAIN\_NAME\_SIZE}!classification.h@{classification.h}}
+\doxysubsubsection{CLASS\_CHAIN\_NAME\_SIZE}
+{\footnotesize\ttfamily \#define CLASS\+\_\+\+CHAIN\+\_\+\+NAME\+\_\+\+SIZE~16}
+
+
+
+Definition at line \textbf{ 28} of file \textbf{ classification.\+h}.
+
+\mbox{\label{classification_8h_a565a4f95defccf54fd9c97fdb0482560}} 
+\index{classification.h@{classification.h}!CLASS\_MAC\_SIZE@{CLASS\_MAC\_SIZE}}
+\index{CLASS\_MAC\_SIZE@{CLASS\_MAC\_SIZE}!classification.h@{classification.h}}
+\doxysubsubsection{CLASS\_MAC\_SIZE}
+{\footnotesize\ttfamily \#define CLASS\+\_\+\+MAC\+\_\+\+SIZE~18}
+
+
+
+Definition at line \textbf{ 27} of file \textbf{ classification.\+h}.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{classification_8h_a2f2af0ce3ad3f1c2878c30c12df8795c}} 
+\index{classification.h@{classification.h}!qos\_addClass@{qos\_addClass}}
+\index{qos\_addClass@{qos\_addClass}!classification.h@{classification.h}}
+\doxysubsubsection{qos\_addClass()}
+{\footnotesize\ttfamily int qos\+\_\+add\+Class (\begin{DoxyParamCaption}\item[{const struct \textbf{ qos\+\_\+class} $\ast$}]{param }\end{DoxyParamCaption})}
+
+API function checks the data in classification struct from .h file. Then build the dscp\+\_\+mark iptables in that kind\+:
+
+dmcli e\+RT addtable Device.\+Qo\+S.\+Classification. dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Source\+Port int -\/1 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Source\+Port\+Range\+Max int -\/1 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Dest\+Port int -\/1 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Dest\+Port\+Range\+Max int -\/1 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Protocol int -\/1
+
+dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Traffic\+Class int 2 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Chain\+Name string \char`\"{}postrouting\+\_\+qos\char`\"{}
+
+dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Iface\+Out string \char`\"{}erouter0\char`\"{} dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+DSCPMark int 32 dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Source\+MACAddress string \char`\"{}00\+:e0\+:4c\+:81\+:c8\+:40\char`\"{} dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Iface\+In string \char`\"{}brlan0\char`\"{} dmcli e\+RT setv Device.\+Qo\+S.\+Classification.\+1.\+Enable bool true
+
+The Parameter must be set
+
+
+\begin{DoxyParams}{Parameters}
+{\em param} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 SUCCESS -\/1 FAIL 
+\end{DoxyReturn}
+Delete all classes before
+
+Alloc space for command
+
+Set iptables command in exec
+
+Realloc space
+
+Input exec into firewall and iptables
+
+dealloc space
+
+Integrate qos-\/firewall file into firewall
+
+Definition at line \textbf{ 250} of file \textbf{ classification.\+c}.
+
+\mbox{\label{classification_8h_a733ca25bba1c57325e812bd4c01e0b95}} 
+\index{classification.h@{classification.h}!qos\_removeAllClasses@{qos\_removeAllClasses}}
+\index{qos\_removeAllClasses@{qos\_removeAllClasses}!classification.h@{classification.h}}
+\doxysubsubsection{qos\_removeAllClasses()}
+{\footnotesize\ttfamily int qos\+\_\+remove\+All\+Classes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Definition at line \textbf{ 329} of file \textbf{ classification.\+c}.
+

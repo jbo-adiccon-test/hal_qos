@@ -1,0 +1,72 @@
+.TH "qos_queue" 3 "Thu Jan 20 2022" "My Project" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+qos_queue
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <queue\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "char \fBdevice_name\fP [IFNAMSIZ]"
+.br
+.ti -1c
+.RI "int \fBalg\fP"
+.br
+.ti -1c
+.RI "unsigned \fBpriority\fP"
+.br
+.ti -1c
+.RI "int \fBweight\fP"
+.br
+.ti -1c
+.RI "unsigned \fBshaping_rate\fP"
+.br
+.ti -1c
+.RI "unsigned \fBclass_size\fP"
+.br
+.ti -1c
+.RI "int \fBclass_list\fP [\fBQUEUE_MAX_TC\fP]"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Definition at line \fB29\fP of file \fBqueue\&.h\fP\&.
+.SH "Field Documentation"
+.PP 
+.SS "int alg"
+
+.PP
+Definition at line \fB35\fP of file \fBqueue\&.h\fP\&.
+.SS "int class_list[\fBQUEUE_MAX_TC\fP]"
+
+.PP
+Definition at line \fB45\fP of file \fBqueue\&.h\fP\&.
+.SS "unsigned class_size"
+
+.PP
+Definition at line \fB43\fP of file \fBqueue\&.h\fP\&.
+.SS "char device_name[IFNAMSIZ]"
+
+.PP
+Definition at line \fB32\fP of file \fBqueue\&.h\fP\&.
+.SS "unsigned priority"
+
+.PP
+Definition at line \fB37\fP of file \fBqueue\&.h\fP\&.
+.SS "unsigned shaping_rate"
+
+.PP
+Definition at line \fB41\fP of file \fBqueue\&.h\fP\&.
+.SS "int weight"
+
+.PP
+Definition at line \fB39\fP of file \fBqueue\&.h\fP\&.
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for My Project from the source code\&.

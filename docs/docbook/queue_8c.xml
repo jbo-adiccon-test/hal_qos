@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_queue_8c" xml:lang="en-US">
+<title>queue.c File Reference</title>
+<indexterm><primary>queue.c</primary></indexterm>
+<programlisting linenumbering="unnumbered">#include &lt;stdio.h&gt;
+#include &quot;stdlib.h&quot;
+#include &quot;queue.h&quot;
+</programlisting><simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para>#define <link linkend="_queue_8c_1a6d13c1cd157d5344f3a37d82f7e488c0">QUEUE_DEFAULT_BANDWIDTH</link>   2</para>
+</listitem>
+            <listitem><para>#define <link linkend="_queue_8c_1a1ee503cf0b5b81361f7973c67a799631">QUEUE_TOTAL_WEIGHT</link>   12</para>
+</listitem>
+            <listitem><para>#define <link linkend="_queue_8c_1a74b3912f33a4df73f9878cddd21f89af">QUEUE_TRAFFIC_CLASS_MASK</link>   0xFF</para>
+</listitem>
+            <listitem><para>#define <link linkend="_queue_8c_1a02effdedef41011bd715e6218b5ec3dc">QUEUE_MAX</link>   8</para>
+</listitem>
+            <listitem><para>#define <link linkend="_queue_8c_1a431f9dcb8306f21ed2db9c72949d9ee3">QUEUE_DEFAULT_CEIL</link>   20</para>
+</listitem>
+            <listitem><para>#define <link linkend="_queue_8c_1af6ca3b5dbd42648c2a7de3bbf4e3a9ed">QUEUE_DEFAULT_BE_RATE</link>   1</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para>int <link linkend="_queue_8c_1af452968babeb7b9a98e5e31653f19ff8">qos_removeQueue</link> (struct <link linkend="_structqos__queue">qos_queue</link> *queue)</para>
+</listitem>
+            <listitem><para>int <link linkend="_queue_8c_1a20116721464d6f5b82b7f0d75410e722">qos_addQueue</link> (int index, struct <link linkend="_structqos__queue">qos_queue</link> *queue)</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Macro Definition Documentation</title>
+<anchor xml:id="_queue_8c_1a6d13c1cd157d5344f3a37d82f7e488c0"/><section>
+    <title>QUEUE_DEFAULT_BANDWIDTH</title>
+<indexterm><primary>QUEUE_DEFAULT_BANDWIDTH</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_DEFAULT_BANDWIDTH</secondary></indexterm>
+<para><computeroutput>#define QUEUE_DEFAULT_BANDWIDTH   2</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00025">25</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1af6ca3b5dbd42648c2a7de3bbf4e3a9ed"/><section>
+    <title>QUEUE_DEFAULT_BE_RATE</title>
+<indexterm><primary>QUEUE_DEFAULT_BE_RATE</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_DEFAULT_BE_RATE</secondary></indexterm>
+<para><computeroutput>#define QUEUE_DEFAULT_BE_RATE   1</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00030">30</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1a431f9dcb8306f21ed2db9c72949d9ee3"/><section>
+    <title>QUEUE_DEFAULT_CEIL</title>
+<indexterm><primary>QUEUE_DEFAULT_CEIL</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_DEFAULT_CEIL</secondary></indexterm>
+<para><computeroutput>#define QUEUE_DEFAULT_CEIL   20</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00029">29</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1a02effdedef41011bd715e6218b5ec3dc"/><section>
+    <title>QUEUE_MAX</title>
+<indexterm><primary>QUEUE_MAX</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_MAX</secondary></indexterm>
+<para><computeroutput>#define QUEUE_MAX   8</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00028">28</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1a1ee503cf0b5b81361f7973c67a799631"/><section>
+    <title>QUEUE_TOTAL_WEIGHT</title>
+<indexterm><primary>QUEUE_TOTAL_WEIGHT</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_TOTAL_WEIGHT</secondary></indexterm>
+<para><computeroutput>#define QUEUE_TOTAL_WEIGHT   12</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00026">26</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1a74b3912f33a4df73f9878cddd21f89af"/><section>
+    <title>QUEUE_TRAFFIC_CLASS_MASK</title>
+<indexterm><primary>QUEUE_TRAFFIC_CLASS_MASK</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>QUEUE_TRAFFIC_CLASS_MASK</secondary></indexterm>
+<para><computeroutput>#define QUEUE_TRAFFIC_CLASS_MASK   0xFF</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00027">27</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="_queue_8c_1a20116721464d6f5b82b7f0d75410e722"/><section>
+    <title>qos_addQueue()</title>
+<indexterm><primary>qos_addQueue</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>qos_addQueue</secondary></indexterm>
+<para><computeroutput>int qos_addQueue (int index, struct <link linkend="_structqos__queue">qos_queue</link> * queue)</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00060">60</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+<anchor xml:id="_queue_8c_1af452968babeb7b9a98e5e31653f19ff8"/><section>
+    <title>qos_removeQueue()</title>
+<indexterm><primary>qos_removeQueue</primary><secondary>queue.c</secondary></indexterm>
+<indexterm><primary>queue.c</primary><secondary>qos_removeQueue</secondary></indexterm>
+<para><computeroutput>int qos_removeQueue (struct <link linkend="_structqos__queue">qos_queue</link> * queue)</computeroutput></para><para>
+Definition at line <link linkend="_queue_8c_source_1l00035">35</link> of file <link linkend="_queue_8c_source">queue.c</link>.</para>
+</section>
+</section>
+</section>

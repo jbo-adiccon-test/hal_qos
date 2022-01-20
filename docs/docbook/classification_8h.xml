@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<section xmlns="http://docbook.org/ns/docbook" version="5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xml:id="_classification_8h" xml:lang="en-US">
+<title>classification.h File Reference</title>
+<indexterm><primary>classification.h</primary></indexterm>
+<programlisting linenumbering="unnumbered">#include &lt;net/if.h&gt;
+#include &lt;arpa/inet.h&gt;
+</programlisting><simplesect>
+    <title>Data Structures    </title>
+        <itemizedlist>
+            <listitem><para>struct <link linkend="_structqos__class">qos_class</link></para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Macros    </title>
+        <itemizedlist>
+            <listitem><para>#define <link linkend="_classification_8h_1a8d6d58f87eb10c769982d775d3c5210d">__QOS_CLASSIFICATION_HAL_H__</link></para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8h_1a565a4f95defccf54fd9c97fdb0482560">CLASS_MAC_SIZE</link>   18</para>
+</listitem>
+            <listitem><para>#define <link linkend="_classification_8h_1a9d4b1a80988269a931dc14637a43a13b">CLASS_CHAIN_NAME_SIZE</link>   16</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<simplesect>
+    <title>Functions    </title>
+        <itemizedlist>
+            <listitem><para>int <link linkend="_classification_8h_1a2f2af0ce3ad3f1c2878c30c12df8795c">qos_addClass</link> (const struct <link linkend="_structqos__class">qos_class</link> *param)</para>
+</listitem>
+            <listitem><para>int <link linkend="_classification_8h_1a733ca25bba1c57325e812bd4c01e0b95">qos_removeAllClasses</link> ()</para>
+</listitem>
+        </itemizedlist>
+</simplesect>
+<section>
+<title>Macro Definition Documentation</title>
+<anchor xml:id="_classification_8h_1a8d6d58f87eb10c769982d775d3c5210d"/><section>
+    <title>__QOS_CLASSIFICATION_HAL_H__</title>
+<indexterm><primary>__QOS_CLASSIFICATION_HAL_H__</primary><secondary>classification.h</secondary></indexterm>
+<indexterm><primary>classification.h</primary><secondary>__QOS_CLASSIFICATION_HAL_H__</secondary></indexterm>
+<para><computeroutput>#define __QOS_CLASSIFICATION_HAL_H__</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00022">22</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_classification_8h_1a9d4b1a80988269a931dc14637a43a13b"/><section>
+    <title>CLASS_CHAIN_NAME_SIZE</title>
+<indexterm><primary>CLASS_CHAIN_NAME_SIZE</primary><secondary>classification.h</secondary></indexterm>
+<indexterm><primary>classification.h</primary><secondary>CLASS_CHAIN_NAME_SIZE</secondary></indexterm>
+<para><computeroutput>#define CLASS_CHAIN_NAME_SIZE   16</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00028">28</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+<anchor xml:id="_classification_8h_1a565a4f95defccf54fd9c97fdb0482560"/><section>
+    <title>CLASS_MAC_SIZE</title>
+<indexterm><primary>CLASS_MAC_SIZE</primary><secondary>classification.h</secondary></indexterm>
+<indexterm><primary>classification.h</primary><secondary>CLASS_MAC_SIZE</secondary></indexterm>
+<para><computeroutput>#define CLASS_MAC_SIZE   18</computeroutput></para><para>
+Definition at line <link linkend="_classification_8h_source_1l00027">27</link> of file <link linkend="_classification_8h_source">classification.h</link>.</para>
+</section>
+</section>
+<section>
+<title>Function Documentation</title>
+<anchor xml:id="_classification_8h_1a2f2af0ce3ad3f1c2878c30c12df8795c"/><section>
+    <title>qos_addClass()</title>
+<indexterm><primary>qos_addClass</primary><secondary>classification.h</secondary></indexterm>
+<indexterm><primary>classification.h</primary><secondary>qos_addClass</secondary></indexterm>
+<para><computeroutput>int qos_addClass (const struct <link linkend="_structqos__class">qos_class</link> * param)</computeroutput></para>
+<para>API function checks the data in classification struct from .h file. Then build the dscp_mark iptables in that kind:</para>
+
+<para>dmcli eRT addtable Device.QoS.Classification. dmcli eRT setv Device.QoS.Classification.1.SourcePort int -1 dmcli eRT setv Device.QoS.Classification.1.SourcePortRangeMax int -1 dmcli eRT setv Device.QoS.Classification.1.DestPort int -1 dmcli eRT setv Device.QoS.Classification.1.DestPortRangeMax int -1 dmcli eRT setv Device.QoS.Classification.1.Protocol int -1</para>
+
+<para>dmcli eRT setv Device.QoS.Classification.1.TrafficClass int 2 dmcli eRT setv Device.QoS.Classification.1.ChainName string &quot;postrouting_qos&quot;</para>
+
+<para>dmcli eRT setv Device.QoS.Classification.1.IfaceOut string &quot;erouter0&quot; dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32 dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string &quot;00:e0:4c:81:c8:40&quot; dmcli eRT setv Device.QoS.Classification.1.IfaceIn string &quot;brlan0&quot; dmcli eRT setv Device.QoS.Classification.1.Enable bool true</para>
+
+<para>The Parameter must be set</para>
+
+<para>
+                <formalpara>
+                    <title>
+Parameters</title>
+                    <para>
+                    <table frame="all">
+                        <tgroup cols="2" align="left" colsep="1" rowsep="1">
+                        <colspec colwidth="1*"/>
+                        <colspec colwidth="4*"/>
+                        <tbody>
+                            <row>
+<entry>param</entry><entry>
+<para></para>
+</entry>
+                            </row>
+                        </tbody>
+                        </tgroup>
+                    </table>
+                    </para>
+                </formalpara>
+                <formalpara><title>Returns</title>
+
+<para>0 SUCCESS -1 FAIL </para>
+</formalpara>
+</para>
+
+<para>Delete all classes before</para>
+
+<para>Alloc space for command</para>
+
+<para>Set iptables command in exec</para>
+
+<para>Realloc space</para>
+
+<para>Input exec into firewall and iptables</para>
+
+<para>dealloc space</para>
+
+<para>Integrate qos-firewall file into firewall</para>
+<para>
+Definition at line <link linkend="_classification_8c_source_1l00250">250</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+<anchor xml:id="_classification_8h_1a733ca25bba1c57325e812bd4c01e0b95"/><section>
+    <title>qos_removeAllClasses()</title>
+<indexterm><primary>qos_removeAllClasses</primary><secondary>classification.h</secondary></indexterm>
+<indexterm><primary>classification.h</primary><secondary>qos_removeAllClasses</secondary></indexterm>
+<para><computeroutput>int qos_removeAllClasses ( )</computeroutput></para><para>
+Definition at line <link linkend="_classification_8c_source_1l00329">329</link> of file <link linkend="_classification_8c_source">classification.c</link>.</para>
+</section>
+</section>
+</section>

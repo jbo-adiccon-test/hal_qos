@@ -1,0 +1,21 @@
+Use \char`\"{}cake\char`\"{} instead of htb prioritiy and class
+
+tc qdisc add dev erouter0 root cake bandwidth 25Mbit overhead 0 mpu 0 diffserv4
+
+parameters\+:
+\begin{DoxyItemize}
+\item interface\+: erouter0 ~\newline
+
+\item bandwith\+: $<$\+N$>$ ~\newline
+
+\end{DoxyItemize}
+
+configuration with dmcli
+
+dmcli e\+RT addtable Device.\+Qo\+S.\+Queue. ~\newline
+ dmcli e\+RT setv Device.\+Qo\+S.\+Queue.\+1.\+Interface string \char`\"{}erouter0\char`\"{} ~\newline
+ dmcli e\+RT setv Device.\+Qo\+S.\+Queue.\+1.\+Shaping\+Rate int 25 ~\newline
+ dmcli e\+RT setv Device.\+Qo\+S.\+Queue.\+1.\+Enable bool true ~\newline
+
+
+This is simple code without any error procedures etc. 

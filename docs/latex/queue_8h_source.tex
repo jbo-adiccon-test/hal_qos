@@ -1,0 +1,58 @@
+\doxysection{queue.\+h}
+\textbf{ Go to the documentation of this file.}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001 \textcolor{comment}{/*}}
+\DoxyCodeLine{00002 \textcolor{comment}{ * If not stated otherwise in this file or this component's Licenses.txt file the}}
+\DoxyCodeLine{00003 \textcolor{comment}{ * following copyright and licenses apply:}}
+\DoxyCodeLine{00004 \textcolor{comment}{ *}}
+\DoxyCodeLine{00005 \textcolor{comment}{ * Copyright 2021 RDK Management}}
+\DoxyCodeLine{00006 \textcolor{comment}{ *}}
+\DoxyCodeLine{00007 \textcolor{comment}{ * Licensed under the Apache License, Version 2.0 (the "{}License"{});}}
+\DoxyCodeLine{00008 \textcolor{comment}{ * you may not use this file except in compliance with the License.}}
+\DoxyCodeLine{00009 \textcolor{comment}{ * You may obtain a copy of the License at}}
+\DoxyCodeLine{00010 \textcolor{comment}{ *}}
+\DoxyCodeLine{00011 \textcolor{comment}{ * http://www.apache.org/licenses/LICENSE-\/2.0}}
+\DoxyCodeLine{00012 \textcolor{comment}{ *}}
+\DoxyCodeLine{00013 \textcolor{comment}{ * Unless required by applicable law or agreed to in writing, software}}
+\DoxyCodeLine{00014 \textcolor{comment}{ * distributed under the License is distributed on an "{}AS IS"{} BASIS,}}
+\DoxyCodeLine{00015 \textcolor{comment}{ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.}}
+\DoxyCodeLine{00016 \textcolor{comment}{ * See the License for the specific language governing permissions and}}
+\DoxyCodeLine{00017 \textcolor{comment}{ * limitations under the License.}}
+\DoxyCodeLine{00018 \textcolor{comment}{*/}}
+\DoxyCodeLine{00019 }
+\DoxyCodeLine{00020 \textcolor{preprocessor}{\#ifndef \_\_QOS\_QUEUE\_HAL\_H\_\_}}
+\DoxyCodeLine{00021 \textcolor{preprocessor}{\#define \_\_QOS\_QUEUE\_HAL\_H\_\_}}
+\DoxyCodeLine{00022 }
+\DoxyCodeLine{00023 \textcolor{preprocessor}{\#include <net/if.h>}}
+\DoxyCodeLine{00024 }
+\DoxyCodeLine{00025 \textcolor{preprocessor}{\#define QUEUE\_MAX\_TC 16}}
+\DoxyCodeLine{00026 }
+\DoxyCodeLine{00027 \textcolor{keyword}{enum} queue\_alg \{ QUEUE\_ALG\_SP, QUEUE\_ALG\_WRR \};}
+\DoxyCodeLine{00028 }
+\DoxyCodeLine{00029 \textcolor{keyword}{struct }qos\_queue}
+\DoxyCodeLine{00030 \{}
+\DoxyCodeLine{00031     \textcolor{comment}{// Interface name}}
+\DoxyCodeLine{00032     \textcolor{keywordtype}{char} device\_name[IFNAMSIZ];}
+\DoxyCodeLine{00033     \textcolor{comment}{// tc algorithm: QUEUE\_ALG\_SP (strict priority) or QUEUE\_ALG\_WRR (weighted}}
+\DoxyCodeLine{00034     \textcolor{comment}{// round robin)}}
+\DoxyCodeLine{00035     \textcolor{keywordtype}{int} alg;}
+\DoxyCodeLine{00036     \textcolor{comment}{// Queue priority: lower number -\/> higher priopity}}
+\DoxyCodeLine{00037     \textcolor{keywordtype}{unsigned} priority;}
+\DoxyCodeLine{00038     \textcolor{comment}{// Queue weight for QUEUE\_ALG\_WRR algorithms}}
+\DoxyCodeLine{00039     \textcolor{keywordtype}{int} weight;}
+\DoxyCodeLine{00040     \textcolor{comment}{// Queue rate in kbps}}
+\DoxyCodeLine{00041     \textcolor{keywordtype}{unsigned} shaping\_rate;}
+\DoxyCodeLine{00042     \textcolor{comment}{// Number of elements in class\_list}}
+\DoxyCodeLine{00043     \textcolor{keywordtype}{unsigned} class\_size;}
+\DoxyCodeLine{00044     \textcolor{comment}{// List of traffic classes related to the queue}}
+\DoxyCodeLine{00045     \textcolor{keywordtype}{int} class\_list[QUEUE\_MAX\_TC];}
+\DoxyCodeLine{00046 \};}
+\DoxyCodeLine{00047 }
+\DoxyCodeLine{00048 \textcolor{comment}{// Adds queue \& shaping}}
+\DoxyCodeLine{00049 \textcolor{keywordtype}{int} qos\_addQueue(\textcolor{keywordtype}{int} index, \textcolor{keyword}{struct} qos\_queue *queue);}
+\DoxyCodeLine{00050 \textcolor{comment}{// Removes ALL queues \& shaping}}
+\DoxyCodeLine{00051 \textcolor{keywordtype}{int} qos\_removeQueue(\textcolor{keyword}{struct} qos\_queue *queue);}
+\DoxyCodeLine{00052 }
+\DoxyCodeLine{00053 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

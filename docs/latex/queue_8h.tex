@@ -1,0 +1,86 @@
+\doxysection{queue.\+h File Reference}
+\label{queue_8h}\index{queue.h@{queue.h}}
+{\ttfamily \#include $<$net/if.\+h$>$}\newline
+\doxysubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \textbf{ qos\+\_\+queue}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \textbf{ QUEUE\+\_\+\+MAX\+\_\+\+TC}~16
+\end{DoxyCompactItemize}
+\doxysubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ queue\+\_\+alg} \{ \textbf{ QUEUE\+\_\+\+ALG\+\_\+\+SP}
+, \textbf{ QUEUE\+\_\+\+ALG\+\_\+\+WRR}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \textbf{ qos\+\_\+add\+Queue} (int index, struct \textbf{ qos\+\_\+queue} $\ast$queue)
+\item 
+int \textbf{ qos\+\_\+remove\+Queue} (struct \textbf{ qos\+\_\+queue} $\ast$queue)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\label{queue_8h_a1bca1d1ff8b5bd1ceb51c65a2b7dc734}} 
+\index{queue.h@{queue.h}!QUEUE\_MAX\_TC@{QUEUE\_MAX\_TC}}
+\index{QUEUE\_MAX\_TC@{QUEUE\_MAX\_TC}!queue.h@{queue.h}}
+\doxysubsubsection{QUEUE\_MAX\_TC}
+{\footnotesize\ttfamily \#define QUEUE\+\_\+\+MAX\+\_\+\+TC~16}
+
+
+
+Definition at line \textbf{ 25} of file \textbf{ queue.\+h}.
+
+
+
+\doxysubsection{Enumeration Type Documentation}
+\mbox{\label{queue_8h_a06e6577a3331a626a4aae8e7c91a064a}} 
+\index{queue.h@{queue.h}!queue\_alg@{queue\_alg}}
+\index{queue\_alg@{queue\_alg}!queue.h@{queue.h}}
+\doxysubsubsection{queue\_alg}
+{\footnotesize\ttfamily enum \textbf{ queue\+\_\+alg}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{QUEUE\_ALG\_SP@{QUEUE\_ALG\_SP}!queue.h@{queue.h}}\index{queue.h@{queue.h}!QUEUE\_ALG\_SP@{QUEUE\_ALG\_SP}}}\mbox{\label{queue_8h_a06e6577a3331a626a4aae8e7c91a064aa37297fbeb27a93c56284ace6c344a7de}} 
+QUEUE\+\_\+\+ALG\+\_\+\+SP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{QUEUE\_ALG\_WRR@{QUEUE\_ALG\_WRR}!queue.h@{queue.h}}\index{queue.h@{queue.h}!QUEUE\_ALG\_WRR@{QUEUE\_ALG\_WRR}}}\mbox{\label{queue_8h_a06e6577a3331a626a4aae8e7c91a064aae103686c42a6f1974a85beb9570bce17}} 
+QUEUE\+\_\+\+ALG\+\_\+\+WRR&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \textbf{ 27} of file \textbf{ queue.\+h}.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\label{queue_8h_a20116721464d6f5b82b7f0d75410e722}} 
+\index{queue.h@{queue.h}!qos\_addQueue@{qos\_addQueue}}
+\index{qos\_addQueue@{qos\_addQueue}!queue.h@{queue.h}}
+\doxysubsubsection{qos\_addQueue()}
+{\footnotesize\ttfamily int qos\+\_\+add\+Queue (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{struct \textbf{ qos\+\_\+queue} $\ast$}]{queue }\end{DoxyParamCaption})}
+
+
+
+Definition at line \textbf{ 60} of file \textbf{ queue.\+c}.
+
+\mbox{\label{queue_8h_af452968babeb7b9a98e5e31653f19ff8}} 
+\index{queue.h@{queue.h}!qos\_removeQueue@{qos\_removeQueue}}
+\index{qos\_removeQueue@{qos\_removeQueue}!queue.h@{queue.h}}
+\doxysubsubsection{qos\_removeQueue()}
+{\footnotesize\ttfamily int qos\+\_\+remove\+Queue (\begin{DoxyParamCaption}\item[{struct \textbf{ qos\+\_\+queue} $\ast$}]{queue }\end{DoxyParamCaption})}
+
+
+
+Definition at line \textbf{ 35} of file \textbf{ queue.\+c}.
+
