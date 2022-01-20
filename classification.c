@@ -53,6 +53,10 @@ static int append_to_fw()
     return 0;
 }
 
+/**
+ * Runs iptables delete commands from qos-rules
+ * @return SUCCESS 0 FAIL -1
+ */
 static int revert_rules(){
     FILE *fp = NULL;
     size_t len = 0;
@@ -96,8 +100,6 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     size_t len = 0;
     char *line = NULL;
 
-
-
     if (!rule)
     {
         printf("Invalid arguments\n");
@@ -126,13 +128,13 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     }
 
     /// alloc space for rule command
-    char *tmp = (char *) malloc(255);
+    char *tmpd = (char *) malloc(255);
     char *exec = (char *) malloc(255);
 
-    strcpy(tmp, rule);
+    strcpy(tmpd, rule);
     /// append newline
-    snprintf(exec, strlen(tmp) + 5,"%s\n", tmp);
-    free(tmp);
+    snprintf(exec, strlen(tmpd) + 1,"%s\n", tmpd);
+    free(tmpd);
 
     /// realloc space for exec
     exec = realloc(exec, strlen(exec)* sizeof( char ));
@@ -212,7 +214,7 @@ int main()
     strcpy(test_class->iface_in, "brlan0");
     test_class->dscp_mark = 32;
 
-    strcpy(test_class->mac_src_addr, "00:e0:4c:81:c8:40");
+    strcpy(test_class->mac_src_addr, "00:e0:4c:81:c8:41");
 
     if(qos_addClass(test_class) == -1)
         return EXIT_FAILURE;
