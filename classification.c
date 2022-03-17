@@ -128,18 +128,18 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     }
 
     /// alloc space for rule command
-    char *tmpd = (char *) malloc(255);
+    //char *tmpd = (char *) malloc(255);
     char *exec = (char *) malloc(255);
 
-    strcpy(tmpd, rule);
+    strcpy(exec, rule);
     /// append newline
-    snprintf(exec, strlen(tmpd) + 5,"%s\n", tmpd);
-    free(tmpd);
+    //snprintf(exec, strlen(tmpd) + 5,"%s\n", tmpd);
+    //free(tmpd);
 
     /// realloc space for exec
     exec = realloc(exec, strlen(exec)* sizeof( char ));
 
-    exec[20] = add_opt;
+    //exec[20] = add_opt;
     fprintf(fp, "%s", exec);
 
     /// run command in shell
@@ -274,7 +274,7 @@ int qos_addClass(const struct qos_class *param)
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
         /// Set iptables command in exec
-        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
+        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
         printf("%s \n", exec1);
@@ -285,14 +285,14 @@ int qos_addClass(const struct qos_class *param)
         free(exec1);
 
         char *exec2 = (char *) malloc(255);
-        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->dscp_mark);
+        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
         printf("%s \n", exec2);
         add_mangle_rule_str(IPTABLES_IPV4, exec2);
         free(exec2);
 
         char *exec3 = (char *) malloc(255);
-        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in);
+        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char ));
         printf("%s \n", exec3);
         //system(exec3);
@@ -300,7 +300,7 @@ int qos_addClass(const struct qos_class *param)
         free(exec3);
 
         char *exec4 = (char *) malloc(255);
-        snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
+        snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
         printf("%s \n", exec4);
         //system(exec4);
@@ -308,7 +308,7 @@ int qos_addClass(const struct qos_class *param)
         free(exec4);
 
         char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 200, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
+        snprintf(exec5, 200, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
         printf("%s \n", exec5);
         //system(exec5);
         add_mangle_rule_str(IPTABLES_IPV4, exec5);
