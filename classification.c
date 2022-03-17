@@ -5,26 +5,29 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <limits.h>
+//#include <limits.h>
 #include <sys/stat.h>
 #include <errno.h>
 
 #include "classification.h"
 
-#define CLASS_MASK_IPV4 32
-#define CLASS_MASK_IPV6 128
-
 #define CLASS_FW_FILENAME "/tmp/qos_rules.sh"
-#define CLASS_FW_DEBUG "/home/tester/qos_rules.sh"
+//#define CLASS_FW_FILENAME "/home/artemisvenari/Codes/Work/qos_rules.sh"
+
 #define CLASS_FW_RELOAD_FILENAME "/etc/utopia/service.d/firewall_log_handle.sh"
-#define CLASS_FW_RELOAD_DEBUG "/home/tester/firewall_log_handle.sh"
+//#define CLASS_FW_RELOAD_FILENAME "/home/artemisvenari/Codes/Work/firewall_log_handle.sh"
+
+//#define CLASS_DATA_ALLOC "/home/artemisvenari/Codes/Work/structure.dat"
+
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
 
+/*
 enum class_table
 {
     IPTABLES_IPV4 = (1 << 0),
     IPTABLES_IPV6 = (1 << 1),
 };
+*/
 
 /**
  * If not exsists append qos-firewall file to utopia firewall
@@ -44,8 +47,10 @@ static int append_to_fw()
 
     while (getline(&line, &len, fp) != -1)
     {
-        if (strstr(line, CLASS_FW_FILENAME))
+        if (strstr(line, CLASS_FW_FILENAME)) {
+            fclose(fp);
             return 0;
+        }
     }
 
     fprintf(fp, "%s\n", CLASS_FW_FILENAME);
@@ -57,33 +62,31 @@ static int append_to_fw()
  * Runs iptables delete commands from qos-rules
  * @return SUCCESS 0 FAIL -1
  */
+/*
 static int revert_rules(){
-    FILE *fp = NULL;
-    size_t len = 0;
-    char *line = NULL;
-
-    /// deleting rule before adding to avoid duplicates
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
-    {
-        printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
-        return -1;
-    }
-
-    /// Check file permissions
-    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
-        printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
-
-    while (getline(&line, &len, fp) != -1) {
-        /// run command in shell
-        line[20] = 'D';
-        if (system(line)) {
-            printf("Failed to execute [%s]\n", line);
-        }
-    }
-
-    fclose(fp);
-    return 0;
+   FILE *fp = NULL;
+   size_t len = 0;
+   char *line = NULL;
+   /// deleting rule before adding to avoid duplicates
+   if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
+   {
+       printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
+       return -1;
+   }
+   /// Check file permissions
+   if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
+       printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
+   while (getline(&line, &len, fp) != -1) {
+       /// run command in shell
+       line[20] = 'D';
+       if (system(line)) {
+           printf("Failed to execute [%s]\n", line);
+       }
+   }
+   fclose(fp);
+   return 0;
 }
+*/
 
 /**
  * Here the magic takes place. The function deletes all classes for qos. After that the firewall file is opened.
@@ -93,12 +96,9 @@ static int revert_rules(){
  * @param rule
  * @return status 0 SUCCESS -1 FAIL
  */
-static int add_mangle_rule_str(enum class_table table, const char *rule)
+static int add_mangle_rule_str(const char *rule)
 {
-    FILE *fp = NULL;
-    char add_opt = (char) 'I';
-    size_t len = 0;
-    char *line = NULL;
+    FILE* fp;
 
     if (!rule)
     {
@@ -107,7 +107,7 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     }
 
     /// deleting rule before adding to avoid duplicates
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a")))
     {
         printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
@@ -117,38 +117,15 @@ static int add_mangle_rule_str(enum class_table table, const char *rule)
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
-    while (getline(&line, &len, fp) != -1)
-    {
-        if (strstr(line, rule))
-        {
-            fclose(fp);
-            return 0;
-        }
+    fprintf(fp, "%s", rule);
 
-    }
-
-    /// alloc space for rule command
-    //char *tmpd = (char *) malloc(255);
-    char *exec = (char *) malloc(255);
-
-    strcpy(exec, rule);
-    /// append newline
-    //snprintf(exec, strlen(tmpd) + 5,"%s\n", tmpd);
-    //free(tmpd);
-
-    /// realloc space for exec
-    exec = realloc(exec, strlen(exec)* sizeof( char ));
-
-    //exec[20] = add_opt;
-    fprintf(fp, "%s", exec);
 
     /// run command in shell
-    if (system(exec))
-    {
-        printf("Failed to execute [%s]\n", exec);
-    }
+    //if (system(exec))
+    //{
+    //    printf("Failed to execute [%s]\n", exec);
+    //}
 
-    free(exec);
     fclose(fp);
 
     return 0;
@@ -161,36 +138,58 @@ typedef struct
 {
     const struct qos_class *data;
     size_t size;
+    char *str;
 } qos_struct;
+
+/*
+qos_struct nextnode(qos_struct *class) {
+    if (class!= NULL) {
+        const struct qos_class *act = class->data;
+        class->data = class->next;
+        class->befor = act;
+    }
+    return *class;
+}
+qos_struct befornode(qos_struct *class) {
+    if (class != NULL) {
+        const struct qos_class *act = class->data;
+        class->data = class->befor;
+        class->next = act;
+    }
+    return *class;
+}
+int append(qos_struct *class, const struct qos_class *ap) {
+    if (class != NULL && ap != NULL) {
+        nextnode(class);
+        class->data = ap;
+        return 0;
+    }
+    return -1;
+}
+int outoQosClass(qos_struct *qosStruct) {
+    FILE* fp;
+    if ((fp = fopen(CLASS_DATA_ALLOC, "wb"))) {
+        fwrite(&qosStruct, sizeof(*qosStruct),1, fp);
+        fclose(fp);
+    }
+    return 0;
+}
+ */
 
 /**
  * Allocates the data of qos_class
  * @param class
  * @return qos_struct of class
  */
-qos_struct initQosClass(const struct qos_class *class)
+qos_struct* initQosClass(const struct qos_class *class)
 {
-
     qos_struct *data = malloc(sizeof(qos_struct));
 
-    data->size = sizeof(qos_struct);
     data->data = malloc(sizeof(struct qos_class));
     data->data = class;
-    return *data;
-}
-
-/**
- * Sets the space free of qos_struct
- * @param class
- * @return 0 SUCCESS -1 FAIL
- */
-int dealloc_testclass(qos_struct *class)
-{
-    if(!class)
-        return -1;
-
-    free(class);
-    return 0;
+    data->size = sizeof(*data);
+    data->str = "\0";
+    return data;
 }
 
 /**
@@ -199,24 +198,37 @@ int dealloc_testclass(qos_struct *class)
  */
 int main()
 {
-    struct qos_class *test_class = malloc(sizeof(struct qos_class));
+    struct qos_class *test_class1 = malloc(sizeof(struct qos_class));
+    struct qos_class *test_class2 = malloc(sizeof(struct qos_class));
 
-    test_class->port_dst_range_start = -1;
-    test_class->port_dst_range_end = -1;
-    test_class->port_src_range_start = -1;
-    test_class->port_src_range_end = -1;
+    test_class1->port_dst_range_start = -1;
+    test_class1->port_dst_range_end = -1;
+    test_class1->port_src_range_start = -1;
+    test_class1->port_src_range_end = -1;
+    test_class1->protocol = -1;
+    test_class1->traffic_class = 2;
+    strcpy(test_class1->chain_name, "postrouting_qos");
+    strcpy(test_class1->iface_out, "erouter0");
+    strcpy(test_class1->iface_in, "brlan0");
+    test_class1->dscp_mark = 32;
+    strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
 
-    test_class->protocol = -1;
+    test_class2->port_dst_range_start = -1;
+    test_class2->port_dst_range_end = -1;
+    test_class2->port_src_range_start = -1;
+    test_class2->port_src_range_end = -1;
+    test_class2->protocol = -1;
+    test_class2->traffic_class = 2;
+    strcpy(test_class2->chain_name, "postrouting_qos");
+    strcpy(test_class2->iface_out, "erouter2");
+    strcpy(test_class2->iface_in, "brlan1");
+    test_class2->dscp_mark = 32;
+    strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
 
-    test_class->traffic_class = 2;
-    strcpy(test_class->chain_name, "postrouting_qos");
-    strcpy(test_class->iface_out, "erouter0");
-    strcpy(test_class->iface_in, "brlan0");
-    test_class->dscp_mark = 32;
+    if(qos_addClass(test_class1) == -1)
+        return EXIT_FAILURE;
 
-    strcpy(test_class->mac_src_addr, "00:e0:4c:81:c8:41");
-
-    if(qos_addClass(test_class) == -1)
+    if(qos_addClass(test_class2) == -1)
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
@@ -249,76 +261,85 @@ int main()
  */
 int qos_addClass(const struct qos_class *param)
 {
-    qos_struct obj = initQosClass(param);
+    qos_struct *obj = initQosClass(param);
 
-    printf("Parameters: %d, %s, %d", obj.data->dscp_mark, obj.data->mac_src_addr, obj.data->traffic_class);
+    //printf("Parameters: %d, %s, %d", obj.data->dscp_mark, obj.data->mac_src_addr, obj.data->traffic_class);
 
-    if (obj.data->port_src_range_end == -1 &&
-        obj.data->port_src_range_start == -1 &&
-        obj.data->port_dst_range_end == -1 &&
-        obj.data->port_dst_range_start == -1 &&
-        obj.data->protocol == -1 &&
-        obj.data->traffic_class != 0 &&
-        obj.data->chain_name[0] != '\0' &&
-        obj.data->iface_in[0] != '\0' &&
-        obj.data->iface_out[0] != '\0' &&
-        obj.data->dscp_mark != 0
+    if (obj->data->port_src_range_end == -1 &&
+        obj->data->port_src_range_start == -1 &&
+        obj->data->port_dst_range_end == -1 &&
+        obj->data->port_dst_range_start == -1 &&
+        obj->data->protocol == -1 &&
+        obj->data->traffic_class != 0 &&
+        obj->data->chain_name[0] != '\0' &&
+        obj->data->iface_in[0] != '\0' &&
+        obj->data->iface_out[0] != '\0' &&
+        obj->data->dscp_mark != 0
             )
     {
         printf("NEW mark Categ add");
 
         /// Delete all classes before
-        revert_rules();
-        qos_removeAllClasses();
+        //revert_rules();
+        //qos_removeAllClasses();
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
         /// Set iptables command in exec
-        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_out, obj.data->dscp_mark);
+        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
         printf("%s \n", exec1);
-        //system(exec1);
-        /// Input exec into firewall and iptables
-        add_mangle_rule_str(IPTABLES_IPV4, exec1);
-        /// dealloc space
-        free(exec1);
+        system(exec1);
 
         char *exec2 = (char *) malloc(255);
-        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->dscp_mark);
+        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
         printf("%s \n", exec2);
-        add_mangle_rule_str(IPTABLES_IPV4, exec2);
-        free(exec2);
+        system(exec2);
 
         char *exec3 = (char *) malloc(255);
-        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in);
+        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char ));
         printf("%s \n", exec3);
-        //system(exec3);
-        add_mangle_rule_str(IPTABLES_IPV4, exec3);
-        free(exec3);
+        system(exec3);
 
         char *exec4 = (char *) malloc(255);
-        snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
+        snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
         printf("%s \n", exec4);
-        //system(exec4);
-        add_mangle_rule_str(IPTABLES_IPV4, exec4);
-        free(exec4);
+        system(exec4);
 
         char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 200, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444\n", CLASS_IPTABLES_MANGLE_CMD, obj.data->chain_name, obj.data->iface_in, obj.data->mac_src_addr);
+        snprintf(exec5, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->mac_src_addr);
+        exec5 = realloc(exec5, strlen(exec5) * sizeof(char ));
         printf("%s \n", exec5);
-        //system(exec5);
-        add_mangle_rule_str(IPTABLES_IPV4, exec5);
+        system(exec5);
+
+        ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
+        char *concat = malloc( (int)l+2 );
+
+        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+
+        free(exec1);
+        free(exec2);
+        free(exec3);
+        free(exec4);
         free(exec5);
 
+        obj->str = concat;
+
+        add_mangle_rule_str(concat);
+
+        free(concat);
+
         /// Integrate qos-firewall file into firewall
-        if(!append_to_fw()) {
+        if(append_to_fw() == -1) {
             printf("Failed to set iptables rules via firewall");
             return -1;
         }
+
+        //outoQosClass(obj);
     } else {
         printf("STD QoS Class add");
     }
