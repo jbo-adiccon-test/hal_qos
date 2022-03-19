@@ -65,6 +65,8 @@ struct qos_class
     int tcp_flags;
     // --tcp-flags ALL PSH
     int tcp_psh;
+
+    char alias[255];
 };
 
 int qos_addClass(const struct qos_class *param);
