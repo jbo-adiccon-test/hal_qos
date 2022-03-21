@@ -188,7 +188,7 @@ qos_struct* initQosClass(const struct qos_class *class)
     data->data = malloc(sizeof(struct qos_class));
     data->data = class;
     data->size = sizeof(*data);
-    data->str = "\0";
+    data->str = "";
     return data;
 }
 
