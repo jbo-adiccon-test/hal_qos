@@ -107,7 +107,7 @@ static int add_mangle_rule_str(const char *rule)
     }
 
     /// deleting rule before adding to avoid duplicates
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a")))
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
     {
         printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
@@ -305,13 +305,13 @@ int qos_addClass(const struct qos_class *param)
         system(exec3);
 
         char *exec4 = (char *) malloc(255);
-        snprintf(exec4, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->mac_src_addr);
+        snprintf(exec4, 255, "%s -I prerouting_qos -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
         printf("%s \n", exec4);
         system(exec4);
 
         char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 255, "%s -I %s -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->mac_src_addr);
+        snprintf(exec5, 255, "%s -I prerouting_qos -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char ));
         printf("%s \n", exec5);
         system(exec5);
@@ -319,7 +319,7 @@ int qos_addClass(const struct qos_class *param)
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
         char *concat = malloc( (int)l+2 );
 
-        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s", exec1, exec2, exec3, exec4, exec5);
 
         free(exec1);
         free(exec2);
