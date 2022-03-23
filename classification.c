@@ -98,7 +98,8 @@ static int revert_rules(){
  */
 static int add_mangle_rule_str(const char *rule)
 {
-    FILE* fp;
+    FILE *fp;
+    //char *str = rule;
 
     if (!rule)
     {
@@ -117,7 +118,8 @@ static int add_mangle_rule_str(const char *rule)
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
-    fprintf(fp, "%s", rule);
+    //fprintf(fp, "%s", rule);
+    fwrite(rule, 1, strlen(rule), fp);
 
 
     /// run command in shell
@@ -317,9 +319,9 @@ int qos_addClass(const struct qos_class *param)
         system(exec5);
 
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
-        char *concat = malloc( (int)l+2 );
+        char *concat = malloc( (int)l+5 );
 
-        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s", exec1, exec2, exec3, exec4, exec5);
+        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s ", exec1, exec2, exec3, exec4, exec5);
 
         free(exec1);
         free(exec2);
@@ -329,7 +331,7 @@ int qos_addClass(const struct qos_class *param)
 
         obj->str = concat;
 
-        add_mangle_rule_str(concat);
+        add_mangle_rule_str(obj->str);
 
         free(concat);
 
