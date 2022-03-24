@@ -60,15 +60,15 @@ int qos_removeQueue(struct qos_queue *queue)
 int qos_addQueue(int index, struct qos_queue *queue)
 {
     char buf[512] = {0};
-    unsigned shaping_rate = queue->shaping_rate != -1 ? queue->shaping_rate :
-        QUEUE_DEFAULT_BANDWIDTH;
+    //unsigned shaping_rate = queue->shaping_rate != -1 ? queue->shaping_rate :
+    //    QUEUE_DEFAULT_BANDWIDTH;
 
     qos_removeQueue(queue);
 
     // initial classes
     if (!index && !queue_exists)
     {
-        sprintf(buf, "tc qdisc add dev %s root cake bandwidth %uMbit overhead 0 mpu 0 diffserv4", queue->device_name, shaping_rate);
+        sprintf(buf, "tc qdisc add dev %s root cake bandwidth %uMbit overhead 0 mpu 0 diffserv4", queue->device_name, queue->bandwidth);
 
         if (system(buf))
         {
@@ -82,7 +82,7 @@ int qos_addQueue(int index, struct qos_queue *queue)
     }
 
     sprintf(buf, "tc qdisc change dev %s root cake bandwidth %uMbit overhead 0 mpu 0 diffserv4"
-        , queue->device_name, shaping_rate);
+        , queue->device_name, queue->bandwidth);
 
     if (system(buf))
     {
