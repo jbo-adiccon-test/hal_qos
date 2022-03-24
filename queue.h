@@ -30,17 +30,11 @@ struct qos_queue
 {
     // Interface name
     char device_name[IFNAMSIZ];
-    // tc algorithm: QUEUE_ALG_SP (strict priority) or QUEUE_ALG_WRR (weighted
-    // round robin)
-    int alg;
-    // Queue priority: lower number -> higher priopity
-    unsigned priority;
-    // Queue weight for QUEUE_ALG_WRR algorithms
-    int weight;
-    // Queue rate in kbps
-    unsigned shaping_rate;
-    // Number of elements in class_list
-    unsigned class_size;
+
+    unsigned bandwidth;
+    unsigned duration;
+    char alias[256];
+
     // List of traffic classes related to the queue
     int class_list[QUEUE_MAX_TC];
 };
