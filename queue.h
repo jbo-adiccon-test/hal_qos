@@ -35,7 +35,6 @@ struct qos_queue
     unsigned duration;
     char alias[256];
 
-    // List of traffic classes related to the queue
     int class_list[QUEUE_MAX_TC];
 };
 

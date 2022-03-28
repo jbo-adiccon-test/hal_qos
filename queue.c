@@ -19,6 +19,8 @@
 
 #include <stdio.h>
 #include "stdlib.h"
+#include <syslog.h>
+
 
 #include "queue.h"
 
@@ -76,8 +78,6 @@ int qos_addQueue(int index, struct qos_queue *queue)
             return -1;
         }
 
-
-
         printf("Added initial classes to device %s\n",  queue->device_name);
     }
 
@@ -91,5 +91,6 @@ int qos_addQueue(int index, struct qos_queue *queue)
     }
 
     queue_exists = 1;
+    closelog();
     return 0;
 }
