@@ -2,11 +2,10 @@
 // Created by limberg on 28.03.2022.
 //
 
+#include "classification.h"
 #include "duration.h"
-#include "queue.h"
 
-
-void dur_daemon(struct qos_queue *queue) {
+void dur_daemon(struct qos_class *queue) {
     if (queue->duration){
         pid_t pid;
 

@@ -18,10 +18,8 @@
 */
 
 #include <stdio.h>
+
 #include "stdlib.h"
-#include <syslog.h>
-
-
 #include "queue.h"
 
 #define QUEUE_DEFAULT_BANDWIDTH 2
@@ -91,6 +89,5 @@ int qos_addQueue(int index, struct qos_queue *queue)
     }
 
     queue_exists = 1;
-    closelog();
     return 0;
 }

@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
+#include <syslog.h>
 
 struct interval {
     time_t *start, *end;

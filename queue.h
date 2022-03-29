@@ -32,7 +32,6 @@ struct qos_queue
     char device_name[IFNAMSIZ];
 
     unsigned bandwidth;
-    unsigned duration;
     char alias[256];
 
     int class_list[QUEUE_MAX_TC];
