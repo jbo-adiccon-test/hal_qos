@@ -178,6 +178,11 @@ int outoQosClass(qos_struct *qosStruct) {
 }
  */
 
+int qos_removeOneClass() {
+    printf("To Remove One Class... TESTTESTTESTTESTTESTTEST");
+    return EXIT_SUCCESS;
+}
+
 /**
  * Allocates the data of qos_class
  * @param class
