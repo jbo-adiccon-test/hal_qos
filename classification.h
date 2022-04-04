@@ -66,7 +66,7 @@ struct qos_class
     // --tcp-flags ALL PSH
     int tcp_psh;
 
-    unsigned duration;
+    char duration[64];
 
     char alias[255];
 };

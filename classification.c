@@ -143,41 +143,6 @@ typedef struct
     char *str;
 } qos_struct;
 
-/*
-qos_struct nextnode(qos_struct *class) {
-    if (class!= NULL) {
-        const struct qos_class *act = class->data;
-        class->data = class->next;
-        class->befor = act;
-    }
-    return *class;
-}
-qos_struct befornode(qos_struct *class) {
-    if (class != NULL) {
-        const struct qos_class *act = class->data;
-        class->data = class->befor;
-        class->next = act;
-    }
-    return *class;
-}
-int append(qos_struct *class, const struct qos_class *ap) {
-    if (class != NULL && ap != NULL) {
-        nextnode(class);
-        class->data = ap;
-        return 0;
-    }
-    return -1;
-}
-int outoQosClass(qos_struct *qosStruct) {
-    FILE* fp;
-    if ((fp = fopen(CLASS_DATA_ALLOC, "wb"))) {
-        fwrite(&qosStruct, sizeof(*qosStruct),1, fp);
-        fclose(fp);
-    }
-    return 0;
-}
- */
-
 int qos_removeOneClass() {
     printf("To Remove One Class... TESTTESTTESTTESTTESTTEST");
     return EXIT_SUCCESS;
@@ -239,6 +204,13 @@ int main()
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
+}
+
+int exec_run(char *str) {
+    if(system(str))
+        return EXIT_SUCCESS;
+    else
+        return EXIT_FAILURE;
 }
 
 /**
@@ -303,7 +275,9 @@ int qos_addClass(const struct qos_class *param)
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
         printf("%s \n", exec2);
-        system(exec2);
+        if(exec_run(exec2) != EXIT_SUCCESS) {
+            return EXIT_FAILURE;
+        }
 
         char *exec3 = (char *) malloc(255);
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
@@ -312,13 +286,13 @@ int qos_addClass(const struct qos_class *param)
         system(exec3);
 
         char *exec4 = (char *) malloc(255);
-        snprintf(exec4, 255, "%s -I prerouting_qos -o %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
+        snprintf(exec4, 255, "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
         printf("%s \n", exec4);
         system(exec4);
 
         char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 255, "%s -I prerouting_qos -o %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
+        snprintf(exec5, 255, "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char ));
         printf("%s \n", exec5);
         system(exec5);
