@@ -327,7 +327,7 @@ int qos_addClass(const struct qos_class *param)
             return -1;
         }
 
-        if (obj->data->duration != '\0') {
+        if (*obj->data->duration != '\0') {
             dur_daemon(obj->data->duration);
         }
         //outoQosClass(obj);
