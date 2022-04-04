@@ -257,8 +257,7 @@ int qos_addClass(const struct qos_class *param)
         obj->data->iface_in[0] != '\0' &&
         obj->data->iface_out[0] != '\0' &&
         obj->data->dscp_mark != 0
-            )
-    {
+            ) {
         printf("NEW mark Categ add\n");
 
         /// Delete all classes before
@@ -268,38 +267,45 @@ int qos_addClass(const struct qos_class *param)
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
         /// Set iptables command in exec
-        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
+        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
         /// Realloc space
-        exec1 = realloc(exec1, strlen(exec1)* sizeof(char ));
+        exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
         printf("%s \n", exec1);
         system(exec1);
 
         char *exec2 = (char *) malloc(255);
-        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
-        exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
+        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
+        exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         printf("%s \n", exec2);
         system(exec2);
 
         char *exec3 = (char *) malloc(255);
-        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
-        exec3 = realloc(exec3, strlen(exec3) * sizeof(char ));
+        snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark",
+                 CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
+        exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         printf("%s \n", exec3);
         system(exec3);
 
         char *exec4 = (char *) malloc(255);
-        snprintf(exec4, 255, "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
-        exec4 = realloc(exec4, strlen(exec4) * sizeof(char ));
+        snprintf(exec4, 255,
+                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
+                 CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
+        exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
         printf("%s \n", exec4);
         system(exec4);
 
         char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 255, "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444", CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
-        exec5 = realloc(exec5, strlen(exec5) * sizeof(char ));
+        snprintf(exec5, 255,
+                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
+                 CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
+        exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
         printf("%s \n", exec5);
         system(exec5);
 
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
-        char *concat = malloc( (int)l+5 );
+        char *concat = malloc((int) l + 5);
 
         snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
 
@@ -316,13 +322,14 @@ int qos_addClass(const struct qos_class *param)
         free(concat);
 
         /// Integrate qos-firewall file into firewall
-        if(append_to_fw() == -1) {
+        if (append_to_fw() == -1) {
             printf("Failed to set iptables rules via firewall");
             return -1;
         }
 
-        //if (obj->data->duration != '\0') dur_daemon(obj->data->duration);
-
+        if (obj->data->duration != '\0') {
+            dur_daemon(obj->data->duration);
+        }
         //outoQosClass(obj);
     } else {
         printf("STD QoS Class add");

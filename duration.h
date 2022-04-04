@@ -15,8 +15,8 @@
 #include <syslog.h>
 
 struct interval {
-    time_t *cur, *end;
-    clock_t *beg, *fin;
+    time_t cur, end;
+    double diff_t;
 };
 typedef struct interval runtime;
 

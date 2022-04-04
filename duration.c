@@ -17,6 +17,9 @@ void sig_handler(int signum) {
 
 void dur_daemon(const char *fin) {
     runtime t;
+
+    int range = atoi(fin);
+
     if (!time(&t.cur)){
         perror("TIME fail");
     }
@@ -31,5 +34,11 @@ void dur_daemon(const char *fin) {
 
     while (1) {
         time(&t.end);
+        t.diff_t = difftime(t.cur, t.end);
+        if ((int) t.diff_t < range) {
+            qos_removeAllClasses();
+            sig_handler(SIGINT);
+        }
+        sleep(10);
     }
 }
