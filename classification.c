@@ -201,6 +201,8 @@ int main()
     if(qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
+    qos_removeAllClasses();
+
     if(qos_addClass(test_class2) == -1)
         return EXIT_FAILURE;
 
@@ -299,7 +301,7 @@ int qos_addClass(const struct qos_class *param)
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
         char *concat = malloc( (int)l+5 );
 
-        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s ", exec1, exec2, exec3, exec4, exec5);
+        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
 
         free(exec1);
         free(exec2);
@@ -331,6 +333,31 @@ int qos_addClass(const struct qos_class *param)
 
 int qos_removeAllClasses()
 {
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+
+    if (!(fp = fopen(CLASS_FW_FILENAME, "r")))
+    {
+        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
+
+    while (getline(&line, &len, fp) != -1)
+    {
+        line[20] = 'D';
+        system(line);
+    }
+    rewind(fp);
+    fclose(fp);
+
+    if (!(fp = fopen(CLASS_FW_FILENAME, "w")))
+    {
+        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
+    putc(' ',fp);
+
     if (remove(CLASS_FW_FILENAME) == -1)
     {
         printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));

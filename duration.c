@@ -5,31 +5,31 @@
 #include "classification.h"
 #include "duration.h"
 
+void sig_handler(int signum) {
+    pid_t pid;
+    printf("Signal: %u", signum);
+    if (signum == SIGINT) {
+        pid = getpid();
+        kill(pid, SIGINT);
+        exit(-1);
+    }
+}
+
 void dur_daemon(const char *fin) {
     runtime t;
     if (!time(&t.cur)){
-
+        perror("TIME fail");
     }
 
+    int nocdir = 0;
+    int noclo = 0;
 
-    if (1==1){
-        pid_t pid;
+    if (daemon(nocdir,noclo))
+        perror("time_daemon");
 
-        pid = fork();
-        if (pid < 0)
-            exit(EXIT_FAILURE);
+    signal(SIGINT,sig_handler);
 
-        if (setsid() < 0)
-            exit(EXIT_FAILURE);
-
-        signal(SIGCHLD, SIG_IGN);
-        signal(SIGHUP, SIG_IGN);
-
-        pid = fork();
-        if (pid < 0)
-            exit(EXIT_FAILURE);
-
-        umask(0);
-        openlog("TimerDaemon for queue kill", LOG_PID, LOG_DAEMON);
+    while (1) {
+        time(&t.end);
     }
 }

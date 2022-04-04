@@ -3,4 +3,5 @@
 
 CMakeFiles/tests.dir/classification.c.o: ../classification.c
 CMakeFiles/tests.dir/classification.c.o: ../classification.h
+CMakeFiles/tests.dir/classification.c.o: ../duration.h
 
