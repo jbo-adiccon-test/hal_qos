@@ -357,6 +357,7 @@ int qos_removeAllClasses()
         return -1;
     }
     putc(' ',fp);
+    fclose(fp);
 
     if (remove(CLASS_FW_FILENAME) == -1)
     {
