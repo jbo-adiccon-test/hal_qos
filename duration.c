@@ -5,8 +5,14 @@
 #include "classification.h"
 #include "duration.h"
 
-void dur_daemon(struct qos_class *queue) {
-    if (queue->duration){
+void dur_daemon(const char *fin) {
+    runtime t;
+    if (!time(&t.cur)){
+
+    }
+
+
+    if (1==1){
         pid_t pid;
 
         pid = fork();

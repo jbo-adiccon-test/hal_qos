@@ -14,10 +14,11 @@
 #include <syslog.h>
 
 struct interval {
-    time_t *start, *end;
+    time_t *cur, *end;
     clock_t *beg, *fin;
 };
+typedef struct interval runtime;
 
-
+void dur_daemon(const char *fin);
 
 #endif //TESTS_DURATION_H

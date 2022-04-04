@@ -8,6 +8,7 @@
 //#include <limits.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "duration.h"
 
 #include "classification.h"
 
@@ -256,7 +257,7 @@ int qos_addClass(const struct qos_class *param)
         obj->data->dscp_mark != 0
             )
     {
-        printf("NEW mark Categ add");
+        printf("NEW mark Categ add\n");
 
         /// Delete all classes before
         //revert_rules();
@@ -275,9 +276,7 @@ int qos_addClass(const struct qos_class *param)
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2)* sizeof(char ));
         printf("%s \n", exec2);
-        if(exec_run(exec2) != EXIT_SUCCESS) {
-            return EXIT_FAILURE;
-        }
+        system(exec2);
 
         char *exec3 = (char *) malloc(255);
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark", CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
@@ -319,6 +318,8 @@ int qos_addClass(const struct qos_class *param)
             printf("Failed to set iptables rules via firewall");
             return -1;
         }
+
+        //if (obj->data->duration != '\0') dur_daemon(obj->data->duration);
 
         //outoQosClass(obj);
     } else {
