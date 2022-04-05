@@ -43,7 +43,7 @@ void dur_daemon(const char *fin) {
     int nocdir = 0;
     int noclo = 0;
 
-    if (daemon(nocdir,noclo))
+    if (fork() != 0)
         perror("time_daemon");
 
     signal(SIGINT,sig_handler);
@@ -54,7 +54,7 @@ void dur_daemon(const char *fin) {
         if ((int) t.diff_t < range) {
             qos_removeAllClasses();
             sig_handler(SIGINT);
-            break;
+            exit(0);
         }
         sleep(10);
     }
