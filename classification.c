@@ -51,6 +51,8 @@ void dur_daemon(const char *fin) {
         sleep(range);
         qos_removeAllClasses();
         sig_handler(SIGINT);
+    } else {
+        printf("Duration timer started with %i sec", range);
     }
 }
 
