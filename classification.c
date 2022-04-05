@@ -7,6 +7,7 @@
 #include <stdlib.h>
 //#include <limits.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <errno.h>
 
 
@@ -33,28 +34,26 @@ void sig_handler(int signum) {
 
 void dur_daemon(const char *fin) {
     //runtime t;
-
     int range = atoi(fin);
 
     //if (!time(&t.cur)){
     //    perror("TIME fail");
     //}
 
-    if (fork() != 0)
+    if (fork() == 0) {
         perror("time_daemon");
 
-    signal(SIGINT,sig_handler);
+        signal(SIGINT, sig_handler);
 
-    while (1) {
+
         //time(&t.end);
         //t.diff_t = difftime(t.cur, t.end);
         sleep(range);
         qos_removeAllClasses();
         sig_handler(SIGINT);
-        exit(0);
-
     }
 }
+
 /*
 enum class_table
 {
@@ -68,14 +67,12 @@ static int check_firewall_double(char *comp) {
     char *line = NULL;
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
-    {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a+"))) {
         printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
 
-    while (getline(&line, &len, fp) != -1)
-    {
+    while (getline(&line, &len, fp) != -1) {
         if (strstr(line, comp)) {
             fclose(fp);
             return EXIT_FAILURE;
@@ -90,20 +87,17 @@ static int check_firewall_double(char *comp) {
  * If not exsists append qos-firewall file to utopia firewall
  * @return 0 SUCCESS -1 FAIL
  */
-static int append_to_fw()
-{
+static int append_to_fw() {
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+")))
-    {
+    if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+"))) {
         printf("Cannot open file "CLASS_FW_RELOAD_FILENAME": %s\n", strerror(errno));
         return -1;
     }
 
-    while (getline(&line, &len, fp) != -1)
-    {
+    while (getline(&line, &len, fp) != -1) {
         if (strstr(line, CLASS_FW_FILENAME)) {
             fclose(fp);
             return 0;
@@ -153,20 +147,17 @@ static int revert_rules(){
  * @param rule
  * @return status 0 SUCCESS -1 FAIL
  */
-static int add_mangle_rule_str(const char *rule)
-{
+static int add_mangle_rule_str(const char *rule) {
     FILE *fp;
     //char *str = rule;
 
-    if (!rule)
-    {
+    if (!rule) {
         printf("Invalid arguments\n");
         return -1;
     }
 
     /// deleting rule before adding to avoid duplicates
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
-    {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a+"))) {
         printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
@@ -193,8 +184,7 @@ static int add_mangle_rule_str(const char *rule)
 /**
  * A Type to alloc the qos class in an type
  */
-typedef struct
-{
+typedef struct {
     const struct qos_class *data;
     size_t size;
     char *str;
@@ -210,8 +200,7 @@ int qos_removeOneClass() {
  * @param class
  * @return qos_struct of class
  */
-qos_struct* initQosClass(const struct qos_class *class)
-{
+qos_struct *initQosClass(const struct qos_class *class) {
     qos_struct *data = malloc(sizeof(qos_struct));
 
     data->data = malloc(sizeof(struct qos_class));
@@ -225,8 +214,7 @@ qos_struct* initQosClass(const struct qos_class *class)
  * Test main func with a debug struct in main to add an set to add (pseudo) classification
  * @return 0 SUCCESS -1 FAIL
  */
-int main()
-{
+int main() {
     struct qos_class *test_class1 = malloc(sizeof(struct qos_class));
     struct qos_class *test_class2 = malloc(sizeof(struct qos_class));
 
@@ -255,19 +243,19 @@ int main()
     test_class2->dscp_mark = 32;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
 
-    if(qos_addClass(test_class1) == -1)
+    if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
     qos_removeAllClasses();
 
-    if(qos_addClass(test_class2) == -1)
+    if (qos_addClass(test_class2) == -1)
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
 }
 
 int exec_run(char *str) {
-    if(system(str))
+    if (system(str))
         return EXIT_SUCCESS;
     else
         return EXIT_FAILURE;
@@ -298,11 +286,11 @@ int exec_run(char *str) {
  * @param param
  * @return 0 SUCCESS -1 FAIL
  */
-int qos_addClass(const struct qos_class *param)
-{
+int qos_addClass(const struct qos_class *param) {
     qos_struct *obj = initQosClass(param);
 
-    printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->ip_src_addr, obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
+    printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->ip_src_addr,
+           obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
 
     if (obj->data->port_src_range_end == -1 &&
         obj->data->port_src_range_start == -1 &&
@@ -417,36 +405,31 @@ int qos_addClass(const struct qos_class *param)
     return 0;
 }
 
-int qos_removeAllClasses()
-{
+int qos_removeAllClasses() {
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "r")))
-    {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "r"))) {
         printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
 
-    while (getline(&line, &len, fp) != -1)
-    {
+    while (getline(&line, &len, fp) != -1) {
         line[20] = 'D';
         system(line);
     }
     rewind(fp);
     fclose(fp);
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "w")))
-    {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "w"))) {
         printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
-    putc(' ',fp);
+    putc(' ', fp);
     fclose(fp);
 
-    if (remove(CLASS_FW_FILENAME) == -1)
-    {
+    if (remove(CLASS_FW_FILENAME) == -1) {
         printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));
         return -1;
     }
