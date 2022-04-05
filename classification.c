@@ -32,13 +32,13 @@ void sig_handler(int signum) {
 }
 
 void dur_daemon(const char *fin) {
-    runtime t;
+    //runtime t;
 
     int range = atoi(fin);
 
-    if (!time(&t.cur)){
-        perror("TIME fail");
-    }
+    //if (!time(&t.cur)){
+    //    perror("TIME fail");
+    //}
 
     if (fork() != 0)
         perror("time_daemon");
@@ -46,14 +46,13 @@ void dur_daemon(const char *fin) {
     signal(SIGINT,sig_handler);
 
     while (1) {
-        time(&t.end);
-        t.diff_t = difftime(t.cur, t.end);
-        if ((int) t.diff_t < range) {
-            qos_removeAllClasses();
-            sig_handler(SIGINT);
-            exit(0);
-        }
-        sleep(10);
+        //time(&t.end);
+        //t.diff_t = difftime(t.cur, t.end);
+        sleep(range);
+        qos_removeAllClasses();
+        sig_handler(SIGINT);
+        exit(0);
+
     }
 }
 /*
@@ -242,6 +241,7 @@ int main()
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
+    strcpy(test_class1->duration, "50");
 
     test_class2->port_dst_range_start = -1;
     test_class2->port_dst_range_end = -1;
