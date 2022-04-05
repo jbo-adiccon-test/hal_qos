@@ -23,7 +23,7 @@
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
 
 void sig_handler(int signum) {
-    pid_t pid;
+    pid_t pid = getpid();
     printf("Signal: %u", signum);
     if (signum == SIGINT) {
         pid = getpid();
