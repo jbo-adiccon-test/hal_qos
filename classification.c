@@ -54,6 +54,7 @@ void dur_daemon(const char *fin) {
         if ((int) t.diff_t < range) {
             qos_removeAllClasses();
             sig_handler(SIGINT);
+            break;
         }
         sleep(10);
     }
