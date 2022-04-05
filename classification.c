@@ -40,9 +40,6 @@ void dur_daemon(const char *fin) {
         perror("TIME fail");
     }
 
-    int nocdir = 0;
-    int noclo = 0;
-
     if (fork() != 0)
         perror("time_daemon");
 
