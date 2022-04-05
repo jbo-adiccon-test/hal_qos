@@ -289,30 +289,38 @@ int qos_addClass(const struct qos_class *param)
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
+        int ex1 = 0, ex2 = 0, ex3 = 0, ex4 = 0, ex5 = 0;
+
         /// Set iptables command in exec
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
         printf("%s \n", exec1);
-        if (check_firewall_double(exec1) == EXIT_SUCCESS)
+        if (check_firewall_double(exec1) == EXIT_SUCCESS) {
             system(exec1);
+            ex1 = 1;
+        }
 
         char *exec2 = (char *) malloc(255);
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         printf("%s \n", exec2);
-        if (check_firewall_double(exec2) == EXIT_SUCCESS)
+        if (check_firewall_double(exec2) == EXIT_SUCCESS) {
             system(exec2);
+            ex2 = 1;
+        }
 
         char *exec3 = (char *) malloc(255);
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         printf("%s \n", exec3);
-        if (check_firewall_double(exec3) == EXIT_SUCCESS)
+        if (check_firewall_double(exec3) == EXIT_SUCCESS) {
             system(exec3);
+            ex3 = 1;
+        }
 
         char *exec4 = (char *) malloc(255);
         snprintf(exec4, 255,
@@ -320,8 +328,10 @@ int qos_addClass(const struct qos_class *param)
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
         printf("%s \n", exec4);
-        if (check_firewall_double(exec4) == EXIT_SUCCESS)
+        if (check_firewall_double(exec4) == EXIT_SUCCESS) {
             system(exec4);
+            ex4 = 1;
+        }
 
         char *exec5 = (char *) malloc(255);
         snprintf(exec5, 255,
@@ -329,24 +339,31 @@ int qos_addClass(const struct qos_class *param)
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
         printf("%s \n", exec5);
-        if (check_firewall_double(exec5) == EXIT_SUCCESS)
+        if (check_firewall_double(exec5) == EXIT_SUCCESS) {
             system(exec5);
+            ex5 = 1;
+        }
 
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
         char *concat = malloc((int) l + 5);
 
-        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+        if (
+                ex1 == 1 &&
+                ex2 == 1 &&
+                ex3 == 1 &&
+                ex4 == 1 &&
+                ex5 == 1
+                ) {
+            snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+            obj->str = concat;
+            add_mangle_rule_str(obj->str);
+        }
 
         free(exec1);
         free(exec2);
         free(exec3);
         free(exec4);
         free(exec5);
-
-        obj->str = concat;
-
-        add_mangle_rule_str(obj->str);
-
         free(concat);
 
         /// Integrate qos-firewall file into firewall

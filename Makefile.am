@@ -21,6 +21,6 @@ ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = foreign
 lib_LTLIBRARIES = libhal_qos.la
 libhal_qos_la_CPPFLAGS = -I$(top_srcdir)/./include $(CPPFLAGS)
-libhal_qos_la_SOURCES = queue.c classification.c
+libhal_qos_la_SOURCES = queue.c classification.c duration.c
 libhal_qos_la_CFLAGS = -Wall -Werror -fPIC
 libhal_qos_la_LDFLAGS = -shared
