@@ -23,6 +23,9 @@
 
 #include <net/if.h>
 #include <arpa/inet.h>
+#include <signal.h>
+#include <time.h>
+#include <unistd.h>
 
 #define CLASS_MAC_SIZE 18
 #define CLASS_CHAIN_NAME_SIZE 16
@@ -74,4 +77,14 @@ struct qos_class
 int qos_addClass(const struct qos_class *param);
 int qos_removeAllClasses();
 int qos_removeOneClass();
+
+
+struct interval {
+    time_t cur, end;
+    double diff_t;
+};
+typedef struct interval runtime;
+
+
+void dur_daemon(const char *fin);
 #endif
