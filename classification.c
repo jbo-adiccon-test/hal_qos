@@ -49,11 +49,11 @@ void dur_daemon(const char *fin) {
         //time(&t.end);
         //t.diff_t = difftime(t.cur, t.end);
         sleep(range);
-        system("dmcli eRT. setv Device.QoS.Classification.1.Enable bool false");
-        system("dmcli eRT. setv Device.QoS.Classification.1.ChainName string \"\"");
-        system("dmcli eRT. setv Device.QoS.Classification.1.IfaceIn string \"\"");
-        system("dmcli eRT. setv Device.QoS.Classification.1.IfaceOut string \"\"");
-        system("dmcli eRT. setv Device.QoS.Classification.1.Duration string \"\"");
+        system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
+        system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
+        system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
+        system("dmcli eRT setv Device.QoS.Classification.1.IfaceOut string \"\"");
+        system("dmcli eRT setv Device.QoS.Classification.1.Duration string \"\"");
 
         //qos_removeAllClasses();
         sig_handler(SIGINT);
@@ -301,11 +301,11 @@ int qos_addClass(const struct qos_class *param) {
            obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
 
     if (
-        *obj->data->chain_name != '\0' &&
-        *obj->data->iface_in != '\0' &&
-        *obj->data->iface_out != '\0' &&
+        obj->data->chain_name[0] != '\0' &&
+        obj->data->iface_in[0] != '\0' &&
+        obj->data->iface_out[0] != '\0' &&
         obj->data->dscp_mark != 0 &&
-        *obj->data->mac_src_addr != '\0'
+        obj->data->mac_src_addr[0] != '\0'
             ) {
         printf("NEW mark Categ add\n");
 
