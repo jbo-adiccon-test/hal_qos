@@ -54,7 +54,7 @@ void dur_daemon(const char *fin) {
         system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
         system("dmcli eRT setv Device.QoS.Classification.1.IfaceOut string \"\"");
         system("dmcli eRT setv Device.QoS.Classification.1.Duration string \"\"");
-        system("dmcli eRT setv Device.QoS.Classification.1.SourceMacAddress string \"\"");
+        system("dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string \"\"");
         //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
 
         //qos_removeAllClasses();
