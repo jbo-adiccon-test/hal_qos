@@ -21,8 +21,12 @@ struct t_time {
     struct tm act_t;
     struct tm tar_t;
     char *file_name;
-};
+} tTime;
 
 void sig_handler_time(int sig);
+
+char *get_str_time(struct tm time);
+
+struct tm get_act_time();
 
 #endif //TESTS_TIMEHANDLER_H

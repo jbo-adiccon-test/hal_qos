@@ -14,5 +14,5 @@ int main() {
     test.act_t.tm_mon = 11;
     test.act_t.tm_year = 2022;
 
-
+    printf("%s", get_str_time(get_act_time()));
 }

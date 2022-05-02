@@ -13,3 +13,14 @@ void sig_handler_time(int signum) {
         kill(pid, SIGINT);
     }
 }
+
+char *get_str_time(struct tm time) {
+    return asctime(&time);
+}
+
+struct tm get_act_time() {
+    time_t raw;
+    time(&raw);
+    tTime.act_t = *localtime(&raw);
+    return tTime.act_t;
+}
