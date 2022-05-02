@@ -37,46 +37,6 @@
 					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="time_cpiler">
-				<Option output="/mnt/c/Users/limberg/hal_qos/cmake-build-debug/time_cpiler" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/limberg/hal_qos/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/mnt/c/Users/limberg/hal_qos/."/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 time_cpiler"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="time_cpiler/fast">
-				<Option output="/mnt/c/Users/limberg/hal_qos/cmake-build-debug/time_cpiler" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/mnt/c/Users/limberg/hal_qos/cmake-build-debug"/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
-				<Compiler>
-					<Add directory="/mnt/c/Users/limberg/hal_qos/."/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 time_cpiler/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/mnt/c/Users/limberg/hal_qos/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="hal_qos">
 				<Option output="/mnt/c/Users/limberg/hal_qos/cmake-build-debug/hal_qos" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="/mnt/c/Users/limberg/hal_qos/cmake-build-debug"/>
@@ -128,17 +88,6 @@
 			<Option target="hal_qos"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/limberg/hal_qos/queue.h">
-			<Option target="hal_qos"/>
-		</Unit>
-		<Unit filename="/mnt/c/Users/limberg/hal_qos/time_test.c">
-			<Option target="time_cpiler"/>
-		</Unit>
-		<Unit filename="/mnt/c/Users/limberg/hal_qos/timehandler.c">
-			<Option target="time_cpiler"/>
-			<Option target="hal_qos"/>
-		</Unit>
-		<Unit filename="/mnt/c/Users/limberg/hal_qos/timehandler.h">
-			<Option target="time_cpiler"/>
 			<Option target="hal_qos"/>
 		</Unit>
 		<Unit filename="/mnt/c/Users/limberg/hal_qos/CMakeLists.txt">
