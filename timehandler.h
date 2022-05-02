@@ -10,9 +10,14 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #define DIR_NAME "/usr/ccsp"
-struct t_time{
+struct t_time {
     struct tm act_t;
     struct tm tar_t;
     char *file_name;
