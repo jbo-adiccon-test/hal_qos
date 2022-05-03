@@ -34,6 +34,10 @@ u_int8_t struct_greater();
 
 u_int8_t valid(struct tm tm);
 
-struct tm strtotm(char *str);
+struct tm strtotm(const char *str);
+
+int diff();
+
+void duration_check();
 
 #endif //TESTS_TIMEHANDLER_H

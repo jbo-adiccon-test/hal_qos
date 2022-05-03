@@ -5,7 +5,7 @@
 #include "timehandler.h"
 
 int main() {
-    char *string = "22:08:12-05.10.2022";
+    const char *string = "22:08:12-05.10.2022";
 
     tTime.tar_t = strtotm(string);
 

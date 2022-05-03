@@ -73,7 +73,7 @@ u_int8_t valid(struct tm tm) {
     }
 }
 
-struct tm strtotm(char *str) {
+struct tm strtotm(const char *str) {
     char *ptr;
     struct tm ret = get_act_time();
     if (strlen(str) >= 8) {
@@ -98,5 +98,61 @@ struct tm strtotm(char *str) {
 
         return ret;
     }
+}
 
+int diff() {
+    get_act_time();
+
+    time_t act = mktime(&tTime.act_t);
+    time_t tar = (time_t) mktime(&tTime.tar_t);
+
+    long ret = tar - act;
+
+    return (int) ret;
+}
+
+void duration_check(const char *fin) {
+    if (fork() == 0) {
+        while (1) {
+            get_act_time();
+
+            perror("time_daemon");
+
+            signal(SIGINT, sig_handler_time);
+
+            DIR *dp;
+            struct dirent *ep;
+            dp = opendir("/lib/ccsp/qos/duration");
+
+            if (dp == NULL)
+                break;
+
+            while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+                FILE *fp = fopen(ep->d_name, "r");
+                if (fp != NULL) { // Open file
+                    char *line;
+                    size_t len;
+                    while (getline(&line, &len, fp) != -1) {
+                        printf("%s\n", line);
+                    }
+                    fclose(fp);
+                }
+                closedir(dp);
+            }
+
+            //system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
+            //system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
+            //system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
+            //system("dmcli eRT setv Device.QoS.Classification.1.IfaceOut string \"\"");
+            //system("dmcli eRT setv Device.QoS.Classification.1.Duration string \"\"");
+            //system("dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string \"\"");
+            //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
+
+            //qos_removeAllClasses();
+            sleep(15);
+            sig_handler_time(SIGINT);
+        }
+    } else {
+        printf("Timechecker activated SIGINT to deactivate");
+    }
 }

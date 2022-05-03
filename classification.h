@@ -26,6 +26,7 @@
 #include <signal.h>
 #include <time.h>
 #include <unistd.h>
+#include "timehandler.h"
 
 #define CLASS_MAC_SIZE 18
 #define CLASS_CHAIN_NAME_SIZE 16

@@ -232,6 +232,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
+    strcpy(test_class1->duration, "17:30:30-03.05.2022");
 
 
     test_class2->port_dst_range_start = -1;
@@ -292,15 +293,17 @@ int exec_run(char *str) {
 int qos_addClass(const struct qos_class *param) {
     qos_struct *obj = initQosClass(param);
 
-    if(obj->data->alias[0] == '\0')
-        snprintf(obj->data->alias,255,"%u", obj->data->id);
+    duration_check();
+
+    if (obj->data->alias[0] == '\0')
+        snprintf(obj->data->alias, 255, "%u", obj->data->id);
 
     printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
            obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
 
     if (
-        obj->data->chain_name[0] != '\0' &&
-        obj->data->iface_in[0] != '\0' &&
+            obj->data->chain_name[0] != '\0' &&
+            obj->data->iface_in[0] != '\0' &&
         obj->data->iface_out[0] != '\0' &&
         obj->data->dscp_mark != 0 &&
         obj->data->mac_src_addr[0] != '\0'
