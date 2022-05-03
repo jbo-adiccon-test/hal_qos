@@ -6,10 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/limberg/hal_qos/time_test.c
-timehandler.h
-/mnt/c/Users/limberg/hal_qos/timehandler.h
-
 /mnt/c/Users/limberg/hal_qos/timehandler.c
 timehandler.h
 /mnt/c/Users/limberg/hal_qos/timehandler.h
@@ -34,5 +30,7 @@ stdlib.h
 string.h
 -
 unistd.h
+-
+stdbool.h
 -
 

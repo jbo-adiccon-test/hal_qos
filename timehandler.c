@@ -15,12 +15,88 @@ void sig_handler_time(int signum) {
 }
 
 char *get_str_time(struct tm time) {
-    return asctime(&time);
+    char *t_str;
+    if (valid(time) == 1) {
+        t_str = malloc(9 * sizeof(char));
+        snprintf(t_str, 8, "%i:%i:%i", time.tm_hour, time.tm_min, time.tm_sec);
+        return t_str;
+    } else if (valid(time) == 0) {
+        t_str = malloc(20 * sizeof(char));
+        snprintf(t_str, 20, "%i:%i:%i-%i.%i.%i", time.tm_hour, time.tm_min, time.tm_sec, time.tm_mday, time.tm_mon,
+                 time.tm_year);
+        return t_str;
+    } else {
+        return "";
+    }
 }
 
 struct tm get_act_time() {
     time_t raw;
     time(&raw);
     tTime.act_t = *localtime(&raw);
+    //mktime(&tTime.act_t);
+    //printf("%s", asctime(&tTime.act_t));
+    tTime.act_t.tm_mon = tTime.act_t.tm_mon + 1;
+    tTime.act_t.tm_year = tTime.act_t.tm_year + 1900;
     return tTime.act_t;
+}
+
+u_int8_t struct_greater() {
+    get_act_time();
+    if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
+        time_t act = mktime(&tTime.act_t);
+        time_t tar = mktime(&tTime.tar_t);
+        if (difftime(tar, act) > 0)
+            return 0;
+        else
+            return 1;
+    }
+}
+
+u_int8_t valid(struct tm tm) {
+    if (
+            tm.tm_sec != 0 &&
+            tm.tm_min != 0 &&
+            tm.tm_hour != 0
+            ) {
+        if (
+                tm.tm_mday != 0 &&
+                tm.tm_mon != 0 &&
+                tm.tm_year != 0
+                ) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        return -1;
+    }
+}
+
+struct tm strtotm(char *str) {
+    char *ptr;
+    struct tm ret = get_act_time();
+    if (strlen(str) >= 8) {
+        int hr = (int) strtol(&str[0], &ptr, 10);
+        int min = (int) strtol(&str[3], &ptr, 10);
+        int sec = (int) strtol(&str[6], &ptr, 10);
+
+        ret.tm_hour = hr;
+        ret.tm_min = min;
+        ret.tm_sec = sec;
+
+        if (strlen(str) == 19) {
+            int day = (int) strtol(&str[9], &ptr, 10);
+            int mon = (int) strtol(&str[12], &ptr, 10);
+            int year = (int) strtol(&str[15], &ptr, 10);
+
+            ret.tm_mday = day;
+            ret.tm_mon = mon;
+            ret.tm_year = year;
+
+        }
+
+        return ret;
+    }
+
 }

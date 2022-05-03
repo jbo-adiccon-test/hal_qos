@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 #define DIR_NAME "/usr/ccsp"
 struct t_time {
@@ -28,5 +29,11 @@ void sig_handler_time(int sig);
 char *get_str_time(struct tm time);
 
 struct tm get_act_time();
+
+u_int8_t struct_greater();
+
+u_int8_t valid(struct tm tm);
+
+struct tm strtotm(char *str);
 
 #endif //TESTS_TIMEHANDLER_H

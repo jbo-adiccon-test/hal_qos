@@ -5,14 +5,12 @@
 #include "timehandler.h"
 
 int main() {
-    struct t_time test;
+    char *string = "22:08:12-05.10.2022";
 
-    test.act_t.tm_sec = 15;
-    test.act_t.tm_min = 12;
-    test.act_t.tm_hour = 5;
-    test.act_t.tm_mday = 23;
-    test.act_t.tm_mon = 11;
-    test.act_t.tm_year = 2022;
+    tTime.tar_t = strtotm(string);
 
-    printf("%s", get_str_time(get_act_time()));
+    get_act_time();
+    struct_greater();
+
+    printf("%s", get_str_time(tTime.tar_t));
 }
