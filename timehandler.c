@@ -51,6 +51,7 @@ u_int8_t struct_greater() {
         else
             return 1;
     }
+    return -1;
 }
 
 u_int8_t valid(struct tm tm) {
@@ -98,6 +99,7 @@ struct tm strtotm(const char *str) {
 
         return ret;
     }
+    return ret;
 }
 
 int diff() {
