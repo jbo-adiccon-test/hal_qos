@@ -16,6 +16,7 @@
 //#define CLASS_FW_FILENAME "/home/artemisvenari/Codes/Work/qos_rules.sh"
 
 #define CLASS_FW_RELOAD_FILENAME "/etc/utopia/service.d/firewall_log_handle.sh"
+#define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
 //#define CLASS_FW_RELOAD_FILENAME "/home/artemisvenari/Codes/Work/firewall_log_handle.sh"
 
 //#define CLASS_DATA_ALLOC "/home/artemisvenari/Codes/Work/structure.dat"
@@ -198,11 +199,6 @@ typedef struct {
     size_t size;
     char *str;
 } qos_struct;
-
-int qos_removeOneClass() {
-    printf("To Remove One Class... TESTTESTTESTTESTTESTTEST");
-    return EXIT_SUCCESS;
-}
 
 /**
  * Allocates the data of qos_class
@@ -410,6 +406,10 @@ int qos_addClass(const struct qos_class *param) {
     return 0;
 }
 
+int qos_persistClass() {
+
+}
+
 int qos_removeAllClasses() {
     FILE *fp;
     char *line = NULL;
@@ -438,6 +438,41 @@ int qos_removeAllClasses() {
         printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));
         return -1;
     }
+
+    return 0;
+}
+
+int qos_removeOneClass(char *com) {
+    FILE *fp;
+    FILE *tp = !(fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")) ? fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")
+                                                                  : NULL;
+    char *line = NULL;
+
+    size_t len = 0;
+
+    if (!(fp = fopen(CLASS_FW_FILENAME, "w+"))) {
+        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
+
+    int posL = 0;
+
+    while (getline(&line, &len, fp) != -1) {
+        if (strcmp(line, com) == 0) {
+            line[20] = 'D';
+            exec_run(line);
+        } else
+            fwrite(com, 1, strlen(com), tp);
+    }
+
+    fclose(fp);
+
+    if (remove(CLASS_FW_FILENAME) == -1) {
+        printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));
+        return -1;
+    }
+
+    rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", CLASS_FW_FILENAME);
 
     return 0;
 }

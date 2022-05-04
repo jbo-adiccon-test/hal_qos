@@ -16,8 +16,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include "classification.h"
 
-#define DIR_NAME "/usr/ccsp"
+#define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
 struct t_time {
     struct tm act_t;
     struct tm tar_t;
@@ -39,5 +40,7 @@ struct tm strtotm(const char *str);
 int diff();
 
 void duration_check();
+
+u_int8_t clean_Class()
 
 #endif //TESTS_TIMEHANDLER_H

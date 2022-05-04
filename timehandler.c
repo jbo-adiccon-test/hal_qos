@@ -51,14 +51,14 @@ u_int8_t struct_greater() {
         else
             return 1;
     }
-    return -1;
+    return 2;
 }
 
 u_int8_t valid(struct tm tm) {
     if (
-            tm.tm_sec != 0 &&
-            tm.tm_min != 0 &&
-            tm.tm_hour != 0
+            (tm.tm_sec >= 0 && tm.tm_sec < 60) ||
+            (tm.tm_min >= 0 && tm.tm_min < 60) ||
+            (tm.tm_hour >= 0 && tm.tm_hour < 24)
             ) {
         if (
                 tm.tm_mday != 0 &&
@@ -70,7 +70,7 @@ u_int8_t valid(struct tm tm) {
             return 1;
         }
     } else {
-        return -1;
+        return 2;
     }
 }
 
@@ -124,18 +124,38 @@ void duration_check(const char *fin) {
 
             DIR *dp;
             struct dirent *ep;
-            dp = opendir("/lib/ccsp/qos/duration");
+            dp = opendir(CLASS_PERSITENT_FILENAME);
 
             if (dp == NULL)
                 break;
 
             while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+                bool obsulate = false;
                 FILE *fp = fopen(ep->d_name, "r");
+
                 if (fp != NULL) { // Open file
                     char *line;
                     size_t len;
                     while (getline(&line, &len, fp) != -1) {
                         printf("%s\n", line);
+                        if (obsulate == false) {
+                            char *token = strtok(line, " ");
+                            if (strcmp(token, "end:") == 0) {
+                                token = strtok(NULL, " "); // Isolate time string
+                                tTime.tar_t = strtotm(token); // change str to tm struct
+                                if (valid(tTime.tar_t) != 2) {
+                                    if (struct_greater() == 0) { // check for oldness
+                                        obsulate = true;
+                                    } else {
+                                        fclose(fp);
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                        if (obsulate == true) {
+                            // ToDo: Fix deletion
+                        }
                     }
                     fclose(fp);
                 }

@@ -79,6 +79,8 @@ int qos_addClass(const struct qos_class *param);
 int qos_removeAllClasses();
 int qos_removeOneClass();
 
+int qos_persistClass();
+
 
 struct interval {
     time_t cur, end;
