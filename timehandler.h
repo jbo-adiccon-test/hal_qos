@@ -19,6 +19,8 @@
 #include "classification.h"
 
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
+#define CLASS_FW_FILENAME "/tmp/qos_rules.sh"
+
 struct t_time {
     struct tm act_t;
     struct tm tar_t;
@@ -39,7 +41,7 @@ struct tm strtotm(const char *str);
 
 int diff();
 
-void duration_check();
+_Noreturn void duration_check();
 
 //u_int8_t clean_Class()
 

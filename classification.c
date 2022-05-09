@@ -221,7 +221,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "11:45:00-09.05.2022");
+    strcpy(test_class1->duration, "16:00:00-09.05.2022");
 
 
     test_class2->port_dst_range_start = -1;
@@ -391,8 +391,8 @@ int qos_addClass(const struct qos_class *param) {
         if (*obj->data->duration != '\0') {
             //dur_daemon(obj->data->duration);
             qos_persistClass(obj);
+
             if (tTime.check != true) {
-                tTime.check = true;
                 duration_check();
             }
         }
@@ -463,16 +463,16 @@ int qos_removeAllClasses() {
     return 0;
 }
 
-int qos_removeOneClass(char *com) {
+int qos_removeOneClass(char *com, char *file) {
     FILE *fp;
-    FILE *tp = !(fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")) ? fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")
+    FILE *tp = (fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")) ? fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")
                                                                   : NULL;
     char *line = NULL;
 
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "w+"))) {
-        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+    if (!(fp = fopen(file, "r"))) {
+        printf("Cannot open file %s: %s\n", file, strerror(errno));
         return -1;
     }
 
@@ -483,17 +483,19 @@ int qos_removeOneClass(char *com) {
             line[20] = 'D';
             exec_run(line);
         } else
-            fwrite(com, 1, strlen(com), tp);
+            fwrite(line, 1, strlen(line), tp);
     }
 
     fclose(fp);
+    fclose(tp);
 
-    if (remove(CLASS_FW_FILENAME) == -1) {
-        printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));
+    if (remove(file) == -1) {
+        printf("Failed to remove %s: %s", file, strerror(errno));
         return -1;
     }
 
-    rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", CLASS_FW_FILENAME);
+
+    rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file);
 
     return 0;
 }

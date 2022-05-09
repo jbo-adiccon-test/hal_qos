@@ -5,12 +5,15 @@
 #include "timehandler.h"
 
 void sig_handler_time(int signum) {
-
     pid_t pid = getpid();
+    pid_t ppid = getppid();
+
     printf("Signal: %u", signum);
+
     if (signum == SIGINT) {
-        pid = getpid();
         kill(pid, SIGINT);
+    } else if (signum == SIGCHLD) {
+        kill(ppid, SIGUSR1);
     }
 }
 
@@ -46,7 +49,7 @@ u_int8_t struct_greater() {
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
         time_t act = mktime(&tTime.act_t);
         time_t tar = mktime(&tTime.tar_t);
-        if (difftime(tar, act) > 0)
+        if (difftime(act, tar) > 0)
             return 0;
         else
             return 1;
@@ -113,10 +116,13 @@ int diff() {
     return (int) ret;
 }
 
-void duration_check() {
-    //if (fork() == 0) {
-    //  signal(SIGINT, sig_handler_time);
+_Noreturn void duration_check() {
+    if (fork() == 0) {
+        signal(SIGINT, sig_handler_time);
+        signal(SIGCHLD, sig_handler_time);
+
         while (1) {
+            bool obsulate = false;
             get_act_time();
 
             perror("time_daemon");
@@ -128,28 +134,44 @@ void duration_check() {
                 printf("NO Dir");
 
             while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
-                bool obsulate = false;
+                obsulate = false;
                 FILE *fp = NULL;
                 char *fname = malloc(128);
                 snprintf(fname, 128, CLASS_PERSITENT_FILENAME"/%s", ep->d_name);
 
-                if (!( fopen(fname, "r") )) { // Open file
+                if (fname[20] == '.')
+                    continue;
+
+                if (!(fp = fopen(fname, "r") )) { // Open file
                     perror("File Unopenable");
                 }
 
-                char *line;
+                char *line = NULL;
                 size_t len;
 
                 while (getline(&line, &len, fp) != -1) {
                     printf("%s\n", line);
+
+                    if (obsulate == true) {
+                        //fclose(fp);
+                        qos_removeOneClass(line, CLASS_FW_FILENAME);
+                        qos_removeOneClass(line, fname);
+                        line[20] = 'D';
+                        system(line);
+                    }
+
                     if (obsulate == false) {
                         char *token = strtok(line, " ");
+
                         if (strcmp(token, "end:") == 0) {
                             token = strtok(NULL, " "); // Isolate time string
                             tTime.tar_t = strtotm(token); // change str to tm struct
                             if (valid(tTime.tar_t) != 2) {
                                 if (struct_greater() == 0) { // check for oldness
                                     obsulate = true;
+                                    char *s_line = malloc(256);
+                                    snprintf(s_line, 256, "%s %s", line, token);
+                                    qos_removeOneClass(s_line, fname);
                                 } else {
                                     fclose(fp);
                                     continue;
@@ -157,18 +179,11 @@ void duration_check() {
                             }
                         }
                     }
-                    if (obsulate == true) {
-                        line[20] = 'D';
-                        system(line);
-                        fclose(fp);
-                        remove(ep->d_name);
-                    }
                 }
-                fclose(fp);
+                //fclose(fp);
             }
             closedir(dp);
         }
-
             //system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
             //system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
             //system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
@@ -178,10 +193,10 @@ void duration_check() {
             //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
 
             //qos_removeAllClasses();
-            //sleep(15);
-            //sig_handler_time(SIGINT);
+            sleep(15);
 
-    //} else {
-    //    printf("Timechecker activated SIGINT to deactivate");
-    //}
+    } else {
+        printf("Timechecker activated SIGINT to deactivate");
+        tTime.check = true;
+    }
 }
