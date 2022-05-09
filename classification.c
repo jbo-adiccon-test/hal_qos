@@ -410,7 +410,7 @@ int qos_persistClass(const qos_struct *obj) {
         return -1;
     }
     line = malloc(256);
-    char *t = strtotm(obj->data->duration);
+    struct tm t = strtotm(obj->data->duration);
     snprintf(line, 256, "end: %s", obj->data->duration);
 
 }
