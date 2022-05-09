@@ -16,4 +16,5 @@ add_executable(hal_qos
 add_executable(time_cpiler
         time_test.c
         timehandler.c
-        timehandler.h)
+        timehandler.h
+        )

@@ -215,12 +215,13 @@ int main() {
     struct qos_class *test_class1 = malloc(sizeof(struct qos_class));
     struct qos_class *test_class2 = malloc(sizeof(struct qos_class));
 
+    test_class1->id = 1;
     strcpy(test_class1->chain_name, "postrouting_qos");
     strcpy(test_class1->iface_out, "erouter0");
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "17:30:30-03.05.2022");
+    strcpy(test_class1->duration, "11:45:00-09.05.2022");
 
 
     test_class2->port_dst_range_start = -1;
@@ -281,7 +282,7 @@ int exec_run(char *str) {
 int qos_addClass(const struct qos_class *param) {
     qos_struct *obj = initQosClass(param);
 
-    duration_check();
+    //duration_check(obj->data->duration);
 
     if (obj->data->alias[0] == '\0')
         snprintf(obj->data->alias, 255, "%u", obj->data->id);
@@ -292,9 +293,9 @@ int qos_addClass(const struct qos_class *param) {
     if (
             obj->data->chain_name[0] != '\0' &&
             obj->data->iface_in[0] != '\0' &&
-        obj->data->iface_out[0] != '\0' &&
-        obj->data->dscp_mark != 0 &&
-        obj->data->mac_src_addr[0] != '\0'
+            obj->data->iface_out[0] != '\0' &&
+            obj->data->dscp_mark != 0 &&
+            obj->data->mac_src_addr[0] != '\0'
             ) {
         printf("NEW mark Categ add\n");
 
@@ -379,17 +380,21 @@ int qos_addClass(const struct qos_class *param) {
         free(exec3);
         free(exec4);
         free(exec5);
-        free(concat);
+        //free(concat);
 
         /// Integrate qos-firewall file into firewall
         if (append_to_fw() == -1) {
             printf("Failed to set iptables rules via firewall");
-            return -1;
+            //return -1;
         }
 
         if (*obj->data->duration != '\0') {
             //dur_daemon(obj->data->duration);
             qos_persistClass(obj);
+            if (tTime.check != true) {
+                tTime.check = true;
+                duration_check();
+            }
         }
         //outoQosClass(obj);
     } else {
@@ -405,14 +410,25 @@ int qos_persistClass(const qos_struct *obj) {
     char *line = NULL;
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_PERSITENT_FILENAME, "w"))) {
+    char *fname = malloc(256);
+    snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
+
+    if(!remove(fname)) {
+        printf("No file %s deletable", fname);
+    }
+
+    if (!(fp = fopen(fname, "w"))) {
         printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
     line = malloc(256);
-    struct tm t = strtotm(obj->data->duration);
-    snprintf(line, 256, "end: %s", obj->data->duration);
+    //struct tm t = strtotm(obj->data->duration);
+    snprintf(line, 256, "end: %s\n", obj->data->duration);
 
+    fwrite(line, 1, strlen(line), fp);
+    fwrite(obj->str, 1, strlen(obj->str), fp);
+    fclose(fp);
+    return 0;
 }
 
 int qos_removeAllClasses() {

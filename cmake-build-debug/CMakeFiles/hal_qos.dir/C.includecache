@@ -6,23 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/limberg/hal_qos/classification.c
-stdio.h
--
-string.h
--
-stdlib.h
--
-sys/stat.h
--
-sys/wait.h
--
-errno.h
--
-classification.h
-/mnt/c/Users/limberg/hal_qos/classification.h
-
-/mnt/c/Users/limberg/hal_qos/classification.h
+/mnt/c/Users/limberg/hal-qos/classification.h
 net/if.h
 -
 arpa/inet.h
@@ -34,13 +18,13 @@ time.h
 unistd.h
 -
 timehandler.h
-/mnt/c/Users/limberg/hal_qos/timehandler.h
+/mnt/c/Users/limberg/hal-qos/timehandler.h
 
-/mnt/c/Users/limberg/hal_qos/timehandler.c
+/mnt/c/Users/limberg/hal-qos/timehandler.c
 timehandler.h
-/mnt/c/Users/limberg/hal_qos/timehandler.h
+/mnt/c/Users/limberg/hal-qos/timehandler.h
 
-/mnt/c/Users/limberg/hal_qos/timehandler.h
+/mnt/c/Users/limberg/hal-qos/timehandler.h
 time.h
 -
 syslog.h
@@ -64,5 +48,5 @@ unistd.h
 stdbool.h
 -
 classification.h
-/mnt/c/Users/limberg/hal_qos/classification.h
+/mnt/c/Users/limberg/hal-qos/classification.h
 

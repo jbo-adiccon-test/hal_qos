@@ -41,6 +41,6 @@ int diff();
 
 void duration_check();
 
-u_int8_t clean_Class()
+//u_int8_t clean_Class()
 
 #endif //TESTS_TIMEHANDLER_H
