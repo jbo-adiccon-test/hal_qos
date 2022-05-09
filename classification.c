@@ -290,6 +290,7 @@ int qos_addClass(const struct qos_class *param) {
     printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
            obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
 
+    // Check for used Data
     if (
             obj->data->chain_name[0] != '\0' &&
             obj->data->iface_in[0] != '\0' &&
@@ -392,6 +393,7 @@ int qos_addClass(const struct qos_class *param) {
             //dur_daemon(obj->data->duration);
             qos_persistClass(obj);
 
+            // If there is no checker active
             if (tTime.check != true) {
                 duration_check();
             }
@@ -399,7 +401,6 @@ int qos_addClass(const struct qos_class *param) {
         //outoQosClass(obj);
     } else {
         printf("STD QoS Class add");
-        qos_persistClass(obj);
     }
 
     return 0;
@@ -479,9 +480,10 @@ int qos_removeOneClass(char *com, char *file) {
     int posL = 0;
 
     while (getline(&line, &len, fp) != -1) {
-        if (strcmp(line, com) == 0) {
+        if (strcmp(line, com) == 0 && posL == 0) {
             line[20] = 'D';
             exec_run(line);
+            posL++;
         } else
             fwrite(line, 1, strlen(line), tp);
     }
