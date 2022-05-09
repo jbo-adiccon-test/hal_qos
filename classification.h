@@ -75,11 +75,22 @@ struct qos_class
     char alias[255];
 };
 
+/**
+ * A Type to alloc the qos class in an type
+ */
+typedef struct {
+    const struct qos_class *data;
+    size_t size;
+    char *str;
+} qos_struct;
+
 int qos_addClass(const struct qos_class *param);
+
 int qos_removeAllClasses();
+
 int qos_removeOneClass();
 
-int qos_persistClass();
+int qos_persistClass(const qos_struct *obj);
 
 
 struct interval {

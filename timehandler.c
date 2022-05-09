@@ -154,7 +154,10 @@ void duration_check(const char *fin) {
                             }
                         }
                         if (obsulate == true) {
-                            // ToDo: Fix deletion
+                            line[20] = 'D';
+                            system(line);
+                            fclose(fp);
+                            remove(ep->d_name);
                         }
                     }
                     fclose(fp);

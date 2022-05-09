@@ -191,14 +191,6 @@ static int add_mangle_rule_str(const char *rule) {
     return 0;
 }
 
-/**
- * A Type to alloc the qos class in an type
- */
-typedef struct {
-    const struct qos_class *data;
-    size_t size;
-    char *str;
-} qos_struct;
 
 /**
  * Allocates the data of qos_class
@@ -396,17 +388,30 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         if (*obj->data->duration != '\0') {
-            dur_daemon(obj->data->duration);
+            //dur_daemon(obj->data->duration);
+            qos_persistClass(obj);
         }
         //outoQosClass(obj);
     } else {
         printf("STD QoS Class add");
+        qos_persistClass(obj);
     }
 
     return 0;
 }
 
-int qos_persistClass() {
+int qos_persistClass(const qos_struct *obj) {
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+
+    if (!(fp = fopen(CLASS_PERSITENT_FILENAME, "w"))) {
+        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        return -1;
+    }
+    line = malloc(256);
+    char *t = strtotm(obj->data->duration);
+    snprintf(line, 256, "end: %s", obj->data->duration);
 
 }
 

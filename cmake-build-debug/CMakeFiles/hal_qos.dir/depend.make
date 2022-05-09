@@ -3,10 +3,12 @@
 
 CMakeFiles/hal_qos.dir/classification.c.o: ../classification.c
 CMakeFiles/hal_qos.dir/classification.c.o: ../classification.h
+CMakeFiles/hal_qos.dir/classification.c.o: ../timehandler.h
 
 CMakeFiles/hal_qos.dir/queue.c.o: ../queue.c
 CMakeFiles/hal_qos.dir/queue.c.o: ../queue.h
 
+CMakeFiles/hal_qos.dir/timehandler.c.o: ../classification.h
 CMakeFiles/hal_qos.dir/timehandler.c.o: ../timehandler.c
 CMakeFiles/hal_qos.dir/timehandler.c.o: ../timehandler.h
 

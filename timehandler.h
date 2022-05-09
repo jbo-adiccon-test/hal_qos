@@ -22,7 +22,7 @@
 struct t_time {
     struct tm act_t;
     struct tm tar_t;
-    char *file_name;
+    bool check;
 } tTime;
 
 void sig_handler_time(int sig);
