@@ -422,8 +422,8 @@ int qos_persistClass(const qos_struct *obj) {
 
     fwrite(line, 1, strlen(line), fp);
     strcpy(line, "");
-    snprintf(line, 256, "id: %i", obj->data->id);
-    fwrite(line );
+    snprintf(line, 256, "id: %i\n", obj->data->id);
+    fwrite(line, 1, strlen(line), fp);
     fwrite(obj->str, 1, strlen(obj->str), fp);
     fclose(fp);
     return 0;

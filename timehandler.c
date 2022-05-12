@@ -147,6 +147,7 @@ void duration_check() {
 
         while (1) {
             bool obsulate = false;
+            uint id;
             get_act_time();
 
             perror("time_daemon");
@@ -171,7 +172,6 @@ void duration_check() {
                 }
 
                 char *line = NULL;
-                uint id;
                 size_t len;
 
                 while (getline(&line, &len, fp) != -1) {
@@ -215,7 +215,7 @@ void duration_check() {
             }
             closedir(dp);
             if (obsulate)
-                reset_dmcli(obj.id);
+                reset_dmcli(id);
             sleep(15);
         }
             //qos_removeAllClasses();
