@@ -140,7 +140,7 @@ void reset_dmcli(uint id) {
     system(str);
 }
 
-_Noreturn void duration_check(struct qos_class obj) {
+void duration_check() {
     if (fork() == 0) {
         signal(SIGINT, sig_handler_time);
         signal(SIGCHLD, sig_handler_time);
@@ -171,6 +171,7 @@ _Noreturn void duration_check(struct qos_class obj) {
                 }
 
                 char *line = NULL;
+                uint id;
                 size_t len;
 
                 while (getline(&line, &len, fp) != -1) {
@@ -192,7 +193,6 @@ _Noreturn void duration_check(struct qos_class obj) {
                             tTime.tar_t = strtotm(token); // change str to tm struct
                             if (valid(tTime.tar_t) != 2) {
                                 if (struct_greater() != 0) { // check for oldness
-                                    obsulate = true;
                                     char *s_line = malloc(256);
                                     snprintf(s_line, 256, "%s %s", line, token);
                                     qos_removeOneClass(s_line, fname);
@@ -201,6 +201,13 @@ _Noreturn void duration_check(struct qos_class obj) {
                                     continue;
                                 }
                             }
+                        } else if (strcmp(token, "id:") == 0) {
+                            token = strtok(NULL, " ");
+                            id = (uint) atoi(token);
+                            obsulate = true;
+                            char *s_line = malloc(256);
+                            snprintf(s_line, 256, "%s %s", line, token);
+                            qos_removeOneClass(s_line, fname);
                         }
                     }
                 }

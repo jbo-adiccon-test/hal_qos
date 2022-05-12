@@ -284,9 +284,6 @@ int qos_addClass(const struct qos_class *param) {
 
     //duration_check(obj->data->duration);
 
-    if (obj->data->alias[0] == '\0')
-        snprintf(obj->data->alias, 255, "%u", obj->data->id);
-
     printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
            obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
 
@@ -306,7 +303,7 @@ int qos_addClass(const struct qos_class *param) {
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
-        int ex1 = 0, ex2 = 0, ex3 = 0, ex4 = 0, ex5 = 0;
+        int  ex4 = 0, ex5 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
 
         /// Set iptables command in exec
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
@@ -316,7 +313,7 @@ int qos_addClass(const struct qos_class *param) {
         printf("%s \n", exec1);
         if (check_firewall_double(exec1) == EXIT_SUCCESS) {
             system(exec1);
-            ex1 = 1;
+            //ex1 = 1;
         }
 
         char *exec2 = (char *) malloc(255);
@@ -326,7 +323,7 @@ int qos_addClass(const struct qos_class *param) {
         printf("%s \n", exec2);
         if (check_firewall_double(exec2) == EXIT_SUCCESS) {
             system(exec2);
-            ex2 = 1;
+            //ex2 = 1;
         }
 
         char *exec3 = (char *) malloc(255);
@@ -336,7 +333,7 @@ int qos_addClass(const struct qos_class *param) {
         printf("%s \n", exec3);
         if (check_firewall_double(exec3) == EXIT_SUCCESS) {
             system(exec3);
-            ex3 = 1;
+            //ex3 = 1;
         }
 
         char *exec4 = (char *) malloc(255);
@@ -392,7 +389,7 @@ int qos_addClass(const struct qos_class *param) {
 
             // If there is no checker active
             if (tTime.check != true) {
-                duration_check(obj);
+                duration_check();
             }
         }
         //outoQosClass(obj);
@@ -424,6 +421,9 @@ int qos_persistClass(const qos_struct *obj) {
     snprintf(line, 256, "end: %s\n", obj->data->duration);
 
     fwrite(line, 1, strlen(line), fp);
+    strcpy(line, "");
+    snprintf(line, 256, "id: %i", obj->data->id);
+    fwrite(line );
     fwrite(obj->str, 1, strlen(obj->str), fp);
     fclose(fp);
     return 0;

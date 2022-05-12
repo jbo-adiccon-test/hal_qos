@@ -41,7 +41,7 @@ struct tm strtotm(const char *str);
 
 int diff();
 
-_Noreturn void duration_check(qos_class obj);
+void duration_check();
 
 //u_int8_t clean_Class()
 
