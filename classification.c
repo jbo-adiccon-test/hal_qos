@@ -13,13 +13,9 @@
 #include "classification.h"
 
 #define CLASS_FW_FILENAME "/tmp/qos_rules.sh"
-//#define CLASS_FW_FILENAME "/home/artemisvenari/Codes/Work/qos_rules.sh"
 
 #define CLASS_FW_RELOAD_FILENAME "/etc/utopia/service.d/firewall_log_handle.sh"
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
-//#define CLASS_FW_RELOAD_FILENAME "/home/artemisvenari/Codes/Work/firewall_log_handle.sh"
-
-//#define CLASS_DATA_ALLOC "/home/artemisvenari/Codes/Work/structure.dat"
 
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
 
@@ -32,37 +28,7 @@ void sig_handler(int signum) {
     }
 }
 
-void dur_daemon(const char *fin) {
-    //runtime t;
-    int range = atoi(fin);
 
-    //if (!time(&t.cur)){
-    //    perror("TIME fail");
-    //}
-
-    if (fork() == 0) {
-        perror("time_daemon");
-
-        signal(SIGINT, sig_handler);
-
-
-        //time(&t.end);
-        //t.diff_t = difftime(t.cur, t.end);
-        sleep(range);
-        system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
-        system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
-        system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
-        system("dmcli eRT setv Device.QoS.Classification.1.IfaceOut string \"\"");
-        system("dmcli eRT setv Device.QoS.Classification.1.Duration string \"\"");
-        system("dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string \"\"");
-        //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
-
-        //qos_removeAllClasses();
-        sig_handler(SIGINT);
-    } else {
-        printf("Duration timer started with %i sec", range);
-    }
-}
 
 /*
 enum class_table
@@ -72,6 +38,11 @@ enum class_table
 };
 */
 
+/**
+ * A Function to check exsistence of string in firewall file
+ * @param comp (char *)
+ * @return EXIT_SUCCESS, EXIT_FAILURE
+ */
 static int check_firewall_double(char *comp) {
     FILE *fp;
     char *line = NULL;
@@ -120,36 +91,6 @@ static int append_to_fw() {
 }
 
 /**
- * Runs iptables delete commands from qos-rules
- * @return SUCCESS 0 FAIL -1
- */
-/*
-static int revert_rules(){
-   FILE *fp = NULL;
-   size_t len = 0;
-   char *line = NULL;
-   /// deleting rule before adding to avoid duplicates
-   if (!(fp = fopen(CLASS_FW_FILENAME, "a+")))
-   {
-       printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
-       return -1;
-   }
-   /// Check file permissions
-   if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
-       printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
-   while (getline(&line, &len, fp) != -1) {
-       /// run command in shell
-       line[20] = 'D';
-       if (system(line)) {
-           printf("Failed to execute [%s]\n", line);
-       }
-   }
-   fclose(fp);
-   return 0;
-}
-*/
-
-/**
  * Here the magic takes place. The function deletes all classes for qos. After that the firewall file is opened.
  * The files will be checked and terminates the func if data has no integrity(should be empty if there is only one instance).
  * Write the file and run command
@@ -176,16 +117,7 @@ static int add_mangle_rule_str(const char *rule) {
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
-    //fprintf(fp, "%s", rule);
     fwrite(rule, 1, strlen(rule), fp);
-
-
-    /// run command in shell
-    //if (system(exec))
-    //{
-    //    printf("Failed to execute [%s]\n", exec);
-    //}
-
     fclose(fp);
 
     return 0;
@@ -223,12 +155,6 @@ int main() {
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
     strcpy(test_class1->duration, "16:00:00-09.05.2022");
 
-
-    test_class2->port_dst_range_start = -1;
-    test_class2->port_dst_range_end = -1;
-    test_class2->port_src_range_start = -1;
-    test_class2->port_src_range_end = -1;
-    test_class2->protocol = -1;
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
     strcpy(test_class2->iface_out, "erouter2");
@@ -247,6 +173,11 @@ int main() {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A simple, quiet indicator for run a command status after execution
+ * @param str
+ * @return
+ */
 int exec_run(char *str) {
     if (system(str))
         return EXIT_SUCCESS;
@@ -375,12 +306,11 @@ int qos_addClass(const struct qos_class *param) {
         free(exec3);
         free(exec4);
         free(exec5);
-        //free(concat);
 
         /// Integrate qos-firewall file into firewall
         if (append_to_fw() == -1) {
             printf("Failed to set iptables rules via firewall");
-            //return -1;
+            return -1;
         }
 
         if (*obj->data->duration != '\0') {
@@ -400,6 +330,11 @@ int qos_addClass(const struct qos_class *param) {
     return 0;
 }
 
+/**
+ * Manifest a classification for a longer time.
+ * @param obj
+ * @return
+ */
 int qos_persistClass(const qos_struct *obj) {
     FILE *fp;
     char *line = NULL;
@@ -413,22 +348,29 @@ int qos_persistClass(const qos_struct *obj) {
     }
 
     if (!(fp = fopen(fname, "w"))) {
-        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        printf("Cannot open file "CLASS_PERSITENT_FILENAME": %s\n", strerror(errno));
         return -1;
     }
     line = malloc(256);
     //struct tm t = strtotm(obj->data->duration);
     snprintf(line, 256, "end: %s\n", obj->data->duration);
 
+    // Add the duration string to file
     fwrite(line, 1, strlen(line), fp);
     strcpy(line, "");
+    // Add the id of classification to file
     snprintf(line, 256, "id: %i\n", obj->data->id);
     fwrite(line, 1, strlen(line), fp);
+    // Add the firewall string
     fwrite(obj->str, 1, strlen(obj->str), fp);
     fclose(fp);
     return 0;
 }
 
+/**
+ * Reverse the complete classification structure off dmcli
+ * @return
+ */
 int qos_removeAllClasses() {
     FILE *fp;
     char *line = NULL;
@@ -461,6 +403,12 @@ int qos_removeAllClasses() {
     return 0;
 }
 
+/**
+ * Search and destroy on spec line on file and delete it
+ * @param com
+ * @param file
+ * @return
+ */
 int qos_removeOneClass(char *com, char *file) {
     FILE *fp;
     FILE *tp = (fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")) ? fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")
@@ -477,12 +425,19 @@ int qos_removeOneClass(char *com, char *file) {
     int posL = 0;
 
     while (getline(&line, &len, fp) != -1) {
+        // If there is a iptables command reverse it
         if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
             exec_run(line);
             posL++;
-        } else if(line[0] == 'e' && strcmp(line, com) == 0)
+        }
+        // If there is a end: ...
+        else if(line[0] == 'e' && strcmp(line, com) == 0)
             printf("END: line");
+        // If there is a id: ...
+        else if (line[1] == 'd' && strcmp(line, com) == 0)
+            printf("ID: line");
+        // It have to be there so write out
         else
             fwrite(line, 1, strlen(line), tp);
     }
@@ -495,7 +450,7 @@ int qos_removeOneClass(char *com, char *file) {
         return -1;
     }
 
-
+    // Make tmp to perm file to have a new actual file
     rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file);
 
     return 0;
