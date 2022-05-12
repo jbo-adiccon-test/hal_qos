@@ -116,8 +116,32 @@ int diff() {
     return (int) ret;
 }
 
-_Noreturn void duration_check() {
-    //if (fork() == 0) {
+void reset_dmcli(uint id) {
+    char* str = malloc(512);
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
+    system(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
+    system(str);
+}
+
+_Noreturn void duration_check(struct qos_class obj) {
+    if (fork() == 0) {
         signal(SIGINT, sig_handler_time);
         signal(SIGCHLD, sig_handler_time);
 
@@ -183,20 +207,13 @@ _Noreturn void duration_check() {
                 //fclose(fp);
             }
             closedir(dp);
+            if (obsulate)
+                reset_dmcli(obj.id);
             sleep(15);
         }
-            //system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
-            //system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
-            //system("dmcli eRT setv Device.QoS.Classification.1.IfaceIn string \"\"");
-            //system("dmcli eRT setv Device.QoS.Classification.1.IfaceOut string \"\"");
-            //system("dmcli eRT setv Device.QoS.Classification.1.Duration string \"\"");
-            //system("dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string \"\"");
-            //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
-
             //qos_removeAllClasses();
-
-    //} else {
-    //    printf("Timechecker activated SIGINT to deactivate");
-    //    tTime.check = true;
-    //}
+    } else {
+        printf("Timechecker activated SIGINT to deactivate");
+        tTime.check = true;
+    }
 }

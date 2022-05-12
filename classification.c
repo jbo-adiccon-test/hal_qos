@@ -392,7 +392,7 @@ int qos_addClass(const struct qos_class *param) {
 
             // If there is no checker active
             if (tTime.check != true) {
-                duration_check();
+                duration_check(obj);
             }
         }
         //outoQosClass(obj);
