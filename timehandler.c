@@ -138,6 +138,7 @@ void reset_dmcli(uint id) {
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     system(str);
+    free(str);
 }
 
 void duration_check() {
@@ -161,8 +162,8 @@ void duration_check() {
             while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
                 obsulate = false;
                 FILE *fp = NULL;
-                char *fname = malloc(128);
-                snprintf(fname, 128, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+                char *fname = malloc(512);
+                snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
 
                 if (fname[20] == '.')
                     continue;
@@ -209,13 +210,15 @@ void duration_check() {
                             snprintf(s_line, 256, "%s %s", line, token);
                             qos_removeOneClass(s_line, fname);
                         }
+                        free(fname);
                     }
                 }
-                //fclose(fp);
+                fclose(fp);
             }
             closedir(dp);
             if (obsulate)
                 reset_dmcli(id);
+
             sleep(15);
         }
             //qos_removeAllClasses();
