@@ -162,7 +162,7 @@ void duration_check() {
                 obsulate = false;
                 FILE *fp = NULL;
                 char *fname = malloc(128);
-                snprintf(fname, 128, CLASS_PERSITENT_FILENAME"/%s", ep->d_name);
+                snprintf(fname, 128, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
 
                 if (fname[20] == '.')
                     continue;

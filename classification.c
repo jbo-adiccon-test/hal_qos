@@ -403,7 +403,7 @@ int qos_addClass(const struct qos_class *param) {
 int qos_persistClass(const qos_struct *obj) {
     FILE *fp;
     char *line = NULL;
-    size_t len = 0;
+    //size_t len = 0;
 
     char *fname = malloc(256);
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
@@ -479,10 +479,10 @@ int qos_removeOneClass(char *com, char *file) {
     while (getline(&line, &len, fp) != -1) {
         if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
-            //exec_run(line);
+            exec_run(line);
             posL++;
         } else if(line[0] == 'e' && strcmp(line, com) == 0)
-            printf("");
+            printf("END: line");
         else
             fwrite(line, 1, strlen(line), tp);
     }
