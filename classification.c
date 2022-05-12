@@ -365,9 +365,6 @@ int qos_addClass(const struct qos_class *param) {
         char *concat = malloc((int) l + 5);
 
         if (
-                ex1 == 1 &&
-                ex2 == 1 &&
-                ex3 == 1 &&
                 ex4 == 1 &&
                 ex5 == 1
                 ) {
@@ -480,11 +477,13 @@ int qos_removeOneClass(char *com, char *file) {
     int posL = 0;
 
     while (getline(&line, &len, fp) != -1) {
-        if (strcmp(line, com) == 0 && posL == 0) {
+        if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
-            exec_run(line);
+            //exec_run(line);
             posL++;
-        } else
+        } else if(line[0] == 'e' && strcmp(line, com) == 0)
+            printf("");
+        else
             fwrite(line, 1, strlen(line), tp);
     }
 

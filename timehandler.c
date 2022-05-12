@@ -117,7 +117,7 @@ int diff() {
 }
 
 _Noreturn void duration_check() {
-    if (fork() == 0) {
+    //if (fork() == 0) {
         signal(SIGINT, sig_handler_time);
         signal(SIGCHLD, sig_handler_time);
 
@@ -156,8 +156,8 @@ _Noreturn void duration_check() {
                         //fclose(fp);
                         qos_removeOneClass(line, CLASS_FW_FILENAME);
                         qos_removeOneClass(line, fname);
-                        line[20] = 'D';
-                        system(line);
+                        //line[20] = 'D';
+                        //system(line);
                     }
 
                     if (obsulate == false) {
@@ -167,7 +167,7 @@ _Noreturn void duration_check() {
                             token = strtok(NULL, " "); // Isolate time string
                             tTime.tar_t = strtotm(token); // change str to tm struct
                             if (valid(tTime.tar_t) != 2) {
-                                if (struct_greater() == 0) { // check for oldness
+                                if (struct_greater() != 0) { // check for oldness
                                     obsulate = true;
                                     char *s_line = malloc(256);
                                     snprintf(s_line, 256, "%s %s", line, token);
@@ -183,6 +183,7 @@ _Noreturn void duration_check() {
                 //fclose(fp);
             }
             closedir(dp);
+            sleep(15);
         }
             //system("dmcli eRT setv Device.QoS.Classification.1.Enable bool false");
             //system("dmcli eRT setv Device.QoS.Classification.1.ChainName string \"\"");
@@ -193,10 +194,9 @@ _Noreturn void duration_check() {
             //system("dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 0");
 
             //qos_removeAllClasses();
-            sleep(15);
 
-    } else {
-        printf("Timechecker activated SIGINT to deactivate");
-        tTime.check = true;
-    }
+    //} else {
+    //    printf("Timechecker activated SIGINT to deactivate");
+    //    tTime.check = true;
+    //}
 }
