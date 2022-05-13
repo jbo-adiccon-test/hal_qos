@@ -45,8 +45,6 @@ struct qos_class
     char iface_in[IFNAMSIZ];
     // Output interface
     char iface_out[IFNAMSIZ];
-    // Destination IP
-    char ip_dst_addr[INET6_ADDRSTRLEN];
     // Source mac
     char mac_src_addr[CLASS_MAC_SIZE];
 
