@@ -218,8 +218,8 @@ int qos_addClass(const struct qos_class *param) {
 
     //duration_check(obj->data->duration);
 
-    printf("Parameters: %s, %s --> %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
-           obj->data->ip_dst_addr, obj->data->traffic_class, obj->data->dscp_mark);
+    printf("Parameters: %s, %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
+           obj->data->traffic_class, obj->data->dscp_mark);
 
     // Check for used Data
     if (
