@@ -19,6 +19,8 @@
 
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
 
+
+/*
 void sig_handler(int signum) {
     pid_t pid = getpid();
     printf("Signal: %u", signum);
@@ -27,7 +29,7 @@ void sig_handler(int signum) {
         kill(pid, SIGINT);
     }
 }
-
+*/
 
 
 /*
@@ -117,6 +119,7 @@ static int add_mangle_rule_str(const char *rule) {
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
+    printf("Add lines to firewall: %s", rule);
     fwrite(rule, 1, strlen(rule), fp);
     fclose(fp);
 
