@@ -70,13 +70,4 @@ int qos_removeOneClass(char *com, char *file);
 
 int qos_persistClass(const qos_struct *obj);
 
-
-struct interval {
-    time_t cur, end;
-    double diff_t;
-};
-typedef struct interval runtime;
-
-
-void dur_daemon(const char *fin);
 #endif
