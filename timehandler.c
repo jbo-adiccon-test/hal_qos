@@ -49,7 +49,7 @@ u_int8_t struct_greater() {
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
         time_t act = mktime(&tTime.act_t);
         time_t tar = mktime(&tTime.tar_t);
-        if (difftime(act, tar) > 0)
+        if (difftime(act, tar) < 0)
             return 0;
         else
             return 1;
@@ -145,8 +145,7 @@ void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
     tTime.check = true;
 
-    if (daemon(0,0) != -1)
-        return;
+    daemon(0,0);
 
     //if (fork() == 0) {
         signal(SIGINT, sig_handler_time);
@@ -193,30 +192,32 @@ void duration_check() {
                     }
 
                     if (obsulate == false) {
-                        char *token = strtok(line, " ");
+                        char *tmpstr = malloc(256);
+                        snprintf(tmpstr, 256, "%s",line);
+                        char *token = strtok(tmpstr, " ");
 
                         if (strcmp(token, "end:") == 0) {
                             token = strtok(NULL, " "); // Isolate time string
                             tTime.tar_t = strtotm(token); // change str to tm struct
                             if (valid(tTime.tar_t) != 2) {
                                 if (struct_greater() != 0) { // check for oldness
-                                    char *s_line = malloc(256);
-                                    snprintf(s_line, 256, "%s %s", line, token);
-                                    qos_removeOneClass(s_line, fname);
-                                } else {
-                                    fclose(fp);
+                                    //char *s_line = malloc(256);
+                                    //snprintf(s_line, 256, "%s %s", line, token);
+                                    qos_removeOneClass(line, fname);
+                                } else
                                     continue;
-                                }
                             }
                         } else if (strcmp(token, "id:") == 0) {
-                            token = strtok(NULL, " ");
-                            id = (uint) atoi(token);
-                            obsulate = true;
-                            char *s_line = malloc(256);
-                            snprintf(s_line, 256, "%s %s", line, token);
-                            qos_removeOneClass(s_line, fname);
+                            if (struct_greater() != 0) {
+                                token = strtok(NULL, " ");
+                                id = (uint) atoi(token);
+                                obsulate = true;
+                                //char *s_line = malloc(256);
+                                //snprintf(s_line, 256, "%s %s", line, token);
+                                qos_removeOneClass(line, fname);
+                            }
                         }
-                        free(fname);
+                        free(tmpstr);
                     }
                 }
                 fclose(fp);

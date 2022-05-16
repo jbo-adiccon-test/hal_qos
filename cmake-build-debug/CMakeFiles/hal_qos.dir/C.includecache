@@ -6,22 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/mnt/c/Users/limberg/hal-qos/classification.c
-stdio.h
--
-string.h
--
-stdlib.h
--
-sys/stat.h
--
-sys/wait.h
--
-errno.h
--
-classification.h
-/mnt/c/Users/limberg/hal-qos/classification.h
-
 /mnt/c/Users/limberg/hal-qos/classification.h
 net/if.h
 -

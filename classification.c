@@ -59,6 +59,7 @@ static int append_to_fw() {
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
+    return 0;
 
     if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+"))) {
         printf("Cannot open file "CLASS_FW_RELOAD_FILENAME": %s\n", strerror(errno));
@@ -141,7 +142,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "16:00:00-09.05.2022");
+    strcpy(test_class1->duration, "16:30:00-16.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -287,6 +288,16 @@ int qos_addClass(const struct qos_class *param) {
             snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
             obj->str = concat;
             add_mangle_rule_str(obj->str);
+
+            if (*obj->data->duration != '\0') {
+                //dur_daemon(obj->data->duration);
+                qos_persistClass(obj);
+
+                // If there is no checker active
+                if (tTime.check != true) {
+                    duration_check();
+                }
+            }
         }
 
         free(exec1);
@@ -301,16 +312,6 @@ int qos_addClass(const struct qos_class *param) {
             return -1;
         }
 
-        if (*obj->data->duration != '\0') {
-            //dur_daemon(obj->data->duration);
-            qos_persistClass(obj);
-
-            // If there is no checker active
-            if (tTime.check != true) {
-                duration_check();
-            }
-        }
-        //outoQosClass(obj);
     } else {
         printf("STD QoS Class add");
     }
@@ -399,8 +400,7 @@ int qos_removeAllClasses() {
  */
 int qos_removeOneClass(char *com, char *file) {
     FILE *fp;
-    FILE *tp = (fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")) ? fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w")
-                                                                  : NULL;
+    FILE *tp = fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w");
     char *line = NULL;
 
     size_t len = 0;
@@ -416,7 +416,7 @@ int qos_removeOneClass(char *com, char *file) {
         // If there is a iptables command reverse it
         if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
-            exec_run(line);
+            //exec_run(line);
             posL++;
         }
         // If there is a end: ...
@@ -439,7 +439,10 @@ int qos_removeOneClass(char *com, char *file) {
     }
 
     // Make tmp to perm file to have a new actual file
-    rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file);
+    if (!(rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file))) {
+        printf("Rename Fail");
+        return -1;
+    }
 
     return 0;
 }
