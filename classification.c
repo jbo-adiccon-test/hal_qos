@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-//#include <limits.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <errno.h>
 
 #include "classification.h"
@@ -18,19 +16,6 @@
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
 
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
-
-
-/*
-void sig_handler(int signum) {
-    pid_t pid = getpid();
-    printf("Signal: %u", signum);
-    if (signum == SIGINT) {
-        pid = getpid();
-        kill(pid, SIGINT);
-    }
-}
-*/
-
 
 /*
 enum class_table

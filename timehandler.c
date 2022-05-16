@@ -142,7 +142,13 @@ void reset_dmcli(uint id) {
 }
 
 void duration_check() {
-    if (fork() == 0) {
+    printf("Timechecker activated SIGINT to deactivate");
+    tTime.check = true;
+
+    if (daemon(0,0) != -1)
+        return;
+
+    //if (fork() == 0) {
         signal(SIGINT, sig_handler_time);
         signal(SIGCHLD, sig_handler_time);
 
@@ -222,8 +228,6 @@ void duration_check() {
             sleep(15);
         }
             //qos_removeAllClasses();
-    } else {
-        printf("Timechecker activated SIGINT to deactivate");
-        tTime.check = true;
-    }
+    //} else {
+          //}
 }
