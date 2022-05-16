@@ -59,7 +59,6 @@ static int append_to_fw() {
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
-    return 0;
 
     if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+"))) {
         printf("Cannot open file "CLASS_FW_RELOAD_FILENAME": %s\n", strerror(errno));
