@@ -10,10 +10,10 @@ void sig_handler_time(int signum) {
 
     printf("Signal: %u", signum);
 
-    if (signum == SIGINT) {
-        kill(ppid, SIGINT);
-    } else if (signum == SIGCHLD) {
-        kill(pid, SIGCHLD);
+    if (signum == SIGUSR1) {
+        kill(ppid, SIGUSR1);
+    } else if (signum == SIGUSR2) {
+        kill(pid, SIGUSR2);
     } else if (signum == SIGKILL) {
         kill(pid, SIGKILL);
         kill(ppid, SIGKILL);
@@ -149,8 +149,8 @@ void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
 
     //if (fork() == 0) {
-    signal(SIGINT, sig_handler_time);
-    signal(SIGCHLD, sig_handler_time);
+    signal(SIGUSR1, sig_handler_time);
+    signal(SIGUSR2, sig_handler_time);
     signal(SIGKILL, sig_handler_time);
 
     while (1) {
@@ -190,7 +190,6 @@ void duration_check() {
                 if (obsulate == true) {
                     qos_removeOneClass(line, CLASS_FW_FILENAME);
                     qos_removeOneClass(line, fname);
-                    reset_dmcli(id);
                     log_loc("SUCCESS: Remove Classification / Reset Dmcli");
                 }
 
@@ -223,6 +222,8 @@ void duration_check() {
                     free(tmpstr);
                 }
             }
+            if (obsulate == true)
+                reset_dmcli(id);
             fclose(fp);
         }
         closedir(dp);

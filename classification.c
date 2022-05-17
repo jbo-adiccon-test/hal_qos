@@ -418,7 +418,10 @@ int qos_removeOneClass(char *com, char *file) {
         // If there is a iptables command reverse it
         if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
-            exec_run(line);
+            if (system(line) != 0) {
+                log_loc("FAIL: System rev Call fail: ");
+                log_loc(line);
+            }
             posL++;
         }
         // If there is a end: ...
