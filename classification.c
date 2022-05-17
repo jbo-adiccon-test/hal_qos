@@ -16,6 +16,7 @@
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
 
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
+#define LOG_FILE "/usr/ccsp/qos/log.txt"
 
 /*
 enum class_table
@@ -61,7 +62,7 @@ static int append_to_fw() {
     size_t len = 0;
 
     if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+"))) {
-        printf("Cannot open file "CLASS_FW_RELOAD_FILENAME": %s\n", strerror(errno));
+        log("Cannot open file Utopia "CLASS_FW_RELOAD_FILENAME);
         return -1;
     }
 
@@ -104,7 +105,8 @@ static int add_mangle_rule_str(const char *rule) {
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
-    printf("Add lines to firewall: %s", rule);
+    log("Add lines to firewall");
+    //log(rule);
     fwrite(rule, 1, strlen(rule), fp);
     fclose(fp);
 
@@ -141,7 +143,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "12:30:00-16.05.2022");
+    strcpy(test_class1->duration, "14:30:00-16.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -203,8 +205,7 @@ int qos_addClass(const struct qos_class *param) {
 
     //duration_check(obj->data->duration);
 
-    printf("Parameters: %s, %s, CLASS: %d, MARK: %d", obj->data->alias, obj->data->mac_src_addr,
-           obj->data->traffic_class, obj->data->dscp_mark);
+    log("SUCCESS: Entry AddClass");
 
     // Check for used Data
     if (
@@ -214,7 +215,7 @@ int qos_addClass(const struct qos_class *param) {
             obj->data->dscp_mark != 0 &&
             obj->data->mac_src_addr[0] != '\0'
             ) {
-        printf("NEW mark Categ add\n");
+        log("SUCCESS: All Classification Comps are there");
 
         /// Delete all classes before
         //revert_rules();
@@ -229,7 +230,6 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
-        printf("%s \n", exec1);
         if (check_firewall_double(exec1) == EXIT_SUCCESS) {
             system(exec1);
             //ex1 = 1;
@@ -239,7 +239,6 @@ int qos_addClass(const struct qos_class *param) {
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
-        printf("%s \n", exec2);
         if (check_firewall_double(exec2) == EXIT_SUCCESS) {
             system(exec2);
             //ex2 = 1;
@@ -249,7 +248,6 @@ int qos_addClass(const struct qos_class *param) {
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
-        printf("%s \n", exec3);
         if (check_firewall_double(exec3) == EXIT_SUCCESS) {
             system(exec3);
             //ex3 = 1;
@@ -260,7 +258,6 @@ int qos_addClass(const struct qos_class *param) {
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
-        printf("%s \n", exec4);
         if (check_firewall_double(exec4) == EXIT_SUCCESS) {
             system(exec4);
             ex4 = 1;
@@ -271,7 +268,6 @@ int qos_addClass(const struct qos_class *param) {
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
-        printf("%s \n", exec5);
         if (check_firewall_double(exec5) == EXIT_SUCCESS) {
             system(exec5);
             ex5 = 1;
@@ -284,16 +280,19 @@ int qos_addClass(const struct qos_class *param) {
                 ex4 == 1 &&
                 ex5 == 1
                 ) {
+            log("SUCCESS: All rules are ready to add...");
             snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
             obj->str = concat;
             add_mangle_rule_str(obj->str);
 
             if (*obj->data->duration != '\0') {
                 //dur_daemon(obj->data->duration);
+                log("SUCCCESS: Make Class persistent");
                 qos_persistClass(obj);
 
                 // If there is no checker active
                 if (tTime.check != true) {
+                    log("SUCCESS: Duration checker start");
                     duration_check();
                 }
             }
@@ -304,15 +303,16 @@ int qos_addClass(const struct qos_class *param) {
         free(exec3);
         free(exec4);
         free(exec5);
+        log("SUCCESS: Make execs free");
 
         /// Integrate qos-firewall file into firewall
         if (append_to_fw() == -1) {
-            printf("Failed to set iptables rules via firewall");
+            log("FAIL: set iptables rules via firewall");
             return -1;
         }
 
     } else {
-        printf("STD QoS Class add");
+        log("FAIL: Not right comps");
     }
 
     return 0;
@@ -332,11 +332,11 @@ int qos_persistClass(const qos_struct *obj) {
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
 
     if(!remove(fname)) {
-        printf("No file %s deletable", fname);
+        log("FAIL: No file deletable \"class_%i.dat\"");
     }
 
     if (!(fp = fopen(fname, "w"))) {
-        printf("Cannot open file "CLASS_PERSITENT_FILENAME": %s\n", strerror(errno));
+        log("Cannot open file "CLASS_PERSITENT_FILENAME);
         return -1;
     }
     line = malloc(256);
@@ -351,6 +351,9 @@ int qos_persistClass(const qos_struct *obj) {
     fwrite(line, 1, strlen(line), fp);
     // Add the firewall string
     fwrite(obj->str, 1, strlen(obj->str), fp);
+
+    log("SUCCESS: Make duration in class_%i persistent");
+
     fclose(fp);
     return 0;
 }
@@ -365,7 +368,7 @@ int qos_removeAllClasses() {
     size_t len = 0;
 
     if (!(fp = fopen(CLASS_FW_FILENAME, "r"))) {
-        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        log("FAIL: Open file "CLASS_FW_FILENAME);
         return -1;
     }
 
@@ -377,14 +380,14 @@ int qos_removeAllClasses() {
     fclose(fp);
 
     if (!(fp = fopen(CLASS_FW_FILENAME, "w"))) {
-        printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
+        log("FAIL: Open file after Rewind "CLASS_FW_FILENAME);
         return -1;
     }
     putc(' ', fp);
     fclose(fp);
 
     if (remove(CLASS_FW_FILENAME) == -1) {
-        printf("Failed to remove "CLASS_FW_FILENAME": %s", strerror(errno));
+        log("FAIL: Remove EXIT -1 "CLASS_FW_FILENAME);
         return -1;
     }
 
@@ -405,7 +408,7 @@ int qos_removeOneClass(char *com, char *file) {
     size_t len = 0;
 
     if (!(fp = fopen(file, "r"))) {
-        printf("Cannot open file %s: %s\n", file, strerror(errno));
+        log("Cannot open file");
         return -1;
     }
 
@@ -433,15 +436,31 @@ int qos_removeOneClass(char *com, char *file) {
     fclose(tp);
 
     if (remove(file) == -1) {
-        printf("Failed to remove %s: %s", file, strerror(errno));
         return -1;
     }
 
     // Make tmp to perm file to have a new actual file
     if (!(rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file))) {
-        printf("Rename Fail");
         return -1;
     }
 
+    log("SUCCESS: Remove one ExecLine");
+
     return 0;
+}
+
+void log(char *str) {
+    FILE *fp = fopen(LOG_FILE, "a");
+
+    if (fp == NULL) {
+        fp = fopen(LOG_FILE, "w");
+    }
+
+    if (fp != NULL) {
+        char *logentry = malloc(strlen(str) + 2);
+        snprintf(logentry, strlen(str) + 2, "%s\n", str);
+        fwrite(logentry, 1, strlen(logentry), fp);
+
+        fclose(fp);
+    }
 }

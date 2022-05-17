@@ -144,97 +144,88 @@ void reset_dmcli(uint id) {
 void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
 
-    //switch (fork()) {
-    //    case -1:
-    //        break;
-    //    case 0:
-            if (fork() == 0) {
-                signal(SIGINT, sig_handler_time);
-                signal(SIGCHLD, sig_handler_time);
+    //if (fork() == 0) {
+    signal(SIGINT, sig_handler_time);
+    signal(SIGCHLD, sig_handler_time);
 
-                while (1) {
-                    bool obsulate = false;
-                    uint id;
-                    get_act_time();
+    while (1) {
+        bool obsulate = false;
+        uint id;
+        get_act_time();
 
-                    perror("time_daemon");
+        DIR *dp;
+        struct dirent *ep;
 
-                    DIR *dp;
-                    struct dirent *ep;
+        if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
+            log("FAIL: No class DIR in /usr/ccsp/qos/class/");
 
-                    if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-                        printf("NO Dir");
+        while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+            obsulate = false;
+            FILE *fp = NULL;
+            char *fname = malloc(512);
+            snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
 
-                    while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
-                        obsulate = false;
-                        FILE *fp = NULL;
-                        char *fname = malloc(512);
-                        snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+            if (fname[20] == '.')
+                continue;
 
-                        if (fname[20] == '.')
-                            continue;
-
-                        if (!(fp = fopen(fname, "r"))) { // Open file
-                            perror("File Unopenable");
-                        }
-
-                        char *line = NULL;
-                        size_t len;
-
-                        while (getline(&line, &len, fp) != -1) {
-                            printf("%s\n", line);
-
-                            if (obsulate == true) {
-                                //fclose(fp);
-                                qos_removeOneClass(line, CLASS_FW_FILENAME);
-                                qos_removeOneClass(line, fname);
-                                //line[20] = 'D';
-                                //system(line);
-                                reset_dmcli(id);
-                            }
-
-                            if (obsulate == false) {
-                                char *tmpstr = malloc(256);
-                                snprintf(tmpstr, 256, "%s", line);
-                                char *token = strtok(tmpstr, " ");
-
-                                if (strcmp(token, "end:") == 0) {
-                                    token = strtok(NULL, " "); // Isolate time string
-                                    tTime.tar_t = strtotm(token); // change str to tm struct
-                                    if (valid(tTime.tar_t) != 2) {
-                                        if (struct_greater() != 0) { // check for oldness
-                                            //char *s_line = malloc(256);
-                                            //snprintf(s_line, 256, "%s %s", line, token);
-                                            qos_removeOneClass(line, fname);
-                                        } else
-                                            continue;
-                                    }
-                                } else if (strcmp(token, "id:") == 0) {
-                                    if (struct_greater() != 0) {
-                                        token = strtok(NULL, " ");
-                                        id = (uint) atoi(token);
-                                        obsulate = true;
-                                        //char *s_line = malloc(256);
-                                        //snprintf(s_line, 256, "%s %s", line, token);
-                                        qos_removeOneClass(line, fname);
-                                    }
-                                }
-                                free(tmpstr);
-                            }
-                        }
-                        fclose(fp);
-                    }
-                    closedir(dp);
-
-
-                    sleep(15);
-                }
-                //qos_removeAllClasses();
+            if (!(fp = fopen(fname, "r"))) { // Open file
+                perror("File Unopenable");
             }
-    //        break;
-    //    default:
-            tTime.check = true;
-            printf("Time check active");
-    //        return;
+
+            log("SUCCESS: Read Dir and Files:");
+            log(fname);
+
+            char *line = NULL;
+            size_t len;
+
+            while (getline(&line, &len, fp) != -1) {
+
+                log("INFO: Check line");
+
+                if (obsulate == true) {
+                    qos_removeOneClass(line, CLASS_FW_FILENAME);
+                    qos_removeOneClass(line, fname);
+                    reset_dmcli(id);
+                    log("SUCCESS: Remove Classification / Reset Dmcli");
+                }
+
+                if (obsulate == false) {
+                    char *tmpstr = malloc(256);
+                    snprintf(tmpstr, 256, "%s", line);
+                    char *token = strtok(tmpstr, " ");
+
+                    if (strcmp(token, "end:") == 0) {
+                        token = strtok(NULL, " "); // Isolate time string
+                        tTime.tar_t = strtotm(token); // change str to tm struct
+                        if (valid(tTime.tar_t) != 2) {
+                            if (struct_greater() != 0) { // check for oldness
+                                qos_removeOneClass(line, fname);
+                                log("REMOVE: Line:");
+                                log(line);
+                            } else
+                                continue;
+                        }
+                    } else if (strcmp(token, "id:") == 0) {
+                        if (struct_greater() != 0) {
+                            token = strtok(NULL, " ");
+                            id = (uint) atoi(token);
+                            obsulate = true;
+                            qos_removeOneClass(line, fname);
+                            log("REMOVE: Line:");
+                            log(line);
+                        }
+                    }
+                    free(tmpstr);
+                }
+            }
+            fclose(fp);
+        }
+        closedir(dp);
+
+        sleep(15);
+    }
+    //} else {
+    tTime.check = true;
+    log("SUCCESS: Time check active");
     //}
 }
