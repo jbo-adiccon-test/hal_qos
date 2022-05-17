@@ -190,6 +190,7 @@ void duration_check() {
                                 qos_removeOneClass(line, fname);
                                 //line[20] = 'D';
                                 //system(line);
+                                reset_dmcli(id);
                             }
 
                             if (obsulate == false) {
@@ -224,8 +225,7 @@ void duration_check() {
                         fclose(fp);
                     }
                     closedir(dp);
-                    if (obsulate)
-                        reset_dmcli(id);
+
 
                     sleep(15);
                 }
