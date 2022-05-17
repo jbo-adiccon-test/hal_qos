@@ -10,13 +10,14 @@ void sig_handler_time(int signum) {
 
     printf("Signal: %u", signum);
 
-    if (signum == SIGKILL) {
-        kill(pid, SIGINT);
+    if (signum == SIGINT) {
+        kill(ppid, SIGINT);
     } else if (signum == SIGCHLD) {
-        kill(ppid, SIGCHLD);
+        kill(pid, SIGCHLD);
     } else if (signum == SIGKILL) {
         kill(pid, SIGKILL);
         kill(ppid, SIGKILL);
+        return;
     }
 }
 
