@@ -144,10 +144,10 @@ void reset_dmcli(uint id) {
 void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
 
-    switch (fork()) {
-        case -1:
-            break;
-        case 0:
+    //switch (fork()) {
+    //    case -1:
+    //        break;
+    //    case 0:
             if (fork() == 0) {
                 signal(SIGINT, sig_handler_time);
                 signal(SIGCHLD, sig_handler_time);
@@ -231,10 +231,10 @@ void duration_check() {
                 }
                 //qos_removeAllClasses();
             }
-            break;
-        default:
+    //        break;
+    //    default:
             tTime.check = true;
             printf("Time check active");
-            return;
-    }
+    //        return;
+    //}
 }
