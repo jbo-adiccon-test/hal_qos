@@ -70,5 +70,5 @@ int qos_removeOneClass(char *com, char *file);
 
 int qos_persistClass(const qos_struct *obj);
 
-void log(char *str);
+void log_loc(char *str);
 #endif

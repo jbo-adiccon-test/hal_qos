@@ -62,7 +62,7 @@ static int append_to_fw() {
     size_t len = 0;
 
     if (!(fp = fopen(CLASS_FW_RELOAD_FILENAME, "a+"))) {
-        log("Cannot open file Utopia "CLASS_FW_RELOAD_FILENAME);
+        log_loc("Cannot open file Utopia "CLASS_FW_RELOAD_FILENAME);
         return -1;
     }
 
@@ -105,7 +105,7 @@ static int add_mangle_rule_str(const char *rule) {
     if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
         printf("Cannot change "CLASS_FW_FILENAME" permissions: %s\n", strerror(errno));
 
-    log("Add lines to firewall");
+    log_loc("Add lines to firewall");
     //log(rule);
     fwrite(rule, 1, strlen(rule), fp);
     fclose(fp);
@@ -205,7 +205,7 @@ int qos_addClass(const struct qos_class *param) {
 
     //duration_check(obj->data->duration);
 
-    log("SUCCESS: Entry AddClass");
+    log_loc("SUCCESS: Entry AddClass");
 
     // Check for used Data
     if (
@@ -215,7 +215,7 @@ int qos_addClass(const struct qos_class *param) {
             obj->data->dscp_mark != 0 &&
             obj->data->mac_src_addr[0] != '\0'
             ) {
-        log("SUCCESS: All Classification Comps are there");
+        log_loc("SUCCESS: All Classification Comps are there");
 
         /// Delete all classes before
         //revert_rules();
@@ -280,19 +280,19 @@ int qos_addClass(const struct qos_class *param) {
                 ex4 == 1 &&
                 ex5 == 1
                 ) {
-            log("SUCCESS: All rules are ready to add...");
+            log_loc("SUCCESS: All rules are ready to add...");
             snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
             obj->str = concat;
             add_mangle_rule_str(obj->str);
 
             if (*obj->data->duration != '\0') {
                 //dur_daemon(obj->data->duration);
-                log("SUCCCESS: Make Class persistent");
+                log_loc("SUCCCESS: Make Class persistent");
                 qos_persistClass(obj);
 
                 // If there is no checker active
                 if (tTime.check != true) {
-                    log("SUCCESS: Duration checker start");
+                    log_loc("SUCCESS: Duration checker start");
                     duration_check();
                 }
             }
@@ -303,16 +303,16 @@ int qos_addClass(const struct qos_class *param) {
         free(exec3);
         free(exec4);
         free(exec5);
-        log("SUCCESS: Make execs free");
+        log_loc("SUCCESS: Make execs free");
 
         /// Integrate qos-firewall file into firewall
         if (append_to_fw() == -1) {
-            log("FAIL: set iptables rules via firewall");
+            log_loc("FAIL: set iptables rules via firewall");
             return -1;
         }
 
     } else {
-        log("FAIL: Not right comps");
+        log_loc("FAIL: Not right comps");
     }
 
     return 0;
@@ -332,11 +332,11 @@ int qos_persistClass(const qos_struct *obj) {
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
 
     if(!remove(fname)) {
-        log("FAIL: No file deletable \"class_%i.dat\"");
+        log_loc("FAIL: No file deletable \"class_%i.dat\"");
     }
 
     if (!(fp = fopen(fname, "w"))) {
-        log("Cannot open file "CLASS_PERSITENT_FILENAME);
+        log_loc("Cannot open file "CLASS_PERSITENT_FILENAME);
         return -1;
     }
     line = malloc(256);
@@ -352,7 +352,7 @@ int qos_persistClass(const qos_struct *obj) {
     // Add the firewall string
     fwrite(obj->str, 1, strlen(obj->str), fp);
 
-    log("SUCCESS: Make duration in class_%i persistent");
+    log_loc("SUCCESS: Make duration in class_%i persistent");
 
     fclose(fp);
     return 0;
@@ -368,7 +368,7 @@ int qos_removeAllClasses() {
     size_t len = 0;
 
     if (!(fp = fopen(CLASS_FW_FILENAME, "r"))) {
-        log("FAIL: Open file "CLASS_FW_FILENAME);
+        log_loc("FAIL: Open file "CLASS_FW_FILENAME);
         return -1;
     }
 
@@ -380,14 +380,14 @@ int qos_removeAllClasses() {
     fclose(fp);
 
     if (!(fp = fopen(CLASS_FW_FILENAME, "w"))) {
-        log("FAIL: Open file after Rewind "CLASS_FW_FILENAME);
+        log_loc("FAIL: Open file after Rewind "CLASS_FW_FILENAME);
         return -1;
     }
     putc(' ', fp);
     fclose(fp);
 
     if (remove(CLASS_FW_FILENAME) == -1) {
-        log("FAIL: Remove EXIT -1 "CLASS_FW_FILENAME);
+        log_loc("FAIL: Remove EXIT -1 "CLASS_FW_FILENAME);
         return -1;
     }
 
@@ -408,7 +408,7 @@ int qos_removeOneClass(char *com, char *file) {
     size_t len = 0;
 
     if (!(fp = fopen(file, "r"))) {
-        log("Cannot open file");
+        log_loc("Cannot open file");
         return -1;
     }
 
@@ -444,12 +444,12 @@ int qos_removeOneClass(char *com, char *file) {
         return -1;
     }
 
-    log("SUCCESS: Remove one ExecLine");
+    log_loc("SUCCESS: Remove one ExecLine");
 
     return 0;
 }
 
-void log(char *str) {
+void log_loc(char *str) {
     FILE *fp = fopen(LOG_FILE, "a");
 
     if (fp == NULL) {

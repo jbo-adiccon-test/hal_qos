@@ -10,10 +10,13 @@ void sig_handler_time(int signum) {
 
     printf("Signal: %u", signum);
 
-    if (signum == SIGINT) {
+    if (signum == SIGKILL) {
         kill(pid, SIGINT);
     } else if (signum == SIGCHLD) {
-        kill(ppid, SIGUSR1);
+        kill(ppid, SIGCHLD);
+    } else if (signum == SIGKILL) {
+        kill(pid, SIGKILL);
+        kill(ppid, SIGKILL);
     }
 }
 
@@ -147,6 +150,7 @@ void duration_check() {
     //if (fork() == 0) {
     signal(SIGINT, sig_handler_time);
     signal(SIGCHLD, sig_handler_time);
+    signal(SIGKILL, sig_handler_time);
 
     while (1) {
         bool obsulate = false;
@@ -157,7 +161,7 @@ void duration_check() {
         struct dirent *ep;
 
         if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-            log("FAIL: No class DIR in /usr/ccsp/qos/class/");
+            log_loc("FAIL: No class DIR in /usr/ccsp/qos/class/");
 
         while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
             obsulate = false;
@@ -172,21 +176,21 @@ void duration_check() {
                 perror("File Unopenable");
             }
 
-            log("SUCCESS: Read Dir and Files:");
-            log(fname);
+            log_loc("SUCCESS: Read Dir and Files:");
+            log_loc(fname);
 
             char *line = NULL;
             size_t len;
 
             while (getline(&line, &len, fp) != -1) {
 
-                log("INFO: Check line");
+                log_loc("INFO: Check line");
 
                 if (obsulate == true) {
                     qos_removeOneClass(line, CLASS_FW_FILENAME);
                     qos_removeOneClass(line, fname);
                     reset_dmcli(id);
-                    log("SUCCESS: Remove Classification / Reset Dmcli");
+                    log_loc("SUCCESS: Remove Classification / Reset Dmcli");
                 }
 
                 if (obsulate == false) {
@@ -200,8 +204,8 @@ void duration_check() {
                         if (valid(tTime.tar_t) != 2) {
                             if (struct_greater() != 0) { // check for oldness
                                 qos_removeOneClass(line, fname);
-                                log("REMOVE: Line:");
-                                log(line);
+                                log_loc("REMOVE: Line:");
+                                log_loc(line);
                             } else
                                 continue;
                         }
@@ -211,8 +215,8 @@ void duration_check() {
                             id = (uint) atoi(token);
                             obsulate = true;
                             qos_removeOneClass(line, fname);
-                            log("REMOVE: Line:");
-                            log(line);
+                            log_loc("REMOVE: Line:");
+                            log_loc(line);
                         }
                     }
                     free(tmpstr);
@@ -226,6 +230,6 @@ void duration_check() {
     }
     //} else {
     tTime.check = true;
-    log("SUCCESS: Time check active");
+    log_loc("SUCCESS: Time check active");
     //}
 }
