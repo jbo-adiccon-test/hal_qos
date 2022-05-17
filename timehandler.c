@@ -155,7 +155,7 @@ void duration_check() {
 
     while (1) {
         bool obsulate = false;
-        uint id;
+        uint id = 0;
         get_act_time();
 
         DIR *dp;
