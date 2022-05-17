@@ -148,7 +148,7 @@ void reset_dmcli(uint id) {
 void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
 
-    //if (fork() == 0) {
+    if (fork() == 0) {
     signal(SIGUSR1, sig_handler_time);
     signal(SIGUSR2, sig_handler_time);
     signal(SIGKILL, sig_handler_time);
@@ -177,13 +177,16 @@ void duration_check() {
                 perror("File Unopenable");
             }
 
-            log_loc("SUCCESS: Read Dir and Files:");
+            log_loc("SUCCESS: Check run");
             log_loc(fname);
 
-            char *line = NULL;
+            char *d_line = NULL;
             size_t len;
 
-            while (getline(&line, &len, fp) != -1) {
+            while (getline(&d_line, &len, fp) != -1) {
+
+                char *line = malloc(strlen(d_line));
+                snprintf(line, strlen(d_line), "%s",d_line);
 
                 log_loc("INFO: Check line");
 
@@ -230,8 +233,8 @@ void duration_check() {
 
         sleep(15);
     }
-    //} else {
-    tTime.check = true;
-    log_loc("SUCCESS: Time check active");
-    //}
+    } else {
+        tTime.check = true;
+        log_loc("SUCCESS: Time check active");
+    }
 }
