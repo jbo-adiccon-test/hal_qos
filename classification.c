@@ -143,7 +143,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "14:30:00-16.05.2022");
+    strcpy(test_class1->duration, "12:40:00-20.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -155,7 +155,7 @@ int main() {
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
-    qos_removeAllClasses();
+    //qos_removeAllClasses();
 
     if (qos_addClass(test_class2) == -1)
         return EXIT_FAILURE;
@@ -203,8 +203,6 @@ int exec_run(char *str) {
 int qos_addClass(const struct qos_class *param) {
     qos_struct *obj = initQosClass(param);
 
-    //duration_check(obj->data->duration);
-
     log_loc("SUCCESS: Entry AddClass");
 
     // Check for used Data
@@ -223,7 +221,7 @@ int qos_addClass(const struct qos_class *param) {
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
-        int  ex4 = 0, ex5 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
+        int ex4 = 0, ex5 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
 
         /// Set iptables command in exec
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
@@ -276,25 +274,26 @@ int qos_addClass(const struct qos_class *param) {
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
         char *concat = malloc((int) l + 5);
 
+        log_loc("SUCCESS: All rules are ready to add...");
+        snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+        obj->str = concat;
+
         if (
                 ex4 == 1 &&
                 ex5 == 1
                 ) {
-            log_loc("SUCCESS: All rules are ready to add...");
-            snprintf(concat, 600, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
-            obj->str = concat;
             add_mangle_rule_str(obj->str);
+        }
 
-            if (*obj->data->duration != '\0') {
-                //dur_daemon(obj->data->duration);
-                log_loc("SUCCCESS: Make Class persistent");
-                qos_persistClass(obj);
+        if (*obj->data->duration != '\0') {
+            //dur_daemon(obj->data->duration);
+            log_loc("SUCCCESS: Make Class persistent");
+            qos_persistClass(obj);
 
-                // If there is no checker active
-                if (tTime.check != true) {
-                    log_loc("SUCCESS: Duration checker start");
-                    duration_check();
-                }
+            // If there is no checker active
+            if (tTime.check != true) {
+                log_loc("SUCCESS: Duration checker start");
+                duration_check();
             }
         }
 
@@ -331,7 +330,7 @@ int qos_persistClass(const qos_struct *obj) {
     char *fname = malloc(256);
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
 
-    if(!remove(fname)) {
+    if (!remove(fname)) {
         log_loc("FAIL: No file deletable \"class_%i.dat\"");
     }
 
@@ -415,8 +414,10 @@ int qos_removeOneClass(char *com, char *file) {
     int posL = 0;
 
     while (getline(&line, &len, fp) != -1) {
+        char *tmpstr = malloc(strlen(line));
+        snprintf(tmpstr, strlen(line), "%s", line);
         // If there is a iptables command reverse it
-        if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
+        if (strcmp(tmpstr, com) == 0 && posL == 0 && strstr(line, "iptables")) {
             line[20] = 'D';
             if (system(line) != 0) {
                 log_loc("FAIL: System rev Call fail: ");
@@ -424,13 +425,13 @@ int qos_removeOneClass(char *com, char *file) {
             }
             posL++;
         }
-        // If there is a end: ...
-        else if(line[0] == 'e' && strcmp(line, com) == 0)
+            // If there is a end: ...
+        else if (line[0] == 'e' && strcmp(tmpstr, com) == 0)
             printf("END: line");
-        // If there is a id: ...
-        else if (line[1] == 'd' && strcmp(line, com) == 0)
+            // If there is a id: ...
+        else if (line[1] == 'd' && strcmp(tmpstr, com) == 0)
             printf("ID: line");
-        // It have to be there so write out
+            // It have to be there so write out
         else
             fwrite(line, 1, strlen(line), tp);
     }
@@ -439,15 +440,14 @@ int qos_removeOneClass(char *com, char *file) {
     fclose(tp);
 
     if (remove(file) == -1) {
-        return -1;
+        log_loc("FAIL: Remove one Class - remove file");
     }
 
     // Make tmp to perm file to have a new actual file
     if (!(rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file))) {
-        return -1;
+        log_loc("FAIL: tmp -> persist data");
     }
 
-    log_loc("SUCCESS: Remove one ExecLine");
 
     return 0;
 }
