@@ -124,38 +124,38 @@ void reset_dmcli(uint id) {
     char *str = malloc(512);
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
     if (system(str) != 0)
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
     if (system(str) != 0)
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
     if (system(str))
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
     if (system(str) != 0)
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
     if (system(str))
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
     if (system(str))
-        printf("");
+        printf(" ");
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     if (system(str))
-        printf("");
+        printf(" ");
     free(str);
 }
 
 void duration_check() {
     printf("Timechecker activated SIGINT to deactivate");
 
-    if (fork() == 0) {
+    //if (fork() == 0) {
         signal(SIGUSR1, sig_handler_time);
         signal(SIGUSR2, sig_handler_time);
         signal(SIGKILL, sig_handler_time);
@@ -240,8 +240,8 @@ void duration_check() {
 
             sleep(15);
         }
-    } else {
+    //} else {
         tTime.check = true;
         log_loc("SUCCESS: Time check active");
-    }
+    //}
 }
