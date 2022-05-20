@@ -339,7 +339,7 @@ int qos_persistClass(const qos_struct *obj) {
         return -1;
     }
     line = malloc(256);
-    //struct tm t = strtotm(obj->data->duration);
+
     snprintf(line, 256, "end: %s\n", obj->data->duration);
 
     // Add the duration string to file
@@ -417,20 +417,20 @@ int qos_removeOneClass(char *com, char *file) {
         char *tmpstr = malloc(strlen(line));
         snprintf(tmpstr, strlen(line), "%s", line);
         // If there is a iptables command reverse it
-        if (strcmp(tmpstr, com) == 0 && posL == 0 && strstr(line, "iptables")) {
-            line[20] = 'D';
-            if (system(line) != 0) {
+        if (strcmp(tmpstr, com) == 0 && posL == 0 && strstr(tmpstr, "iptables")) {
+            tmpstr[20] = 'D';
+            if (system(tmpstr) != 0) {
                 log_loc("FAIL: System rev Call fail: ");
-                log_loc(line);
+                log_loc(tmpstr);
             }
             posL++;
         }
             // If there is a end: ...
         else if (line[0] == 'e' && strcmp(tmpstr, com) == 0)
-            printf("END: line");
+            log_loc("SUCCESS: end line delete");
             // If there is a id: ...
         else if (line[1] == 'd' && strcmp(tmpstr, com) == 0)
-            printf("ID: line");
+            log_loc("SUCCESS: id line delete");
             // It have to be there so write out
         else
             fwrite(line, 1, strlen(line), tp);
