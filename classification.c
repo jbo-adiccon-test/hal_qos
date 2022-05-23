@@ -331,7 +331,7 @@ int qos_persistClass(const qos_struct *obj) {
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
 
     if (!remove(fname)) {
-        log_loc("FAIL: No file deletable \"class_%i.dat\"");
+        log_loc("FAIL: persistClass No file deletable \"class_%i.dat\"");
     }
 
     if (!(fp = fopen(fname, "w"))) {
@@ -407,7 +407,7 @@ int qos_removeOneClass(char *com, char *file) {
     size_t len = 0;
 
     if (!(fp = fopen(file, "r"))) {
-        log_loc("FAIL: Open file:");
+        log_loc("FAIL: removeOneClass Open file:");
         log_loc(file);
         return -1;
     }
@@ -421,21 +421,21 @@ int qos_removeOneClass(char *com, char *file) {
         if (strcmp(tmpstr, com) == 0 && posL == 0 && strstr(tmpstr, "iptables")) {
             tmpstr[20] = 'D';
             if (system(tmpstr) != 0) {
-                log_loc("FAIL: System rev Call fail: ");
+                log_loc("FAIL: System iptables delete Call fail: ");
                 log_loc(tmpstr);
             }
             posL++;
         }
             // If there is a end: ...
         else if (line[0] == 'e' && strcmp(tmpstr, com) == 0)
-            log_loc("SUCCESS: end line delete");
+            log_loc("SUCCESS: end line over tmp delete");
             // If there is a id: ...
         else if (line[1] == 'd' && strcmp(tmpstr, com) == 0)
-            log_loc("SUCCESS: id line delete");
+            log_loc("SUCCESS: id line over tmp delete");
             // It have to be there so write out
         else {
             fwrite(line, 1, strlen(line), tp);
-            log_loc("SUCCESS: write Line");
+            log_loc("SUCCESS: tmp.txt write Line");
             log_loc(line);
         }
     }
@@ -450,7 +450,7 @@ int qos_removeOneClass(char *com, char *file) {
 
     // Make tmp to perm file to have a new actual file
     if (!(rename("/usr/ccsp/qos/class/.tmp.txt", file))) {
-        log_loc("FAIL: tmp -> persist data");
+        log_loc("FAIL: rename tmp -> data");
         log_loc(file);
         return -1;
     }
@@ -467,8 +467,9 @@ void log_loc(char *str) {
     }
 
     if (fp != NULL) {
-        char *logentry = malloc(strlen(str) + 2);
-        snprintf(logentry, strlen(str) + 2, "%s\n", str);
+        char *logentry = malloc(strlen(str) + 256);
+        get_act_time();
+        snprintf(logentry, strlen(str) + 256, "%s: %s\n", get_str_time(tTime.act_t), str);
         fwrite(logentry, 1, strlen(logentry), fp);
 
         fclose(fp);

@@ -150,6 +150,7 @@ void reset_dmcli(uint id) {
     if (system(str))
         printf(" ");
     free(str);
+    log_loc("INFO: reset Dmcli finished");
 }
 
 void duration_check() {
@@ -181,11 +182,11 @@ void duration_check() {
                     continue;
 
                 if (!(fp = fopen(fname, "r"))) { // Open file
-                    perror("File Unopenable");
+                    log_loc("FAIL: Fork open fname");
+                } else {
+                    log_loc("SUCCESS: Fork :");
+                    log_loc(fname);
                 }
-
-                log_loc("SUCCESS: Check run");
-                log_loc(fname);
 
                 char *d_line = NULL;
                 size_t len;
@@ -195,20 +196,18 @@ void duration_check() {
                     char *line = malloc(strlen(d_line));
                     snprintf(line, strlen(d_line), "%s", d_line);
 
-                    log_loc("INFO: Check line");
-
                     if (obsulate == true) {
                         fclose(fp);
                         int ret1 = qos_removeOneClass(line, CLASS_FW_FILENAME);
                         int ret2 = qos_removeOneClass(line, fname);
                         if(!(fopen(fname,"r"))) {
-                            log_loc("FAIL: file not openable:");
+                            log_loc("FAIL: Fork file not openable:");
                             log_loc(fname);
                         }
                         if (ret1 == 0 && ret2 == 0)
-                            log_loc("SUCCESS: Remove Classification");
+                            log_loc("SUCCESS: Fork Remove Classification");
                         else
-                            log_loc("FAIL: Remove Classification");
+                            log_loc("FAIL: Fork Remove Classification");
                     }
 
                     if (obsulate == false) {
@@ -219,12 +218,15 @@ void duration_check() {
                         if (strcmp(token, "end:") == 0) {
                             token = strtok(NULL, " "); // Isolate time string
                             tTime.tar_t = strtotm(token);// change str to tm struct
-                            log_loc("Got Time:");
+
+                            log_loc("INFO: Fork Time for end Check:");
                             log_loc(get_str_time(tTime.act_t));
+                            log_loc(get_str_time(tTime.tar_t));
+
                             if (valid(tTime.tar_t) != 2) {
                                 if (struct_greater() != 0) { // check for oldness
                                     qos_removeOneClass(line, fname);
-                                    log_loc("INFO: Remove Line:");
+                                    log_loc("INFO: Fork Remove Line:");
                                     log_loc(line);
                                 } else
                                     continue;
@@ -235,7 +237,7 @@ void duration_check() {
                                 id = (uint) atoi(token);
                                 obsulate = true;
                                 qos_removeOneClass(line, fname);
-                                log_loc("INFO: Remove Line:");
+                                log_loc("INFO: Fork Remove Line:");
                                 log_loc(line);
                             }
                         }
@@ -248,7 +250,7 @@ void duration_check() {
             }
             closedir(dp);
 
-            log_loc("INFO: Fin check Period & Sleep");
+            log_loc("INFO: Fork Fin check Period & Sleep");
             sleep(15);
         }
     } else {
