@@ -36,7 +36,7 @@ static int check_firewall_double(char *comp) {
     char *line = NULL;
     size_t len = 0;
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+"))) {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a"))) {
         printf("Cannot open file "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }
@@ -96,7 +96,7 @@ static int add_mangle_rule_str(const char *rule) {
     }
 
     /// deleting rule before adding to avoid duplicates
-    if (!(fp = fopen(CLASS_FW_FILENAME, "a+"))) {
+    if (!(fp = fopen(CLASS_FW_FILENAME, "a"))) {
         printf("Cannot open "CLASS_FW_FILENAME": %s\n", strerror(errno));
         return -1;
     }

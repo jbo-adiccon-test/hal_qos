@@ -53,10 +53,13 @@ u_int8_t struct_greater() {
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
         time_t act = mktime(&tTime.act_t);
         time_t tar = mktime(&tTime.tar_t);
-        if (difftime(act, tar) < 0)
+        if (difftime(tar, act) <= 0) {
+            log_loc("INFO: Time run out");
             return 0;
-        else
+        } else {
+            log_loc("INFO: Time left, no deletion");
             return 1;
+        }
     }
     return 2;
 }
