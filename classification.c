@@ -407,7 +407,8 @@ int qos_removeOneClass(char *com, char *file) {
     size_t len = 0;
 
     if (!(fp = fopen(file, "r"))) {
-        log_loc("Cannot open file");
+        log_loc("FAIL: Open file:");
+        log_loc(file);
         return -1;
     }
 
@@ -432,8 +433,11 @@ int qos_removeOneClass(char *com, char *file) {
         else if (line[1] == 'd' && strcmp(tmpstr, com) == 0)
             log_loc("SUCCESS: id line delete");
             // It have to be there so write out
-        else
+        else {
             fwrite(line, 1, strlen(line), tp);
+            log_loc("SUCCESS: write Line");
+            log_loc(line);
+        }
     }
 
     fclose(fp);
@@ -441,11 +445,14 @@ int qos_removeOneClass(char *com, char *file) {
 
     if (remove(file) == -1) {
         log_loc("FAIL: Remove one Class - remove file");
+        log_loc(file);
     }
 
     // Make tmp to perm file to have a new actual file
-    if (!(rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file))) {
+    if (!(rename("/usr/ccsp/qos/class/.tmp.txt", file))) {
         log_loc("FAIL: tmp -> persist data");
+        log_loc(file);
+        return -1;
     }
 
 

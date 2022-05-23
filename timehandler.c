@@ -198,9 +198,17 @@ void duration_check() {
                     log_loc("INFO: Check line");
 
                     if (obsulate == true) {
-                        qos_removeOneClass(line, CLASS_FW_FILENAME);
-                        qos_removeOneClass(line, fname);
-                        log_loc("SUCCESS: Remove Classification / Reset Dmcli");
+                        fclose(fp);
+                        int ret1 = qos_removeOneClass(line, CLASS_FW_FILENAME);
+                        int ret2 = qos_removeOneClass(line, fname);
+                        if(!(fopen(fname,"r"))) {
+                            log_loc("FAIL: file not openable:");
+                            log_loc(fname);
+                        }
+                        if (ret1 == 0 && ret2 == 0)
+                            log_loc("SUCCESS: Remove Classification");
+                        else
+                            log_loc("FAIL: Remove Classification");
                     }
 
                     if (obsulate == false) {
@@ -210,11 +218,13 @@ void duration_check() {
 
                         if (strcmp(token, "end:") == 0) {
                             token = strtok(NULL, " "); // Isolate time string
-                            tTime.tar_t = strtotm(token); // change str to tm struct
+                            tTime.tar_t = strtotm(token);// change str to tm struct
+                            log_loc("Got Time:");
+                            log_loc(get_str_time(tTime.act_t));
                             if (valid(tTime.tar_t) != 2) {
                                 if (struct_greater() != 0) { // check for oldness
                                     qos_removeOneClass(line, fname);
-                                    log_loc("REMOVE: Line:");
+                                    log_loc("INFO: Remove Line:");
                                     log_loc(line);
                                 } else
                                     continue;
@@ -225,7 +235,7 @@ void duration_check() {
                                 id = (uint) atoi(token);
                                 obsulate = true;
                                 qos_removeOneClass(line, fname);
-                                log_loc("REMOVE: Line:");
+                                log_loc("INFO: Remove Line:");
                                 log_loc(line);
                             }
                         }
@@ -238,6 +248,7 @@ void duration_check() {
             }
             closedir(dp);
 
+            log_loc("INFO: Fin check Period & Sleep");
             sleep(15);
         }
     } else {
