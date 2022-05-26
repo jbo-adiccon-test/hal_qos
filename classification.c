@@ -46,7 +46,7 @@ int file_contain(char *comp, FILE *fp) {
     size_t len = 0;
 
     if (fp == NULL)
-        return EXIT_SUCCESS;
+        return -2;
 
     fseek(fp, 0, SEEK_SET);
 
@@ -283,13 +283,15 @@ int main() {
     struct qos_class *test_class1 = malloc(sizeof(struct qos_class));
     struct qos_class *test_class2 = malloc(sizeof(struct qos_class));
 
+    qos_removeAllClasses();
+
     test_class1->id = 1;
     strcpy(test_class1->chain_name, "postrouting_qos");
     strcpy(test_class1->iface_out, "erouter0");
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "06:15:59-26.05.2022");
+    strcpy(test_class1->duration, "17:15:59-26.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -365,9 +367,13 @@ int qos_addClass(const struct qos_class *param) {
 
         FILE *fp = file_open(CLASS_FW_FILENAME, "r");
 
+        if (fp == NULL) {
+            file_touch(CLASS_FW_FILENAME);
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
+
         if (file_contain(exec1, fp) == EXIT_SUCCESS) {
-            system(exec1);
-            //ex1 = 1;
+            exec_run(exec1);
         }
 
         char *exec2 = (char *) malloc(255);
@@ -375,8 +381,7 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(exec2, fp) == EXIT_SUCCESS) {
-            system(exec2);
-            //ex2 = 1;
+            exec_run(exec2);
         }
 
         char *exec3 = (char *) malloc(255);
@@ -384,8 +389,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(exec3, fp) == EXIT_SUCCESS) {
-            system(exec3);
-            //ex3 = 1;
+            exec_run(exec3);
         }
 
         char *exec4 = (char *) malloc(255);
@@ -440,10 +444,18 @@ int qos_addClass(const struct qos_class *param) {
         log_loc("SUCCESS: AddClass Make execs free");
 
         /// Integrate qos-firewall file into firewall
-        if (file_write(CLASS_FW_RELOAD_FILENAME,"a", add_n(CLASS_FW_FILENAME)) == EXIT_FAILURE) {
-            log_loc("FAIL: AddClass set iptables rules via firewall");
-            return EXIT_FAILURE;
-        }
+        fp = file_open(CLASS_FW_RELOAD_FILENAME, "r");
+        if (file_contain(CLASS_FW_FILENAME, fp) == EXIT_SUCCESS) {
+            file_close(fp);
+            if (file_write(CLASS_FW_RELOAD_FILENAME, "a", add_n(CLASS_FW_FILENAME)) == EXIT_FAILURE) {
+                log_loc("FAIL: AddClass set iptables rules via firewall");
+                return EXIT_FAILURE;
+            } else
+                log_loc("SUCCESS: AddClass Firewall Utopia entry done");
+        } else
+            log_loc("INFO: AddClass Firewall is set up before");
+
+
 
     } else {
         log_loc("FAIL: AddClass Not right comps");
