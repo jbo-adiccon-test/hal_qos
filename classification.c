@@ -355,6 +355,13 @@ int qos_addClass(const struct qos_class *param) {
             ) {
         log_loc("SUCCESS: AddClass All Classification Comps are there");
 
+        FILE *fp = file_open(CLASS_FW_FILENAME, "r");
+
+        if (fp == NULL) {
+            file_touch(CLASS_FW_FILENAME);
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
+
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
         int  ex4 = 0, ex5 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
@@ -364,13 +371,6 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
-
-        FILE *fp = file_open(CLASS_FW_FILENAME, "r");
-
-        if (fp == NULL) {
-            file_touch(CLASS_FW_FILENAME);
-            fp = file_open(CLASS_FW_FILENAME, "r");
-        }
 
         if (file_contain(exec1, fp) == EXIT_SUCCESS) {
             exec_run(exec1);
@@ -414,14 +414,15 @@ int qos_addClass(const struct qos_class *param) {
 
         ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
         char *concat = malloc((int) l + 5);
+        snprintf(concat, l + 6, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+        obj->str = concat;
 
         if (
                 ex4 == 1 &&
                 ex5 == 1
                 ) {
             log_loc("SUCCESS: AddClass All rules are ready to add...");
-            snprintf(concat, l + 6, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
-            obj->str = concat;
+
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
 
@@ -490,93 +491,36 @@ int qos_DurationClass(const qos_struct *obj) {
  * @return
  */
 int qos_removeAllClasses() {
-    FILE *fp;
-    char *line = NULL;
-    size_t len = 0;
-
-    if (!(fp = fopen(CLASS_FW_FILENAME, "r"))) {
-        log_loc("FAIL: removeAllClasses Open file "CLASS_FW_FILENAME);
-        return -1;
+    if (revert_iptables(CLASS_FW_FILENAME) == EXIT_FAILURE) {
+        log_loc("FAIL: removeAllClasses revert Iptables failed");
     }
 
-    while (getline(&line, &len, fp) != -1) {
-        line[20] = 'D';
-        system(line);
-    }
-    rewind(fp);
-    fclose(fp);
+    if (file_touch(CLASS_FW_FILENAME) == EXIT_SUCCESS) {
+        log_loc("SUCCESS: removeAllClasses Empty file touch");
+    } else {
+        log_loc("FAIL: removeAllClasses Empty file touch");
 
-    if (!(fp = fopen(CLASS_FW_FILENAME, "w"))) {
-        log_loc("FAIL: RemoveAllClasses Open file after Rewind "CLASS_FW_FILENAME);
-        return EXIT_FAILURE;
     }
-    putc(' ', fp);
-    fclose(fp);
 
-    if (remove(CLASS_FW_FILENAME) == -1) {
-        log_loc("FAIL: RemoveAllClasses Remove EXIT -1 "CLASS_FW_FILENAME);
-        return EXIT_FAILURE;
+    DIR *dp;
+    struct dirent *ep;
+
+    if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
+        log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
+
+    while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+        char *fname = malloc(256);
+        snprintf(fname, 256, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+
+        if (fname[20] == '.')
+            continue;
+
+        remove(fname);
     }
+
+    closedir(dp);
 
     return EXIT_SUCCESS;
-}
-
-/**
- * Search and destroy on spec line on file and delete it
- * @param com
- * @param file
- * @return
- */
-int qos_removeOneClass(char *com, char *file) {
-    FILE *fp;
-    FILE *tp = fopen(CLASS_PERSITENT_FILENAME"/.tmp.txt", "w");
-    char *line = NULL;
-
-    size_t len = 0;
-
-    if (!(fp = fopen(file, "r"))) {
-        log_loc("Cannot open file");
-        return -1;
-    }
-
-    int posL = 0;
-
-    while (getline(&line, &len, fp) != -1) {
-        // If there is a iptables command reverse it
-        if (strcmp(line, com) == 0 && posL == 0 && strstr(line, "iptables")) {
-            line[20] = 'D';
-            if (system(line) != 0) {
-                log_loc("FAIL: System rev Call fail: ");
-                log_loc(line);
-            }
-            posL++;
-        }
-        // If there is a end: ...
-        else if(line[0] == 'e' && strcmp(line, com) == 0)
-            printf("END: line");
-        // If there is a id: ...
-        else if (line[1] == 'd' && strcmp(line, com) == 0)
-            printf("ID: line");
-        // It have to be there so write out
-        else
-            fwrite(line, 1, strlen(line), tp);
-    }
-
-    fclose(fp);
-    fclose(tp);
-
-    if (remove(file) == -1) {
-        return -1;
-    }
-
-    // Make tmp to perm file to have a new actual file
-    if (!(rename(CLASS_PERSITENT_FILENAME"/.tmp.txt", file))) {
-        return -1;
-    }
-
-    log_loc("SUCCESS: Remove one ExecLine");
-
-    return 0;
 }
 
 void log_loc(char *str) {
