@@ -127,10 +127,10 @@ char * file_read_all(char *filename) {
 }
 
 int file_write(char *filename, char *mode, char *line) {
-    FILE *fp;
+    FILE *fp = file_open(filename, "r");
 
-    if ((fp = file_open(filename, "r")) != NULL)
-        if (file_contain(line, fp) != EXIT_SUCCESS) {
+    if (fp != NULL)
+        if (file_contain(line, fp) == EXIT_FAILURE) {
             log_loc("SUCCESS: FileWrite File Contains line, no action needed");
             log_loc(line);
             file_close(fp);
@@ -291,7 +291,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "17:15:59-26.05.2022");
+    strcpy(test_class1->duration, "12:15:59-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -303,7 +303,7 @@ int main() {
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
-    qos_removeAllClasses();
+    strcpy(test_class1->duration, "12:15:59-28.05.2022");
 
     if (qos_addClass(test_class2) == -1)
         return EXIT_FAILURE;
@@ -341,8 +341,6 @@ int main() {
 int qos_addClass(const struct qos_class *param) {
     qos_struct *obj = initQosClass(param);
 
-    //duration_check(obj->data->duration);
-
     log_loc("SUCCESS: AddClass Entry AddClass");
 
     // Check for used Data
@@ -374,6 +372,7 @@ int qos_addClass(const struct qos_class *param) {
 
         if (file_contain(exec1, fp) == EXIT_SUCCESS) {
             exec_run(exec1);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
         }
 
         char *exec2 = (char *) malloc(255);
@@ -382,6 +381,7 @@ int qos_addClass(const struct qos_class *param) {
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(exec2, fp) == EXIT_SUCCESS) {
             exec_run(exec2);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
         }
 
         char *exec3 = (char *) malloc(255);
@@ -390,6 +390,7 @@ int qos_addClass(const struct qos_class *param) {
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(exec3, fp) == EXIT_SUCCESS) {
             exec_run(exec3);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
         }
 
         char *exec4 = (char *) malloc(255);
@@ -412,9 +413,11 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
-        ulong l = strlen(exec1) + strlen(exec2) + strlen(exec3) + strlen(exec4) + strlen(exec5);
-        char *concat = malloc((int) l + 5);
-        snprintf(concat, l + 6, "%s\n%s\n%s\n%s\n%s\n", exec1, exec2, exec3, exec4, exec5);
+        file_close(fp);
+
+        ulong l = strlen(exec4) + strlen(exec5);
+        char *concat = malloc((int) l + 2);
+        snprintf(concat, l + 2, "%s\n%s", exec4, exec5);
         obj->str = concat;
 
         if (
@@ -422,7 +425,6 @@ int qos_addClass(const struct qos_class *param) {
                 ex5 == 1
                 ) {
             log_loc("SUCCESS: AddClass All rules are ready to add...");
-
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
 
@@ -476,11 +478,11 @@ int qos_DurationClass(const qos_struct *obj) {
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
 
     char *clas_file = malloc(strlen(obj->str) + 32);
-    snprintf(clas_file, strlen(obj->str) + 64, "end: %s\n%s", obj->data->duration, obj->str);
+    snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
 
     file_remove(fname);
-
-    file_write(fname, "w", clas_file);
+    file_touch(fname);
+    file_write_text(fname, "a", clas_file, "\n");
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
     return 0;

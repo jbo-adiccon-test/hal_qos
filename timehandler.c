@@ -163,7 +163,7 @@ int time_handler (char *fname) {
     getline(&s_line, &len, fp);
 
     char *line = malloc(strlen(s_line)+1);
-    snprintf(line, strlen(s_line)+1, "%s", s_line);
+    snprintf(line, strlen(s_line), "%s", s_line);
 
     char *token = strtok(line, " ");
     if (strcmp(token, "end:") == 0) {
@@ -177,8 +177,18 @@ int time_handler (char *fname) {
                 char *content = file_read_all(fname);
                 file_remove(fname);
                 file_del_text(CLASS_FW_FILENAME,content,"\n");
+
+                free(line);
+                free(s_line);
+                file_close(fp);
+
                 return EXIT_SUCCESS;
             } else {
+
+                free(line);
+                free(s_line);
+                file_close(fp);
+
                 return EXIT_FAILURE;
             }
         }
