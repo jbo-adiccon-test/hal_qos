@@ -110,7 +110,7 @@ char * file_read_all(char *filename) {
     while (getline(&line, &len, fp) != -1) {
         lret = lret + len;
 
-        if (tmp == "\0")
+        if (tmp[0] == '\0')
             snprintf(ret, lret, "%s", line);
         else {
             snprintf(ret, lret, "%s%s", tmp, line);
@@ -289,7 +289,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "02:23:59-26.05.2022");
+    strcpy(test_class1->duration, "06:15:59-26.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
