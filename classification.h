@@ -66,9 +66,25 @@ int qos_addClass(const struct qos_class *param);
 
 int qos_removeAllClasses();
 
-int qos_removeOneClass(char *com, char *file);
+//int qos_removeOneClass(char *com, char *file);
 
-int qos_persistClass(const qos_struct *obj);
+int qos_DurationClass(const qos_struct *obj);
 
 void log_loc(char *str);
+
+int file_write_text(char *filename, char *mode, char *text, char *delim);
+int file_write(char *filename, char *mode, char *line);
+int file_touch(char *filename);
+int file_remove(const char *filename);
+int file_close(FILE *fp);
+FILE* file_open(char *filename, char *mode);
+int file_contain(char *comp, FILE *fp);
+int file_del_text(char *filename, char *text, char *delim);
+char * file_read_all(char *filename);
+
+int revert_iptables(char *fname);
+
+char* add_n(char *line);
+char* del_n(char *line);
+int file_del(char *filename, char *text);
 #endif

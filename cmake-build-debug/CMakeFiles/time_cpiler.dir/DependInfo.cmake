@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/c/Users/limberg/hal-qos/time_test.c" "/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/time_test.c.o"
-  "/mnt/c/Users/limberg/hal-qos/timehandler.c" "/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/timehandler.c.o"
+  "/home/artemis/hal_qos/time_test.c" "/home/artemis/hal_qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/time_test.c.o"
+  "/home/artemis/hal_qos/timehandler.c" "/home/artemis/hal_qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/timehandler.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

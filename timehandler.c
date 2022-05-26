@@ -37,29 +37,24 @@ char *get_str_time(struct tm time) {
     }
 }
 
-struct tm get_act_time() {
+struct tm get_act_time(struct tm *act) {
     time_t raw;
     time(&raw);
-    tTime.act_t = *localtime(&raw);
+    *act = *localtime(&raw);
     //mktime(&tTime.act_t);
     //printf("%s", asctime(&tTime.act_t));
-    tTime.act_t.tm_mon = tTime.act_t.tm_mon + 1;
-    tTime.act_t.tm_year = tTime.act_t.tm_year + 1900;
-    return tTime.act_t;
+    (*act).tm_mon = (*act).tm_mon + 1;
+    (*act).tm_year = (*act).tm_year + 1900;
+    return *act;
 }
 
 u_int8_t struct_greater() {
-    get_act_time();
+    get_act_time(&tTime.act_t);
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
-        time_t act = mktime(&tTime.act_t);
-        time_t tar = mktime(&tTime.tar_t);
-        if (difftime(tar, act) <= 0) {
-            log_loc("INFO: Time run out");
+        if (diff() < 0)
             return 0;
-        } else {
-            log_loc("INFO: Time left, no deletion");
+        else
             return 1;
-        }
     }
     return 2;
 }
@@ -86,7 +81,8 @@ u_int8_t valid(struct tm tm) {
 
 struct tm strtotm(const char *str) {
     char *ptr;
-    struct tm ret = get_act_time();
+    struct tm ret;
+    get_act_time(&ret);
     if (strlen(str) >= 8) {
         int hr = (int) strtol(&str[0], &ptr, 10);
         int min = (int) strtol(&str[3], &ptr, 10);
@@ -112,152 +108,117 @@ struct tm strtotm(const char *str) {
     return ret;
 }
 
-int diff() {
-    get_act_time();
+long diff() {
+    get_act_time(&tTime.act_t);
 
-    time_t act = mktime(&tTime.act_t);
+    if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
+        return 1;
+    if(tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
+        return 1;
+    if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
+        return 1;
+
+    time_t act = (time_t) mktime(&tTime.act_t);
     time_t tar = (time_t) mktime(&tTime.tar_t);
 
     long ret = tar - act;
 
-    return (int) ret;
+    return ret;
 }
 
 void reset_dmcli(uint id) {
-    char *str = malloc(512);
+    char* str = malloc(512);
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
-    if (system(str) != 0)
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
-    if (system(str) != 0)
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
-    if (system(str))
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
-    if (system(str) != 0)
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
-    if (system(str))
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
-    if (system(str))
-        printf(" ");
+    system(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
-    if (system(str))
-        printf(" ");
+    system(str);
     free(str);
-    log_loc("INFO: reset Dmcli finished");
+}
+
+int time_handler (char *fname) {
+    FILE *fp = file_open(fname, "r");
+
+    if (fp == NULL)
+        return -2;
+
+    char *s_line = NULL;
+    size_t len;
+
+    getline(&s_line, &len, fp);
+
+    char *line = malloc(strlen(s_line)+1);
+    snprintf(line, strlen(s_line)+1, "%s", s_line);
+
+    char *token = strtok(line, " ");
+    if (strcmp(token, "end:") == 0) {
+        token = strtok(NULL, " "); // Isolate time string
+        tTime.tar_t = strtotm(del_n(token)); // change str to tm struct
+        if (valid(tTime.tar_t) != 2) {
+            if (struct_greater() == 0) { // check for oldness
+                file_close(fp);
+                file_del(fname, s_line);
+                revert_iptables(fname);
+                char *content = file_read_all(fname);
+                file_remove(fname);
+                file_del_text(CLASS_FW_FILENAME,content,"\n");
+                return EXIT_SUCCESS;
+            } else {
+                return EXIT_FAILURE;
+            }
+        }
+    } else
+        file_remove(fname);
+    return EXIT_FAILURE;
 }
 
 void duration_check() {
-    printf("Timechecker activated SIGINT to deactivate");
-
     if (fork() == 0) {
-        signal(SIGUSR1, sig_handler_time);
-        signal(SIGUSR2, sig_handler_time);
-        signal(SIGKILL, sig_handler_time);
+    signal(SIGUSR1, sig_handler_time);
+    signal(SIGUSR2, sig_handler_time);
+    signal(SIGKILL, sig_handler_time);
 
-        while (1) {
-            bool obsulate = false;
-            uint id = 0;
-            get_act_time();
+    while (1) {
+        uint id = 0;
+        get_act_time(&tTime.act_t);
+        DIR *dp;
+        struct dirent *ep;
 
-            DIR *dp;
-            struct dirent *ep;
+        if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
+            log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
 
-            if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-                log_loc("FAIL: No class DIR in /usr/ccsp/qos/class/");
+        while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+            char *fname = malloc(512);
+            snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
 
-            while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
-                obsulate = false;
-                FILE *fp = NULL;
-                char *fname = malloc(512);
-                snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+            if (fname[20] == '.')
+                continue;
 
-                if (fname[20] == '.')
-                    continue;
-
-                if (!(fp = fopen(fname, "r"))) { // Open file
-                    log_loc("FAIL: Fork open fname");
-                } else {
-                    log_loc("SUCCESS: Fork :");
-                    log_loc(fname);
-                }
-
-                char *d_line = NULL;
-                size_t len;
-
-                while (getline(&d_line, &len, fp) != -1) {
-
-                    char *line = malloc(strlen(d_line));
-                    snprintf(line, strlen(d_line), "%s", d_line);
-
-                    if (obsulate == true) {
-                        fclose(fp);
-                        int ret1 = qos_removeOneClass(line, CLASS_FW_FILENAME);
-                        int ret2 = qos_removeOneClass(line, fname);
-                        if(!(fopen(fname,"r"))) {
-                            log_loc("FAIL: Fork file not openable:");
-                            log_loc(fname);
-                        }
-                        if (ret1 == 0 && ret2 == 0)
-                            log_loc("SUCCESS: Fork Remove Classification");
-                        else
-                            log_loc("FAIL: Fork Remove Classification");
-                    }
-
-                    if (obsulate == false) {
-                        char *tmpstr = malloc(256);
-                        snprintf(tmpstr, 256, "%s", line);
-                        char *token = strtok(tmpstr, " ");
-
-                        if (strcmp(token, "end:") == 0) {
-                            token = strtok(NULL, " "); // Isolate time string
-                            tTime.tar_t = strtotm(token);// change str to tm struct
-
-                            log_loc("INFO: Fork Time for end Check:");
-                            log_loc(get_str_time(tTime.act_t));
-                            log_loc(get_str_time(tTime.tar_t));
-
-                            if (valid(tTime.tar_t) != 2) {
-                                if (struct_greater() != 0) { // check for oldness
-                                    qos_removeOneClass(line, fname);
-                                    log_loc("INFO: Fork Remove Line:");
-                                    log_loc(line);
-                                } else
-                                    continue;
-                            }
-                        } else if (strcmp(token, "id:") == 0) {
-                            if (struct_greater() != 0) {
-                                token = strtok(NULL, " ");
-                                id = (uint) atoi(token);
-                                obsulate = true;
-                                qos_removeOneClass(line, fname);
-                                log_loc("INFO: Fork Remove Line:");
-                                log_loc(line);
-                            }
-                        }
-                        free(tmpstr);
-                    }
-                }
-                if (obsulate == true)
-                    reset_dmcli(id);
-                fclose(fp);
-            }
-            closedir(dp);
-
-            log_loc("INFO: Fork Fin check Period & Sleep");
-            sleep(15);
+            if (time_handler(fname) == EXIT_SUCCESS)
+                reset_dmcli(id);
         }
+
+        closedir(dp);
+
+        sleep(15);
+    }
     } else {
         tTime.check = true;
-        log_loc("SUCCESS: Time check active");
+        log_loc("SUCCESS: DurationChecker Time check active");
     }
 }

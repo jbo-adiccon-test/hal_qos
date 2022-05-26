@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/limberg/hal-qos
+CMAKE_SOURCE_DIR = /home/artemis/hal_qos
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/limberg/hal-qos/cmake-build-debug
+CMAKE_BINARY_DIR = /home/artemis/hal_qos/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/time_cpiler.dir/depend.make
@@ -59,29 +59,29 @@ include CMakeFiles/time_cpiler.dir/flags.make
 
 CMakeFiles/time_cpiler.dir/time_test.c.o: CMakeFiles/time_cpiler.dir/flags.make
 CMakeFiles/time_cpiler.dir/time_test.c.o: ../time_test.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/time_cpiler.dir/time_test.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/time_cpiler.dir/time_test.c.o   -c /mnt/c/Users/limberg/hal-qos/time_test.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/time_cpiler.dir/time_test.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/time_cpiler.dir/time_test.c.o   -c /home/artemis/hal_qos/time_test.c
 
 CMakeFiles/time_cpiler.dir/time_test.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/time_cpiler.dir/time_test.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/limberg/hal-qos/time_test.c > CMakeFiles/time_cpiler.dir/time_test.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/artemis/hal_qos/time_test.c > CMakeFiles/time_cpiler.dir/time_test.c.i
 
 CMakeFiles/time_cpiler.dir/time_test.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/time_cpiler.dir/time_test.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/limberg/hal-qos/time_test.c -o CMakeFiles/time_cpiler.dir/time_test.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/artemis/hal_qos/time_test.c -o CMakeFiles/time_cpiler.dir/time_test.c.s
 
 CMakeFiles/time_cpiler.dir/timehandler.c.o: CMakeFiles/time_cpiler.dir/flags.make
 CMakeFiles/time_cpiler.dir/timehandler.c.o: ../timehandler.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/time_cpiler.dir/timehandler.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/time_cpiler.dir/timehandler.c.o   -c /mnt/c/Users/limberg/hal-qos/timehandler.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/time_cpiler.dir/timehandler.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/time_cpiler.dir/timehandler.c.o   -c /home/artemis/hal_qos/timehandler.c
 
 CMakeFiles/time_cpiler.dir/timehandler.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/time_cpiler.dir/timehandler.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/limberg/hal-qos/timehandler.c > CMakeFiles/time_cpiler.dir/timehandler.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/artemis/hal_qos/timehandler.c > CMakeFiles/time_cpiler.dir/timehandler.c.i
 
 CMakeFiles/time_cpiler.dir/timehandler.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/time_cpiler.dir/timehandler.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/limberg/hal-qos/timehandler.c -o CMakeFiles/time_cpiler.dir/timehandler.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/artemis/hal_qos/timehandler.c -o CMakeFiles/time_cpiler.dir/timehandler.c.s
 
 # Object files for target time_cpiler
 time_cpiler_OBJECTS = \
@@ -95,7 +95,7 @@ time_cpiler: CMakeFiles/time_cpiler.dir/time_test.c.o
 time_cpiler: CMakeFiles/time_cpiler.dir/timehandler.c.o
 time_cpiler: CMakeFiles/time_cpiler.dir/build.make
 time_cpiler: CMakeFiles/time_cpiler.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable time_cpiler"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable time_cpiler"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/time_cpiler.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -108,6 +108,6 @@ CMakeFiles/time_cpiler.dir/clean:
 .PHONY : CMakeFiles/time_cpiler.dir/clean
 
 CMakeFiles/time_cpiler.dir/depend:
-	cd /mnt/c/Users/limberg/hal-qos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/limberg/hal-qos /mnt/c/Users/limberg/hal-qos /mnt/c/Users/limberg/hal-qos/cmake-build-debug /mnt/c/Users/limberg/hal-qos/cmake-build-debug /mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/artemis/hal_qos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/artemis/hal_qos /home/artemis/hal_qos /home/artemis/hal_qos/cmake-build-debug /home/artemis/hal_qos/cmake-build-debug /home/artemis/hal_qos/cmake-build-debug/CMakeFiles/time_cpiler.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/time_cpiler.dir/depend
 

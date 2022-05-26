@@ -31,7 +31,7 @@ void sig_handler_time(int sig);
 
 char *get_str_time(struct tm time);
 
-struct tm get_act_time();
+struct tm get_act_time(struct tm *act);
 
 u_int8_t struct_greater();
 
@@ -39,7 +39,7 @@ u_int8_t valid(struct tm tm);
 
 struct tm strtotm(const char *str);
 
-int diff();
+long diff();
 
 void duration_check();
 
