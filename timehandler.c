@@ -180,7 +180,6 @@ int time_handler (char *fname) {
 
                 free(line);
                 free(s_line);
-                file_close(fp);
 
                 return EXIT_SUCCESS;
             } else {
