@@ -511,8 +511,8 @@ int qos_removeAllClasses() {
         log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
 
     while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
-        char *fname = malloc(256);
-        snprintf(fname, 256, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+        char *fname = malloc(277);
+        snprintf(fname, 277, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
 
         if (fname[20] == '.')
             continue;
