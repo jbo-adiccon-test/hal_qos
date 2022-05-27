@@ -181,6 +181,9 @@ int time_handler (char *fname) {
                 file_remove(fname);
                 file_del_text(CLASS_FW_FILENAME,content,"\n");
 
+                log_loc("INFO: timeHandler deactivate:");
+                log_loc(content);
+
                 free(line);
                 free(s_line);
 
@@ -221,6 +224,7 @@ void duration_check() {
             if (fname[20] == '.')
                 continue;
 
+            log_loc("INFO: Duration Checker run");
             if (time_handler(fname) == EXIT_SUCCESS)
                 reset_dmcli(id);
         }
@@ -229,6 +233,8 @@ void duration_check() {
 
         sleep(15);
     }
+        log_loc("FAIL: DurationChecker Exit duration Fork");
+
     } else {
         tTime.check = true;
         log_loc("SUCCESS: DurationChecker Time check active");

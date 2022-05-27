@@ -372,8 +372,9 @@ int qos_addClass(const struct qos_class *param) {
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
         if (file_contain(add_n(exec1), fp) == EXIT_SUCCESS) {
-            exec_run(exec1);
+            system(exec1);
             file_close(fp);
+            log_loc("INFO: addClass exec1");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
             file_open(CLASS_FW_FILENAME, "r");
         }
@@ -383,8 +384,9 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
-            exec_run(exec2);
+            system(exec2);
             file_close(fp);
+            log_loc("INFO: addClass exec2");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
             file_open(CLASS_FW_FILENAME, "r");
         }
@@ -394,8 +396,9 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(add_n(exec3), fp) == EXIT_SUCCESS) {
-            exec_run(exec3);
+            system(exec3);
             file_close(fp);
+            log_loc("INFO: addClass exec3");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
             file_open(CLASS_FW_FILENAME, "r");
         }
@@ -407,6 +410,7 @@ int qos_addClass(const struct qos_class *param) {
         exec4 = realloc(add_n(exec4), strlen(exec4) * sizeof(char));
         if (file_contain(exec4, fp) == EXIT_SUCCESS) {
             system(exec4);
+            log_loc("INFO: addClass exec4");
             ex4 = 1;
         }
 
@@ -417,6 +421,7 @@ int qos_addClass(const struct qos_class *param) {
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
             system(exec5);
+            log_loc("INFO: addClass exec5");
             ex5 = 1;
         }
 
@@ -500,16 +505,6 @@ int qos_DurationClass(const qos_struct *obj) {
  * @return
  */
 int qos_removeAllClasses() {
-    //if (revert_iptables(CLASS_FW_FILENAME) == EXIT_FAILURE) {
-    //    log_loc("FAIL: removeAllClasses revert Iptables failed");
-    //}
-
-    //if (file_touch(CLASS_FW_FILENAME) == EXIT_SUCCESS) {
-    //    log_loc("SUCCESS: removeAllClasses Empty file touch");
-    //} else {
-    //    log_loc("FAIL: removeAllClasses Empty file touch");
-    //}
-
     DIR *dp;
     struct dirent *ep;
 
@@ -538,6 +533,8 @@ int qos_removeAllClasses() {
         revert_iptables(fname);
 
         reset_dmcli(id);
+
+        log_loc("INFO: removeAllClasses done");
 
         remove(fname);
     }
