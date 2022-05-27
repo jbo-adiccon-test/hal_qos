@@ -304,7 +304,7 @@ int main() {
         return EXIT_FAILURE;
 
     qos_removeAllClasses();
-    strcpy(test_class1->duration, "12:15:59-28.05.2022");
+    strcpy(test_class1->duration, "20:25:59-27.05.2022");
 
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
