@@ -183,7 +183,7 @@ char* del_n(char *line) {
 
 int file_write_text(char *filename, char *mode, char *text, char *delim) {
     char *tmp = malloc(strlen(text)+1);
-    snprintf(tmp, strlen(text), "%s", text);
+    snprintf(tmp, strlen(text)+1, "%s", text);
 
     char *token = strtok(tmp, delim);
     file_write(filename, mode,add_n(token));
@@ -246,6 +246,12 @@ int file_del(char *filename, char *text) {
 }
 
 int file_del_text(char *filename, char *text, char *delim){
+    if (text == NULL)
+        return EXIT_FAILURE;
+
+    if (delim == NULL)
+        return EXIT_FAILURE;
+
     char *tmp = malloc(strlen(text)+1);
     snprintf(tmp, strlen(text)+1, "%s", text);
 
@@ -291,7 +297,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "23:45:00-28.05.2022");
+    strcpy(test_class1->duration, "05:38:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");

@@ -49,7 +49,7 @@ struct tm get_act_time(struct tm *act) {
 }
 
 u_int8_t struct_greater() {
-    get_act_time(&tTime.act_t);
+    tTime.act_t = get_act_time(&tTime.act_t);
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
         if (diff() < 0)
             return 0;
@@ -121,6 +121,11 @@ long diff() {
     time_t act = (time_t) mktime(&tTime.act_t);
     time_t tar = (time_t) mktime(&tTime.tar_t);
 
+    char *log = malloc(256);
+    snprintf(log, 256, "INFO: Time compare total:\nACT:%ld - TAR:%ld", act, tar);
+    log_loc(log);
+    free(log);
+
     long ret = tar - act;
 
     return ret;
@@ -173,6 +178,13 @@ int time_handler (char *fname) {
         token = strtok(NULL, " "); // Isolate time string
         tTime.tar_t = strtotm(del_n(token)); // change str to tm struct
         if (valid(tTime.tar_t) != 2) {
+
+            char *log = malloc(256);
+            snprintf(log, 256, "INFO: Time compare:\n ACT:%s - TAR:%s",
+                     get_str_time(tTime.act_t), get_str_time(tTime.tar_t));
+            log_loc(log);
+            free(log);
+
             if (struct_greater() == 0) { // check for oldness
                 file_close(fp);
                 file_del(fname, s_line);
