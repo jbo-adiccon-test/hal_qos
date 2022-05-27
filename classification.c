@@ -51,7 +51,7 @@ int file_contain(char *comp, FILE *fp) {
     fseek(fp, 0, SEEK_SET);
 
     while (getline(&line, &len, fp) != -1) {
-        if (strstr(line, comp)) {
+        if (strcmp(line, comp) == 0) {
             return EXIT_FAILURE;
         }
     }
@@ -291,7 +291,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "23:45:00-26.05.2022");
+    strcpy(test_class1->duration, "23:45:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -303,9 +303,10 @@ int main() {
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
+    qos_removeAllClasses();
     strcpy(test_class1->duration, "12:15:59-28.05.2022");
 
-    if (qos_addClass(test_class2) == -1)
+    if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
@@ -370,34 +371,40 @@ int qos_addClass(const struct qos_class *param) {
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
-        if (file_contain(exec1, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec1), fp) == EXIT_SUCCESS) {
             exec_run(exec1);
+            file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
+            file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec2 = (char *) malloc(255);
         snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
-        if (file_contain(exec2, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
             exec_run(exec2);
+            file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
+            file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec3 = (char *) malloc(255);
         snprintf(exec3, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
-        if (file_contain(exec3, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec3), fp) == EXIT_SUCCESS) {
             exec_run(exec3);
+            file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
+            file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec4 = (char *) malloc(255);
         snprintf(exec4, 255,
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
-        exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
+        exec4 = realloc(add_n(exec4), strlen(exec4) * sizeof(char));
         if (file_contain(exec4, fp) == EXIT_SUCCESS) {
             system(exec4);
             ex4 = 1;
@@ -408,7 +415,7 @@ int qos_addClass(const struct qos_class *param) {
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
-        if (file_contain(exec5, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
             system(exec5);
             ex5 = 1;
         }
@@ -475,7 +482,7 @@ int qos_addClass(const struct qos_class *param) {
 int qos_DurationClass(const qos_struct *obj) {
 
     char *fname = malloc(256);
-    snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i.dat", obj->data->id);
+    snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i", obj->data->id);
 
     char *clas_file = malloc(strlen(obj->str) + 32);
     snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
@@ -493,16 +500,15 @@ int qos_DurationClass(const qos_struct *obj) {
  * @return
  */
 int qos_removeAllClasses() {
-    if (revert_iptables(CLASS_FW_FILENAME) == EXIT_FAILURE) {
-        log_loc("FAIL: removeAllClasses revert Iptables failed");
-    }
+    //if (revert_iptables(CLASS_FW_FILENAME) == EXIT_FAILURE) {
+    //    log_loc("FAIL: removeAllClasses revert Iptables failed");
+    //}
 
-    if (file_touch(CLASS_FW_FILENAME) == EXIT_SUCCESS) {
-        log_loc("SUCCESS: removeAllClasses Empty file touch");
-    } else {
-        log_loc("FAIL: removeAllClasses Empty file touch");
-
-    }
+    //if (file_touch(CLASS_FW_FILENAME) == EXIT_SUCCESS) {
+    //    log_loc("SUCCESS: removeAllClasses Empty file touch");
+    //} else {
+    //    log_loc("FAIL: removeAllClasses Empty file touch");
+    //}
 
     DIR *dp;
     struct dirent *ep;
@@ -516,6 +522,22 @@ int qos_removeAllClasses() {
 
         if (fname[20] == '.')
             continue;
+
+        char *num = &ep->d_name[6];
+        int id = (int)atoi(num);
+        FILE *fp = file_open(fname, "r");
+        char *line = NULL;
+        size_t len = 0;
+        getline(&line, &len, fp);
+        file_close(fp);
+
+        file_del(fname, line);
+        char *cont = file_read_all(fname);
+        file_del_text(CLASS_FW_FILENAME, cont, "\n");
+
+        revert_iptables(fname);
+
+        reset_dmcli(id);
 
         remove(fname);
     }

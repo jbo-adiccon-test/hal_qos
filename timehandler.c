@@ -149,6 +149,9 @@ void reset_dmcli(uint id) {
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     system(str);
     free(str);
+    char *log = malloc(255);
+    snprintf(log, 255, "INFO: reset dnmcli Entry: %i", id);
+    log_loc(log);
 }
 
 int time_handler (char *fname) {

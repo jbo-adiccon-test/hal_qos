@@ -43,6 +43,8 @@ long diff();
 
 void duration_check();
 
+void reset_dmcli(uint id);
+
 //u_int8_t clean_Class()
 
 #endif //TESTS_TIMEHANDLER_H
