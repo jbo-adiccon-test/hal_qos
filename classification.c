@@ -414,11 +414,11 @@ int qos_addClass(const struct qos_class *param) {
             ex4 = 1;
         }
 
-        char *exec5 = (char *) malloc(255);
-        snprintf(exec5, 255,
+        char *exec5 = (char *) malloc(257);
+        snprintf(exec5, 256,
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
-        exec5 = realloc(exec5, strlen(exec5) * sizeof(char));
+        exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
             system(exec5);
             log_loc("INFO: addClass exec5");

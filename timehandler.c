@@ -193,6 +193,7 @@ int time_handler (char *fname) {
                 free(line);
                 free(s_line);
                 file_close(fp);
+                log_loc("INFO: timeHandler still running");
 
                 return EXIT_FAILURE;
             }
@@ -224,7 +225,8 @@ void duration_check() {
             if (fname[20] == '.')
                 continue;
 
-            log_loc("INFO: Duration Checker run");
+            log_loc("INFO: Duration Checker run:");
+            log_loc(fname);
             if (time_handler(fname) == EXIT_SUCCESS)
                 reset_dmcli(id);
         }
