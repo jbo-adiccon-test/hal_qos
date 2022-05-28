@@ -214,6 +214,9 @@ int revert_iptables(char *fname) {
         return EXIT_FAILURE;
 
     while (getline(&line, &len, fp) != -1) {
+        if (line[0] == 'e')
+            continue;
+
         line[20] = 'D';
         log_loc("INFO: Run iptables Revert:");
         log_loc(del_n(line));
@@ -307,7 +310,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "13:01:00-28.05.2022");
+    strcpy(test_class1->duration, "22:01:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -536,6 +539,7 @@ int qos_removeAllClasses() {
 
         char *num = &ep->d_name[6];
         int id = (int)atoi(num);
+        /*
         FILE *fp = file_open(fname, "r");
         char *line = NULL;
         size_t len = 0;
@@ -545,7 +549,7 @@ int qos_removeAllClasses() {
         file_del(fname, line);
         char *cont = file_read_all(fname);
         file_del_text(CLASS_FW_FILENAME, cont, "\n");
-
+        */
         revert_iptables(fname);
 
         reset_dmcli(id);
@@ -556,6 +560,8 @@ int qos_removeAllClasses() {
     }
 
     closedir(dp);
+
+    remove(CLASS_FW_FILENAME);
 
     return EXIT_SUCCESS;
 }

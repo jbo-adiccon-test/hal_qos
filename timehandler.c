@@ -198,15 +198,19 @@ int time_handler (char *fname) {
 
             if (struct_greater() == 0) { // check for oldness
                 file_close(fp);
-                file_del(fname, s_line);
-                revert_iptables(fname);
-                char *content = file_read_all(fname);
+                // file_del(fname, s_line);
+                // revert_iptables(fname);
+                // char *content = file_read_all(fname);
+                // file_remove(fname);
+                // file_del_text(CLASS_FW_FILENAME,content,"\n");
+
                 file_remove(fname);
-                file_del_text(CLASS_FW_FILENAME,content,"\n");
+                revert_iptables(CLASS_FW_FILENAME);
+                file_remove(CLASS_FW_FILENAME);
 
                 log_loc("INFO: timeHandler deactivate:");
-                if (content != NULL)
-                    log_loc(content);
+                //if (content != NULL)
+                //    log_loc(content);
 
                 free(line);
                 free(s_line);
