@@ -51,28 +51,25 @@ struct tm get_act_time(struct tm *act) {
 u_int8_t struct_greater() {
     tTime.act_t = get_act_time(&tTime.act_t);
 
-    if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
-        return 1;
-    if(tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
-        return 1;
-    if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
-        return 1;
-
-    time_t tar = (time_t) mktime(&tTime.tar_t);
-    time_t act = (time_t) mktime(&tTime.act_t);
-
-    char *log = malloc(256);
-    snprintf(log, 256, "INFO: Time compare total:\nACT:%ld - TAR:%ld", act, tar);
-    log_loc(log);
-    free(log);
-
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
-        if (difftime(tar, act) < 0)
-            return 0;
-        else
+        if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
             return 1;
+        if (tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
+            return 1;
+        if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
+            return 1;
+        if (tTime.tar_t.tm_hour > tTime.act_t.tm_hour)
+            return 1;
+        if (tTime.tar_t.tm_min > tTime.act_t.tm_min)
+            return 1;
+        if (tTime.tar_t.tm_sec > tTime.act_t.tm_sec)
+            return 1;
+    } else {
+        return 2;
     }
-    return 2;
+
+    log_loc("INFO: StructGreater Time run down");
+    return 0;
 }
 
 u_int8_t valid(struct tm tm) {
