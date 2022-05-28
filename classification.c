@@ -123,6 +123,9 @@ char * file_read_all(char *filename) {
 
     file_close(fp);
 
+    log_loc("INFO: File Read:");
+    log_loc(ret);
+
     return ret;
 }
 
@@ -151,6 +154,7 @@ int file_write(char *filename, char *mode, char *line) {
     }
 
     log_loc("SUCCESS: FileWrite File has been written");
+    log_loc(line);
 
     return EXIT_SUCCESS;
 }
@@ -210,8 +214,10 @@ int revert_iptables(char *fname) {
         return EXIT_FAILURE;
 
     while (getline(&line, &len, fp) != -1) {
-            line[20] = 'D';
-            exec_run(del_n(line));
+        line[20] = 'D';
+        log_loc("INFO: Run iptables Revert:");
+        log_loc(del_n(line));
+        system(del_n(line));
     }
 
     file_close(fp);
@@ -241,6 +247,10 @@ int file_del(char *filename, char *text) {
     file_remove(filename);
 
     rename(CLASS_PERSITENT_FILENAME"/.tmp", filename);
+
+    log_loc("INFO: DelLine in File:");
+    log_loc(text);
+    log_loc(filename);
 
     return EXIT_SUCCESS;
 }
