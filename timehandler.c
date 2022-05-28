@@ -140,27 +140,36 @@ long diff() {
 }
 
 void reset_dmcli(uint id) {
+    log_loc("INFO dmcliReset:");
     char* str = malloc(512);
-    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
-    system(str);
-    strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
     system(str);
+    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
     system(str);
+    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
     system(str);
+    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
     system(str);
+    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
     system(str);
+    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     system(str);
+    log_loc(str);
+    strcpy(str, "");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
+    system(str);
+    log_loc(str);
+
     free(str);
     char *log = malloc(255);
     snprintf(log, 255, "INFO: reset dnmcli Entry: %i", id);
@@ -235,7 +244,6 @@ void duration_check() {
     signal(SIGKILL, sig_handler_time);
 
     while (1) {
-        uint id = 0;
         get_act_time(&tTime.act_t);
         DIR *dp;
         struct dirent *ep;
@@ -249,6 +257,9 @@ void duration_check() {
 
             if (fname[20] == '.')
                 continue;
+
+            char *num = &ep->d_name[6];
+            uint id = (uint)atoi(num);
 
             log_loc("INFO: Duration Checker run:");
             log_loc(fname);
