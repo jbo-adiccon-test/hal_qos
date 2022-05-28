@@ -50,8 +50,24 @@ struct tm get_act_time(struct tm *act) {
 
 u_int8_t struct_greater() {
     tTime.act_t = get_act_time(&tTime.act_t);
+
+    if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
+        return 1;
+    if(tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
+        return 1;
+    if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
+        return 1;
+
+    time_t tar = (time_t) mktime(&tTime.tar_t);
+    time_t act = (time_t) mktime(&tTime.act_t);
+
+    char *log = malloc(256);
+    snprintf(log, 256, "INFO: Time compare total:\nACT:%ld - TAR:%ld", act, tar);
+    log_loc(log);
+    free(log);
+
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
-        if (diff() < 0)
+        if (difftime(tar, act) < 0)
             return 0;
         else
             return 1;
@@ -111,12 +127,7 @@ struct tm strtotm(const char *str) {
 long diff() {
     get_act_time(&tTime.act_t);
 
-    if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
-        return 1;
-    if(tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
-        return 1;
-    if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
-        return 1;
+
 
     time_t act = (time_t) mktime(&tTime.act_t);
     time_t tar = (time_t) mktime(&tTime.tar_t);
@@ -194,7 +205,8 @@ int time_handler (char *fname) {
                 file_del_text(CLASS_FW_FILENAME,content,"\n");
 
                 log_loc("INFO: timeHandler deactivate:");
-                log_loc(content);
+                if (content != NULL)
+                    log_loc(content);
 
                 free(line);
                 free(s_line);

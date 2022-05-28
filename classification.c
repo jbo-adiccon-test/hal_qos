@@ -297,7 +297,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "05:38:00-28.05.2022");
+    strcpy(test_class1->duration, "13:01:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -378,7 +378,7 @@ int qos_addClass(const struct qos_class *param) {
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
         if (file_contain(add_n(exec1), fp) == EXIT_SUCCESS) {
-            system(exec1);
+            system(del_n(exec1));
             file_close(fp);
             log_loc("INFO: addClass exec1");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
@@ -390,7 +390,7 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
-            system(exec2);
+            system(del_n(exec2));
             file_close(fp);
             log_loc("INFO: addClass exec2");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
@@ -402,7 +402,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(add_n(exec3), fp) == EXIT_SUCCESS) {
-            system(exec3);
+            system(del_n(exec3));
             file_close(fp);
             log_loc("INFO: addClass exec3");
             file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
@@ -413,9 +413,9 @@ int qos_addClass(const struct qos_class *param) {
         snprintf(exec4, 255,
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
-        exec4 = realloc(add_n(exec4), strlen(exec4) * sizeof(char));
+        exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
         if (file_contain(exec4, fp) == EXIT_SUCCESS) {
-            system(exec4);
+            system(del_n(exec4));
             log_loc("INFO: addClass exec4");
             ex4 = 1;
         }
@@ -426,7 +426,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
-            system(exec5);
+            system(del_n(exec5));
             log_loc("INFO: addClass exec5");
             ex5 = 1;
         }
