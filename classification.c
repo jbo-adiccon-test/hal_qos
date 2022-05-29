@@ -335,7 +335,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "22:59:00-28.05.2022");
+    //strcpy(test_class1->duration, "22:59:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -626,4 +626,16 @@ void log_loc(char *str) {
 
         fclose(fp);
     }
+}
+
+int qos_removeOneClass(uint id) {
+    char *str = malloc(256);
+    snprintf(str, 256,"INFO: RemoveOneClass no. %i", id);
+    log_loc(str);
+
+    qos_removeAllClasses();
+
+    free(str);
+
+    return EXIT_SUCCESS;
 }
