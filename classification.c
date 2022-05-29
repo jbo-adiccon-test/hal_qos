@@ -117,7 +117,7 @@ char * file_read_all(char *filename) {
     FILE *fp = file_open(filename, "r");
     char *line = NULL;
     char *ret = malloc(1024);
-    char *tmp = malloc(1);
+    char *tmp;
     size_t len = 0;
     size_t lret = 0;
     tmp = "\0";
@@ -588,7 +588,11 @@ int qos_removeAllClasses() {
         */
         //revert_iptables(fname);
 
-        reset_dmcli(id);
+        if (fork() == 0) {
+            sleep(1);
+            log_loc("INFO: removeAllClasses resetDmcli fork");
+            reset_dmcli(id);
+        }
 
         log_loc("INFO: removeAllClasses done");
 
