@@ -33,6 +33,7 @@
 
 struct qos_class
 {
+    int enable;
     // Unique ID
     unsigned id;
     // Traffic class of the rule

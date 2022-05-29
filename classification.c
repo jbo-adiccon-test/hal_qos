@@ -390,6 +390,7 @@ int qos_addClass(const struct qos_class *param) {
 
     // Check for used Data
     if (
+            obj->data->enable &&
             obj->data->chain_name[0] != '\0' &&
             obj->data->iface_in[0] != '\0' &&
             obj->data->iface_out[0] != '\0' &&

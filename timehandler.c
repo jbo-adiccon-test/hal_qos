@@ -121,24 +121,6 @@ struct tm strtotm(const char *str) {
     return ret;
 }
 
-long diff() {
-    get_act_time(&tTime.act_t);
-
-
-
-    time_t act = (time_t) mktime(&tTime.act_t);
-    time_t tar = (time_t) mktime(&tTime.tar_t);
-
-    char *log = malloc(256);
-    snprintf(log, 256, "INFO: Time compare total:\nACT:%ld - TAR:%ld", act, tar);
-    log_loc(log);
-    free(log);
-
-    long ret = tar - act;
-
-    return ret;
-}
-
 void reset_dmcli(uint id) {
     log_loc("INFO dmcliReset:");
     char* str = malloc(512);
@@ -187,8 +169,13 @@ int time_handler (char *fname) {
     snprintf(line, strlen(s_line), "%s", s_line);
 
     char *token = strtok(line, " ");
+
     if (strcmp(token, "end:") == 0) {
         token = strtok(NULL, " "); // Isolate time string
+
+        if (strcmp(token, "inf") == 0)
+            return EXIT_FAILURE;
+
         tTime.tar_t = strtotm(del_n(token)); // change str to tm struct
         if (valid(tTime.tar_t) != 2) {
 
@@ -271,7 +258,6 @@ void duration_check() {
 
         sleep(15);
     }
-        log_loc("FAIL: DurationChecker Exit duration Fork");
 
     } else {
         tTime.check = true;
