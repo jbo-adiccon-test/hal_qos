@@ -30,10 +30,24 @@ enum class_table
  * @return
  */
 int exec_run(char *str) {
-    if (system(str) == 0)
-        return EXIT_SUCCESS;
-    else
-        return EXIT_FAILURE;
+        if (system(str) == 0) {
+            log_loc("SUCCESS: ExecRun line:");
+            log_loc(str);
+            return EXIT_SUCCESS;
+        } else {
+            log_loc("FAIL: ExecRun NEXT TRYS");
+            for (int i = 1; i < 5; i++) {
+                int ret = system(str);
+                if (ret == 0) {
+                    log_loc("SUCCESS: ExecRun line");
+                    log_loc(str);
+                    return EXIT_SUCCESS;
+                }
+                log_loc("FAIL: ExecRun retry line");
+            }
+            log_loc("FAIL: ExecRun fails 5 trys");
+            return EXIT_FAILURE;
+        }
 }
 
 /**
@@ -221,7 +235,7 @@ int revert_iptables(char *fname) {
             continue;
 
         line[20] = 'D';
-        if (system(del_n(line)) == 0) {
+        if (exec_run(del_n(line)) == 0) {
             log_loc("SUCCESS: revertIptables Run iptables Revert:");
             log_loc(del_n(line));
         } else {
@@ -398,7 +412,7 @@ int qos_addClass(const struct qos_class *param) {
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
         if (file_contain(add_n(exec1), fp) == EXIT_SUCCESS) {
-            if(system(del_n(exec1)) != 0)
+            if(exec_run(del_n(exec1)) != 0)
                 log_loc("FAIL: system exec1");
             else
                 log_loc("SUCCESS: system exec1");
@@ -412,7 +426,7 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
-            if(system(del_n(exec2)) != 0)
+            if(exec_run(del_n(exec2)) != 0)
                 log_loc("FAIL: system exec2");
             else
                 log_loc("SUCCESS: addClass exec2");
@@ -426,7 +440,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(add_n(exec3), fp) == EXIT_SUCCESS) {
-            if(system(del_n(exec3)) != 0)
+            if(exec_run(del_n(exec3)) != 0)
                 log_loc("FAIL: system exec3");
             else
                 log_loc("SUCCESS: addClass exec3");
@@ -441,7 +455,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
         if (file_contain(exec4, fp) == EXIT_SUCCESS) {
-            if (system(del_n(exec4)) != 0)
+            if (exec_run(del_n(exec4)) != 0)
                 log_loc("FAIL: system exec4");
             else
                 log_loc("SUCCESS: addClass exec4");
@@ -454,7 +468,7 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
-            if (system(del_n(exec5)) != 0)
+            if (exec_run(del_n(exec5)) != 0)
                 log_loc("FAIL: system exec5");
             else
                 log_loc("SUCCESS: addClass exec5");
