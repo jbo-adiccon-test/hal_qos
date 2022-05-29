@@ -76,8 +76,12 @@ FILE* file_open(char *filename, char *mode) {
     FILE *fp = NULL;
 
     if(!(fp = fopen(filename, mode))) {
-        log_loc("FAIL: file openener");
-        log_loc(filename);
+        sleep(1);
+        fp = fopen(filename, mode);
+        if (fp == NULL) {
+            log_loc("FAIL: file openener");
+            log_loc(filename);
+        }
     }
     return fp;
 }
@@ -593,8 +597,8 @@ int qos_removeAllClasses() {
 
     closedir(dp);
 
-    remove(CLASS_FW_FILENAME);
     revert_iptables(CLASS_FW_FILENAME);
+    remove(CLASS_FW_FILENAME);
 
     return EXIT_SUCCESS;
 }

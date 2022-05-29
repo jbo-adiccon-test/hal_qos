@@ -87,4 +87,5 @@ int revert_iptables(char *fname);
 char* add_n(char *line);
 char* del_n(char *line);
 int file_del(char *filename, char *text);
+int exec_run(char *str);
 #endif
