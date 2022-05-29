@@ -259,11 +259,12 @@ void duration_check() {
 
             log_loc("INFO: Duration Checker run:");
             log_loc(fname);
-            if (time_handler(fname) == EXIT_SUCCESS)
+            if (time_handler(fname) == EXIT_SUCCESS) {
                 reset_dmcli(id);
-                char* str = malloc(512);
+                char *str = malloc(512);
                 snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool \"false\"");
                 exec_run(str);
+            }
         }
 
         closedir(dp);
