@@ -165,10 +165,6 @@ void reset_dmcli(uint id) {
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     exec_run(str);
     log_loc(str);
-    strcpy(str, "");
-    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool false");
-    exec_run(str);
-    log_loc(str);
 
     free(str);
     char *log = malloc(255);
@@ -210,9 +206,9 @@ int time_handler (char *fname) {
                 // file_remove(fname);
                 // file_del_text(CLASS_FW_FILENAME,content,"\n");
 
-                file_remove(fname);
-                revert_iptables(CLASS_FW_FILENAME);
-                file_remove(CLASS_FW_FILENAME);
+                //file_remove(fname);
+                //revert_iptables(CLASS_FW_FILENAME);
+                //file_remove(CLASS_FW_FILENAME);
 
                 log_loc("INFO: timeHandler deactivate:");
                 //if (content != NULL)
@@ -265,6 +261,9 @@ void duration_check() {
             log_loc(fname);
             if (time_handler(fname) == EXIT_SUCCESS)
                 reset_dmcli(id);
+                char* str = malloc(512);
+                snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool \"false\"");
+                exec_run(str);
         }
 
         closedir(dp);

@@ -30,7 +30,7 @@ enum class_table
  * @return
  */
 int exec_run(char *str) {
-        if (system(str) == 0) {
+        if (system(str) != -1) {
             log_loc("SUCCESS: ExecRun line:");
             log_loc(str);
             return EXIT_SUCCESS;
@@ -38,7 +38,7 @@ int exec_run(char *str) {
             log_loc("FAIL: ExecRun NEXT TRYS");
             for (int i = 1; i < 5; i++) {
                 int ret = system(str);
-                if (ret == 0) {
+                if (ret != -1) {
                     log_loc("SUCCESS: ExecRun line");
                     log_loc(str);
                     return EXIT_SUCCESS;
@@ -589,7 +589,7 @@ int qos_removeAllClasses() {
         //revert_iptables(fname);
 
         if (fork() == 0) {
-            sleep(1);
+            //sleep(1);
             log_loc("INFO: removeAllClasses resetDmcli fork");
             reset_dmcli(id);
         }
