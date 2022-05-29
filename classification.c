@@ -494,16 +494,14 @@ int qos_addClass(const struct qos_class *param) {
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
 
-        if (*obj->data->duration != '\0') {
-            qos_DurationClass(obj);
-            log_loc("SUCCESS: AddClass make Class persistent");
+        qos_DurationClass(obj);
+        log_loc("SUCCESS: AddClass make Class persistent");
 
             // If there is no checker active
             if (tTime.check != true) {
                 log_loc("SUCCESS: AddClass Duration checker start");
                 duration_check();
             }
-        }
 
         free(exec1);
         free(exec2);
@@ -544,14 +542,20 @@ int qos_DurationClass(const qos_struct *obj) {
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i", obj->data->id);
 
     char *clas_file = malloc(strlen(obj->str) + 32);
-    snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
 
+    if (*obj->data->duration != '\0') {
+        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
+    } else {
+        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", "inf", obj->str);
+    }
     file_remove(fname);
     file_touch(fname);
     file_write_text(fname, "a", clas_file, "\n");
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
-    return 0;
+    free(clas_file);
+
+    return EXIT_SUCCESS;
 }
 
 /**
