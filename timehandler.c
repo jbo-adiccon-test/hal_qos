@@ -126,27 +126,21 @@ void reset_dmcli(uint id) {
     char* str = malloc(512);
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     exec_run(str);
-    log_loc(str);
 
     free(str);
     char *log = malloc(255);
