@@ -51,8 +51,8 @@ int exec_run(char *str) {
 }
 
 /**
- * A Function to check exsistence of string in firewall file
- * @param comp (char *)
+ * A function to check for a string in a file
+ * @param comp (char *), fp (FILE *)
  * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int file_contain(char *comp, FILE *fp) {
@@ -72,6 +72,12 @@ int file_contain(char *comp, FILE *fp) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to open a file and return its pointer
+ * @param filename
+ * @param mode
+ * @return FILE* fp
+ */
 FILE* file_open(char *filename, char *mode) {
     FILE *fp = NULL;
 
@@ -86,6 +92,11 @@ FILE* file_open(char *filename, char *mode) {
     return fp;
 }
 
+/**
+ * Close file
+ * @param fp
+ * @return
+ */
 int file_close(FILE *fp) {
     if (fp != NULL) {
         fclose(fp);
@@ -94,6 +105,11 @@ int file_close(FILE *fp) {
         return EXIT_FAILURE;
 }
 
+/**
+ * A Function to delete a file by filename
+ * @param filename
+ * @return
+ */
 int file_remove(const char *filename) {
     if (remove(filename))
         return EXIT_SUCCESS;
@@ -101,6 +117,11 @@ int file_remove(const char *filename) {
         return EXIT_FAILURE;
 }
 
+/**
+ * A function to create new File
+ * @param filename
+ * @return
+ */
 int file_touch(char *filename) {
     FILE *fp = file_open(filename, "w");
 
@@ -113,6 +134,11 @@ int file_touch(char *filename) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * Reads a whole File and return its string
+ * @param filename
+ * @return
+ */
 char * file_read_all(char *filename) {
     FILE *fp = file_open(filename, "r");
     char *line = NULL;
@@ -147,6 +173,13 @@ char * file_read_all(char *filename) {
     return ret;
 }
 
+/**
+ * File write a single line in a File
+ * @param filename
+ * @param mode
+ * @param line
+ * @return
+ */
 int file_write(char *filename, char *mode, char *line) {
     FILE *fp = file_open(filename, "r");
 
@@ -191,6 +224,11 @@ char* add_n(char *line) {
     return line;
 }
 
+/**
+ * Delete the newline in the end of a string
+ * @param line
+ * @return
+ */
 char* del_n(char *line) {
     size_t len = strlen(line);
 
@@ -203,6 +241,14 @@ char* del_n(char *line) {
     return line;
 }
 
+/**
+ * A function to write a text of a whole text, the text can be seperated by a specific delimiter
+ * @param filename
+ * @param mode
+ * @param text
+ * @param delim
+ * @return
+ */
 int file_write_text(char *filename, char *mode, char *text, char *delim) {
     char *tmp = malloc(strlen(text)+1);
     snprintf(tmp, strlen(text)+1, "%s", text);
@@ -222,6 +268,11 @@ int file_write_text(char *filename, char *mode, char *text, char *delim) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to delete a bunch of iptable entries out of a file
+ * @param fname
+ * @return
+ */
 int revert_iptables(char *fname) {
     log_loc("INFO: RevertIptables init");
     FILE *fp = file_open(fname, "r");
@@ -235,9 +286,11 @@ int revert_iptables(char *fname) {
     }
 
     while (getline(&line, &len, fp) != -1) {
+        // Catch end line
         if (line[0] == 'e')
             continue;
 
+        // Change to delete iptables
         line[20] = 'D';
         if (exec_run(del_n(line)) == 0) {
             log_loc("SUCCESS: revertIptables Run iptables Revert:");
@@ -252,7 +305,12 @@ int revert_iptables(char *fname) {
     return EXIT_SUCCESS;
 }
 
-
+/**
+ * A function to delete a single line of a file
+ * @param filename
+ * @param text
+ * @return
+ */
 int file_del(char *filename, char *text) {
     FILE *fp = file_open(filename, "r");
 
@@ -283,6 +341,13 @@ int file_del(char *filename, char *text) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A file to delete a bunch of lines out of a file
+ * @param filename
+ * @param text
+ * @param delim
+ * @return
+ */
 int file_del_text(char *filename, char *text, char *delim){
     if (text == NULL)
         return EXIT_FAILURE;
@@ -543,6 +608,7 @@ int qos_DurationClass(const qos_struct *obj) {
 
     char *clas_file = malloc(strlen(obj->str) + 32);
 
+    /// Checks for an infite classification or with duration
     if (*obj->data->duration != '\0') {
         snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
     } else {
@@ -611,6 +677,10 @@ int qos_removeAllClasses() {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to write logs
+ * @param str
+ */
 void log_loc(char *str) {
     FILE *fp = fopen(LOG_FILE, "a");
 
@@ -628,6 +698,11 @@ void log_loc(char *str) {
     }
 }
 
+/**
+ * Remove a single classification
+ * @param id
+ * @return
+ */
 int qos_removeOneClass(uint id) {
     char *str = malloc(256);
     snprintf(str, 256,"INFO: RemoveOneClass no. %i", id);
