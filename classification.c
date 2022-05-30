@@ -458,7 +458,7 @@ int qos_addClass(const struct qos_class *param) {
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
-        if (file_contain(exec4, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec4), fp) == EXIT_SUCCESS) {
             if (exec_run(del_n(exec4)) != 0)
                 log_loc("FAIL: system exec4");
             else
