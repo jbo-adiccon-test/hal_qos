@@ -205,8 +205,7 @@ int file_write(char *filename, char *mode, char *line) {
         return EXIT_FAILURE;
     }
 
-    if (chmod(filename, S_IRWXU | S_IRWXG | S_IRWXO))
-        log_loc("Cannot change permissions");
+
 
     log_loc("SUCCESS: FileWrite File has been written");
     log_loc(line);
@@ -591,7 +590,8 @@ int qos_addClass(const struct qos_class *param) {
         } else
             log_loc("INFO: AddClass Firewall is set up before");
 
-
+        if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
+            log_loc("Cannot change permissions");
 
     } else {
         log_loc("FAIL: AddClass Not right comps");

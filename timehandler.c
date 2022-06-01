@@ -263,11 +263,15 @@ void duration_check() {
         signal(SIGUSR1, sig_handler_time);
         signal(SIGUSR2, sig_handler_time);
         signal(SIGKILL, sig_handler_time);
+        tTime.check = true;
 
         while (1) {
             get_act_time(&tTime.act_t);
             DIR *dp;
             struct dirent *ep;
+
+            log_loc("INFO: Time checker status:");
+            log_loc((char *) tTime.check);
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
                 log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
@@ -303,7 +307,6 @@ void duration_check() {
         }
 
     } else {
-        tTime.check = true;
         log_loc("SUCCESS: DurationChecker Time check active");
     }
 }
