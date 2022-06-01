@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "classification.h"
 
@@ -170,6 +171,9 @@ int file_write(char *filename, char *mode, char *line) {
         log_loc("FAIL: FileWrite File not closable");
         return EXIT_FAILURE;
     }
+
+    if (chmod(filename, S_IRWXU | S_IRWXG | S_IRWXO))
+        log_loc("Cannot change permissions");
 
     log_loc("SUCCESS: FileWrite File has been written");
     log_loc(line);
@@ -551,6 +555,9 @@ int qos_DurationClass(const qos_struct *obj) {
     file_remove(fname);
     file_touch(fname);
     file_write_text(fname, "a", clas_file, "\n");
+
+    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
+        log_loc("Cannot change "CLASS_FW_FILENAME" permissions");
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
     free(clas_file);
