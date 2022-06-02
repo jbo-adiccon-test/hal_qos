@@ -622,7 +622,7 @@ int qos_DurationClass(const qos_struct *obj) {
     file_touch(fname);
     file_write_text(fname, "a", clas_file, "\n");
 
-    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
+    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO) != 0)
         log_loc("Cannot change "CLASS_FW_FILENAME" permissions");
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
