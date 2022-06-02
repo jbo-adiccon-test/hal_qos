@@ -590,8 +590,8 @@ int qos_addClass(const struct qos_class *param) {
         } else
             log_loc("INFO: AddClass Firewall is set up before");
 
-        if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO))
-            log_loc("Cannot change permissions");
+        if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO) != 0)
+            log_loc("FAIL: Cannot change permissions");
 
     } else {
         log_loc("FAIL: AddClass Not right comps");
