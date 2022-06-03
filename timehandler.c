@@ -264,7 +264,6 @@ void duration_check() {
         // Register signal handling
         signal(SIGUSR1, sig_handler_time);
         signal(SIGUSR2, sig_handler_time);
-        tTime.check = true;
 
         char *str = malloc(256);
         snprintf(str, 256, "Fork PID: %d-%d",tTime.self, getpid());
@@ -317,6 +316,7 @@ void duration_check() {
         }
 
     } else {
+        tTime.check = true;
         log_loc("SUCCESS: DurationChecker Time check active");
     }
 }
