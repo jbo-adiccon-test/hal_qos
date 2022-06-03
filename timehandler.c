@@ -82,6 +82,7 @@ u_int8_t struct_greater() {
             return 1;
         if (tTime.tar_t.tm_sec > tTime.act_t.tm_sec)
             return 1;
+        //return 0;
     } else {
         return 2;
     }
