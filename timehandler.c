@@ -15,13 +15,11 @@ void sig_handler_time(int signum) {
     printf("Signal: %u", signum);
 
     if (signum == SIGUSR1) {
-        kill(ppid, SIGUSR1);
-    } else if (signum == SIGUSR2) {
-        kill(pid, SIGUSR2);
-    } else if (signum == SIGKILL) {
-        kill(pid, SIGKILL);
+        log_loc("info: kill ppid");
         kill(ppid, SIGKILL);
-        return;
+    } else if (signum == SIGUSR2) {
+        log_loc("INFO: kill pid");
+        kill(pid, SIGKILL);
     }
 }
 
@@ -259,12 +257,20 @@ int time_handler(char *fname) {
  * fork to handle deprecated time entries
  */
 void duration_check() {
+
+    kill(0, SIGUSR2);
+
     if (fork() == 0) {
         // Register signal handling
         signal(SIGUSR1, sig_handler_time);
         signal(SIGUSR2, sig_handler_time);
-        signal(SIGKILL, sig_handler_time);
         tTime.check = true;
+
+        char *str = malloc(256);
+        snprintf(str, 256, "Fork PID: %d-%d",tTime.self, getpid());
+        log_loc(str);
+        free(str);
+        tTime.self = getpid();
 
         while (1) {
             get_act_time(&tTime.act_t);
@@ -272,7 +278,10 @@ void duration_check() {
             struct dirent *ep;
 
             log_loc("INFO: Time checker status:");
-            log_loc((char *) tTime.check);
+            if (tTime.check == true)
+                log_loc("TRUE");
+            else
+                log_loc("FALSE");
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
                 log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");

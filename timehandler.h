@@ -24,6 +24,8 @@
 struct t_time {
     struct tm act_t;
     struct tm tar_t;
+    pid_t self = -1;
+    ppid_t par = -1;
     bool check;
 } tTime;
 
