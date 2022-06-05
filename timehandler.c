@@ -15,7 +15,7 @@ void sig_handler_time(int signum) {
     printf("Signal: %u", signum);
 
     if (signum == SIGUSR1) {
-        log_loc("info: kill ppid");
+        log_loc("INFO: kill ppid");
         kill(ppid, SIGKILL);
     } else if (signum == SIGUSR2) {
         log_loc("INFO: kill pid");
