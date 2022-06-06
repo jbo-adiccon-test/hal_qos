@@ -685,8 +685,13 @@ int qos_removeAllClasses() {
     int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
     procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
 
-    if (procom->child != 0)
+    if (procom->child != 0) {
+        char *str = malloc(256);
+        snprintf(str,256, "INFO: Delete Child Proc %i", procom->child);
+        log_loc(str);
         kill(procom->child, 9);
+        free(str);
+    }
 
     shmdt(procom);
     shmctl(shmid,IPC_RMID,NULL);
