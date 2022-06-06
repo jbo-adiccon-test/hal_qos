@@ -666,10 +666,10 @@ int qos_removeAllClasses() {
         */
         //revert_iptables(fname);
 
-        //if (fork() == 0) {
+        if (fork() == 0) {
             log_loc("INFO: removeAllClasses resetDmcli fork");
             reset_dmcli(id);
-        //}
+        }
 
         log_loc("INFO: removeAllClasses done");
 
