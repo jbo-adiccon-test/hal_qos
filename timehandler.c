@@ -9,18 +9,21 @@
  * @param signum
  */
 void sig_handler_time(int signum) {
-    pid_t pid = getpid();
-    pid_t ppid = getppid();
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
 
     printf("Signal: %u", signum);
 
     if (signum == SIGUSR1) {
         log_loc("INFO: kill ppid");
-        kill(ppid, SIGKILL);
+        kill(procom->child, SIGKILL);
     } else if (signum == SIGUSR2) {
         log_loc("INFO: kill pid");
-        kill(pid, SIGKILL);
+        kill(procom->parent, SIGKILL);
     }
+
+    shmdt(procom);
 }
 
 /**
@@ -258,29 +261,35 @@ int time_handler(char *fname) {
  */
 void duration_check() {
 
-    kill(0, SIGUSR2);
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
 
     if (fork() == 0) {
         // Register signal handling
         signal(SIGUSR1, sig_handler_time);
         signal(SIGUSR2, sig_handler_time);
 
+        if (!procom->check)
+            return;
+
+        procom->child = getpid();
+
         char *str = malloc(256);
-        snprintf(str, 256, "Fork PID: %d-%d",tTime.self, getpid());
+        snprintf(str, 256, "Fork PID: %d-%d",procom->parent, procom->child);
         log_loc(str);
         free(str);
-        tTime.self = getpid();
 
         while (1) {
             get_act_time(&tTime.act_t);
             DIR *dp;
             struct dirent *ep;
 
-            log_loc("INFO: Time checker status:");
-            if (tTime.check == true)
-                log_loc("TRUE");
-            else
-                log_loc("FALSE");
+            //log_loc("INFO: Time checker status:");
+            //if (tTime.parent == true)
+            //    log_loc("TRUE");
+            //else
+            //    log_loc("FALSE");
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
                 log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
@@ -316,7 +325,8 @@ void duration_check() {
         }
 
     } else {
-        tTime.check = true;
+        procom->check = true;
         log_loc("SUCCESS: DurationChecker Time check active");
     }
+    shmdt(procom);
 }

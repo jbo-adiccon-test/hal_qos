@@ -16,6 +16,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+
+#include <sys/shm.h>
+#include <sys/ipc.h>
+
 #include "classification.h"
 
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
@@ -24,10 +28,13 @@
 struct t_time {
     struct tm act_t;
     struct tm tar_t;
-    pid_t self;
-    pid_t par;
-    bool check;
 } tTime;
+
+struct shm_data {
+    pid_t parent;
+    pid_t child;
+    bool check;
+};
 
 void sig_handler_time(int sig);
 

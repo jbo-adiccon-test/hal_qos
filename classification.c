@@ -554,10 +554,7 @@ int qos_addClass(const struct qos_class *param) {
         snprintf(concat, l + 2, "%s\n%s", exec4, exec5);
         obj->str = concat;
 
-        if (
-                ex4 == 1 &&
-                ex5 == 1
-                ) {
+        if ( ex4 == 1 && ex5 == 1 ) {
             log_loc("SUCCESS: AddClass All rules are ready to add...");
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
@@ -565,11 +562,18 @@ int qos_addClass(const struct qos_class *param) {
         qos_DurationClass(obj);
         log_loc("SUCCESS: AddClass make Class persistent");
 
-            // If there is no checker active
-            if (tTime.check != true) {
-                log_loc("SUCCESS: AddClass Duration checker start");
-                duration_check();
-            }
+        struct shm_data *procom;
+        int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+        procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
+
+        procom->parent = getpid();
+
+        // If there is no checker active
+        if (procom->check != true) {
+            log_loc("SUCCESS: AddClass Duration checker start");
+            duration_check();
+        }
+        shmdt(procom);
 
         free(exec1);
         free(exec2);
@@ -621,9 +625,6 @@ int qos_DurationClass(const qos_struct *obj) {
     file_remove(fname);
     file_touch(fname);
     file_write_text(fname, "a", clas_file, "\n");
-
-    if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO) != 0)
-        log_loc("Cannot change "CLASS_FW_FILENAME" permissions");
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
     free(clas_file);
