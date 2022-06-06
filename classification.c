@@ -601,6 +601,7 @@ int qos_addClass(const struct qos_class *param) {
         log_loc("FAIL: AddClass Not right comps");
     }
 
+    kill(getpid(), 9);
     return 0;
 }
 
@@ -666,11 +667,10 @@ int qos_removeAllClasses() {
         */
         //revert_iptables(fname);
 
-        if (fork() == 0) {
-            //sleep(1);
+        //if (fork() == 0) {
             log_loc("INFO: removeAllClasses resetDmcli fork");
             reset_dmcli(id);
-        }
+        //}
 
         log_loc("INFO: removeAllClasses done");
 
