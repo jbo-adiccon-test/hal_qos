@@ -601,7 +601,6 @@ int qos_addClass(const struct qos_class *param) {
         log_loc("FAIL: AddClass Not right comps");
     }
 
-    kill(getpid(), 9);
     return 0;
 }
 
@@ -629,6 +628,16 @@ int qos_DurationClass(const qos_struct *obj) {
 
     log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
     free(clas_file);
+
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
+
+    if (procom->child != 0)
+        kill(procom->child, 9);
+
+    shmdt(procom);
+    shmctl(shmid,IPC_RMID,NULL);
 
     return EXIT_SUCCESS;
 }
