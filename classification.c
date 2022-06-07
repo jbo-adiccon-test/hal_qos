@@ -780,9 +780,10 @@ int qos_removeAllClasses() {
 
     closedir(dp);
 
-    //revert_iptables(CLASS_FW_FILENAME);
+    revert_iptables(CLASS_FW_FILENAME);
     remove(CLASS_FW_FILENAME);
 
+    /*
     struct shm_data *procom;
     int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
     procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
@@ -797,7 +798,7 @@ int qos_removeAllClasses() {
 
     shmdt(procom);
     shmctl(shmid,IPC_RMID,NULL);
-
+    */
     return EXIT_SUCCESS;
 }
 
