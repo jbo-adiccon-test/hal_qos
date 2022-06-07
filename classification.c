@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "classification.h"
 
@@ -51,8 +52,8 @@ int exec_run(char *str) {
 }
 
 /**
- * A Function to check exsistence of string in firewall file
- * @param comp (char *)
+ * A function to check for a string in a file
+ * @param comp (char *), fp (FILE *)
  * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int file_contain(char *comp, FILE *fp) {
@@ -72,6 +73,12 @@ int file_contain(char *comp, FILE *fp) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to open a file and return its pointer
+ * @param filename
+ * @param mode
+ * @return FILE* fp
+ */
 FILE* file_open(char *filename, char *mode) {
     FILE *fp = NULL;
 
@@ -86,6 +93,11 @@ FILE* file_open(char *filename, char *mode) {
     return fp;
 }
 
+/**
+ * Close file
+ * @param fp
+ * @return
+ */
 int file_close(FILE *fp) {
     if (fp != NULL) {
         fclose(fp);
@@ -94,6 +106,11 @@ int file_close(FILE *fp) {
         return EXIT_FAILURE;
 }
 
+/**
+ * A Function to delete a file by filename
+ * @param filename
+ * @return
+ */
 int file_remove(const char *filename) {
     if (remove(filename))
         return EXIT_SUCCESS;
@@ -101,6 +118,11 @@ int file_remove(const char *filename) {
         return EXIT_FAILURE;
 }
 
+/**
+ * A function to create new File
+ * @param filename
+ * @return
+ */
 int file_touch(char *filename) {
     FILE *fp = file_open(filename, "w");
 
@@ -113,6 +135,11 @@ int file_touch(char *filename) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * Reads a whole File and return its string
+ * @param filename
+ * @return
+ */
 char * file_read_all(char *filename) {
     FILE *fp = file_open(filename, "r");
     char *line = NULL;
@@ -147,6 +174,13 @@ char * file_read_all(char *filename) {
     return ret;
 }
 
+/**
+ * File write a single line in a File
+ * @param filename
+ * @param mode
+ * @param line
+ * @return
+ */
 int file_write(char *filename, char *mode, char *line) {
     FILE *fp = file_open(filename, "r");
 
@@ -171,6 +205,8 @@ int file_write(char *filename, char *mode, char *line) {
         return EXIT_FAILURE;
     }
 
+
+
     log_loc("SUCCESS: FileWrite File has been written");
     log_loc(line);
 
@@ -191,6 +227,11 @@ char* add_n(char *line) {
     return line;
 }
 
+/**
+ * Delete the newline in the end of a string
+ * @param line
+ * @return
+ */
 char* del_n(char *line) {
     size_t len = strlen(line);
 
@@ -203,6 +244,14 @@ char* del_n(char *line) {
     return line;
 }
 
+/**
+ * A function to write a text of a whole text, the text can be seperated by a specific delimiter
+ * @param filename
+ * @param mode
+ * @param text
+ * @param delim
+ * @return
+ */
 int file_write_text(char *filename, char *mode, char *text, char *delim) {
     char *tmp = malloc(strlen(text)+1);
     snprintf(tmp, strlen(text)+1, "%s", text);
@@ -222,6 +271,11 @@ int file_write_text(char *filename, char *mode, char *text, char *delim) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to delete a bunch of iptable entries out of a file
+ * @param fname
+ * @return
+ */
 int revert_iptables(char *fname) {
     log_loc("INFO: RevertIptables init");
     FILE *fp = file_open(fname, "r");
@@ -235,9 +289,11 @@ int revert_iptables(char *fname) {
     }
 
     while (getline(&line, &len, fp) != -1) {
+        // Catch end line
         if (line[0] == 'e')
             continue;
 
+        // Change to delete iptables
         line[20] = 'D';
         if (exec_run(del_n(line)) == 0) {
             log_loc("SUCCESS: revertIptables Run iptables Revert:");
@@ -252,7 +308,12 @@ int revert_iptables(char *fname) {
     return EXIT_SUCCESS;
 }
 
-
+/**
+ * A function to delete a single line of a file
+ * @param filename
+ * @param text
+ * @return
+ */
 int file_del(char *filename, char *text) {
     FILE *fp = file_open(filename, "r");
 
@@ -283,6 +344,13 @@ int file_del(char *filename, char *text) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * A file to delete a bunch of lines out of a file
+ * @param filename
+ * @param text
+ * @param delim
+ * @return
+ */
 int file_del_text(char *filename, char *text, char *delim){
     if (text == NULL)
         return EXIT_FAILURE;
@@ -335,7 +403,7 @@ int main() {
     strcpy(test_class1->iface_in, "brlan0");
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    strcpy(test_class1->duration, "22:59:00-28.05.2022");
+    //strcpy(test_class1->duration, "22:59:00-28.05.2022");
 
     test_class2->traffic_class = 2;
     strcpy(test_class2->chain_name, "postrouting_qos");
@@ -458,7 +526,7 @@ int qos_addClass(const struct qos_class *param) {
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
-        if (file_contain(exec4, fp) == EXIT_SUCCESS) {
+        if (file_contain(add_n(exec4), fp) == EXIT_SUCCESS) {
             if (exec_run(del_n(exec4)) != 0)
                 log_loc("FAIL: system exec4");
             else
@@ -486,10 +554,7 @@ int qos_addClass(const struct qos_class *param) {
         snprintf(concat, l + 2, "%s\n%s", exec4, exec5);
         obj->str = concat;
 
-        if (
-                ex4 == 1 &&
-                ex5 == 1
-                ) {
+        if ( ex4 == 1 && ex5 == 1 ) {
             log_loc("SUCCESS: AddClass All rules are ready to add...");
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
@@ -497,11 +562,18 @@ int qos_addClass(const struct qos_class *param) {
         qos_DurationClass(obj);
         log_loc("SUCCESS: AddClass make Class persistent");
 
-            // If there is no checker active
-            if (tTime.check != true) {
-                log_loc("SUCCESS: AddClass Duration checker start");
-                duration_check();
-            }
+        struct shm_data *procom;
+        int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+        procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
+
+        procom->parent = getpid();
+
+        // If there is no checker active
+        if (procom->check != true) {
+            log_loc("SUCCESS: AddClass Duration checker start");
+            duration_check();
+        }
+        shmdt(procom);
 
         free(exec1);
         free(exec2);
@@ -522,7 +594,8 @@ int qos_addClass(const struct qos_class *param) {
         } else
             log_loc("INFO: AddClass Firewall is set up before");
 
-
+        if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO) != 0)
+            log_loc("FAIL: Cannot change permissions");
 
     } else {
         log_loc("FAIL: AddClass Not right comps");
@@ -543,6 +616,7 @@ int qos_DurationClass(const qos_struct *obj) {
 
     char *clas_file = malloc(strlen(obj->str) + 32);
 
+    /// Checks for an infite classification or with duration
     if (*obj->data->duration != '\0') {
         snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
     } else {
@@ -593,7 +667,6 @@ int qos_removeAllClasses() {
         //revert_iptables(fname);
 
         if (fork() == 0) {
-            //sleep(1);
             log_loc("INFO: removeAllClasses resetDmcli fork");
             reset_dmcli(id);
         }
@@ -608,9 +681,28 @@ int qos_removeAllClasses() {
     revert_iptables(CLASS_FW_FILENAME);
     remove(CLASS_FW_FILENAME);
 
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
+
+    if (procom->child != 0) {
+        char *str = malloc(256);
+        snprintf(str,256, "INFO: Delete Child Proc %i", procom->child);
+        log_loc(str);
+        kill(procom->child, 9);
+        free(str);
+    }
+
+    shmdt(procom);
+    shmctl(shmid,IPC_RMID,NULL);
+
     return EXIT_SUCCESS;
 }
 
+/**
+ * A function to write logs
+ * @param str
+ */
 void log_loc(char *str) {
     FILE *fp = fopen(LOG_FILE, "a");
 
@@ -626,4 +718,21 @@ void log_loc(char *str) {
 
         fclose(fp);
     }
+}
+
+/**
+ * Remove a single classification
+ * @param id
+ * @return
+ */
+int qos_removeOneClass(uint id) {
+    char *str = malloc(256);
+    snprintf(str, 256,"INFO: RemoveOneClass no. %i", id);
+    log_loc(str);
+
+    qos_removeAllClasses();
+
+    free(str);
+
+    return EXIT_SUCCESS;
 }

@@ -4,23 +4,33 @@
 
 #include "timehandler.h"
 
+/**
+ * A signal handler registrated in modul intern forks
+ * @param signum
+ */
 void sig_handler_time(int signum) {
-    pid_t pid = getpid();
-    pid_t ppid = getppid();
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
 
     printf("Signal: %u", signum);
 
     if (signum == SIGUSR1) {
-        kill(ppid, SIGUSR1);
+        log_loc("INFO: kill ppid");
+        kill(procom->child, SIGKILL);
     } else if (signum == SIGUSR2) {
-        kill(pid, SIGUSR2);
-    } else if (signum == SIGKILL) {
-        kill(pid, SIGKILL);
-        kill(ppid, SIGKILL);
-        return;
+        log_loc("INFO: kill pid");
+        kill(procom->parent, SIGKILL);
     }
+
+    shmdt(procom);
 }
 
+/**
+ * Returns a string that shows the time
+ * @param time
+ * @return
+ */
 char *get_str_time(struct tm time) {
     char *t_str;
     if (valid(time) == 1) {
@@ -37,6 +47,11 @@ char *get_str_time(struct tm time) {
     }
 }
 
+/**
+ * A function to get the actual time and store it in tTime struct
+ * @param act
+ * @return
+ */
 struct tm get_act_time(struct tm *act) {
     time_t raw;
     time(&raw);
@@ -48,6 +63,10 @@ struct tm get_act_time(struct tm *act) {
     return *act;
 }
 
+/**
+ * A function to check time when classification should be deleted in relation to actual time
+ * @return
+ */
 u_int8_t struct_greater() {
     tTime.act_t = get_act_time(&tTime.act_t);
 
@@ -64,6 +83,7 @@ u_int8_t struct_greater() {
             return 1;
         if (tTime.tar_t.tm_sec > tTime.act_t.tm_sec)
             return 1;
+        //return 0;
     } else {
         return 2;
     }
@@ -72,6 +92,11 @@ u_int8_t struct_greater() {
     return 0;
 }
 
+/**
+ * Checks for validation of substring that is going to be integrated in tTime
+ * @param tm
+ * @return
+ */
 u_int8_t valid(struct tm tm) {
     if (
             (tm.tm_sec >= 0 && tm.tm_sec < 60) ||
@@ -92,6 +117,11 @@ u_int8_t valid(struct tm tm) {
     }
 }
 
+/**
+ * Translate the string out of a file into a tm format
+ * @param str
+ * @return
+ */
 struct tm strtotm(const char *str) {
     char *ptr;
     struct tm ret;
@@ -121,32 +151,30 @@ struct tm strtotm(const char *str) {
     return ret;
 }
 
+/**
+ * Neutralize the dmcli entries of classification with id ...
+ * @param id
+ */
 void reset_dmcli(uint id) {
     log_loc("INFO dmcliReset:");
-    char* str = malloc(512);
+    char *str = malloc(512);
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".ChainName string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceIn string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
     exec_run(str);
-    log_loc(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".DSCPMark int 0");
     exec_run(str);
-    log_loc(str);
 
     free(str);
     char *log = malloc(255);
@@ -154,7 +182,12 @@ void reset_dmcli(uint id) {
     log_loc(log);
 }
 
-int time_handler (char *fname) {
+/**
+ * Checks time from a file for obsulation
+ * @param fname
+ * @return
+ */
+int time_handler(char *fname) {
     FILE *fp = file_open(fname, "r");
 
     if (fp == NULL)
@@ -165,14 +198,16 @@ int time_handler (char *fname) {
 
     getline(&s_line, &len, fp);
 
-    char *line = malloc(strlen(s_line)+1);
+    char *line = malloc(strlen(s_line) + 1);
     snprintf(line, strlen(s_line), "%s", s_line);
 
+    // Split string in end: and time string
     char *token = strtok(line, " ");
 
     if (strcmp(token, "end:") == 0) {
         token = strtok(NULL, " "); // Isolate time string
 
+        // inf time isnt interesting for handler
         if (strcmp(token, "inf") == 0)
             return EXIT_FAILURE;
 
@@ -185,6 +220,7 @@ int time_handler (char *fname) {
             log_loc(log);
             free(log);
 
+            // compare tTime
             if (struct_greater() == 0) { // check for oldness
                 file_close(fp);
                 // file_del(fname, s_line);
@@ -220,47 +256,77 @@ int time_handler (char *fname) {
     return EXIT_FAILURE;
 }
 
+/**
+ * fork to handle deprecated time entries
+ */
 void duration_check() {
+
+    struct shm_data *procom;
+    int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
+    procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
+
     if (fork() == 0) {
-    signal(SIGUSR1, sig_handler_time);
-    signal(SIGUSR2, sig_handler_time);
-    signal(SIGKILL, sig_handler_time);
+        // Register signal handling
+        signal(SIGUSR1, sig_handler_time);
+        signal(SIGUSR2, sig_handler_time);
 
-    while (1) {
-        get_act_time(&tTime.act_t);
-        DIR *dp;
-        struct dirent *ep;
+        if (!procom->check)
+            return;
 
-        if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-            log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
+        procom->child = getpid();
 
-        while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
-            char *fname = malloc(512);
-            snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+        char *str = malloc(256);
+        snprintf(str, 256, "Fork PID: %d-%d",procom->parent, procom->child);
+        log_loc(str);
+        free(str);
 
-            if (fname[20] == '.')
-                continue;
+        while (1) {
+            get_act_time(&tTime.act_t);
+            DIR *dp;
+            struct dirent *ep;
 
-            char *num = &ep->d_name[6];
-            uint id = (uint)atoi(num);
+            //log_loc("INFO: Time checker status:");
+            //if (tTime.parent == true)
+            //    log_loc("TRUE");
+            //else
+            //    log_loc("FALSE");
 
-            log_loc("INFO: Duration Checker run:");
-            log_loc(fname);
-            if (time_handler(fname) == EXIT_SUCCESS) {
-                reset_dmcli(id);
-                char *str = malloc(512);
-                snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Enable bool \"false\"");
-                exec_run(str);
+            if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
+                log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
+
+            while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
+                char *fname = malloc(512);
+                snprintf(fname, 512, "%s/%s", CLASS_PERSITENT_FILENAME, ep->d_name);
+
+                // Jump over system paths "." ".." ".tmp" ...
+                if (fname[20] == '.')
+                    continue;
+
+                // Get id of the obsulate classification
+                char *num = &ep->d_name[6];
+                uint id = (uint) atoi(num);
+
+                log_loc("INFO: Duration Checker run:");
+                log_loc(fname);
+
+                // Call checker routine to controll time
+                if (time_handler(fname) == EXIT_SUCCESS) {
+                    reset_dmcli(id);
+                    char *str = malloc(512);
+                    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id,
+                             ".Enable bool \"false\"");
+                    exec_run(str);
+                }
             }
+
+            closedir(dp);
+
+            sleep(15);
         }
 
-        closedir(dp);
-
-        sleep(15);
-    }
-
     } else {
-        tTime.check = true;
+        procom->check = true;
         log_loc("SUCCESS: DurationChecker Time check active");
     }
+    shmdt(procom);
 }
