@@ -70,6 +70,11 @@ struct tm get_act_time(struct tm *act) {
 u_int8_t struct_greater() {
     tTime.act_t = get_act_time(&tTime.act_t);
 
+    char *str = malloc(512);
+    snprintf(str, 512, "INFO: Time to compare --> TAR:%s - ACT:%s", get_str_time(tTime.tar_t), get_str_time(tTime.act_t));
+    log_loc(str);
+    free(str);
+
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
         if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
             return 1;
