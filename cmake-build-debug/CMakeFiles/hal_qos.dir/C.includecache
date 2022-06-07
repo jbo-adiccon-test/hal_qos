@@ -32,10 +32,6 @@ unistd.h
 timehandler.h
 /home/artemis/hal_qos/timehandler.h
 
-/home/artemis/hal_qos/timehandler.c
-timehandler.h
-/home/artemis/hal_qos/timehandler.h
-
 /home/artemis/hal_qos/timehandler.h
 time.h
 -
