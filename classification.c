@@ -561,7 +561,7 @@ int qos_addClass(const struct qos_class *param) {
         char *exec6 = (char *) malloc(255);
         snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
-        exec6 = realloc(exec6, strlen(exec6) * sizeof(char) + 1);
+        exec6 = realloc(exec6, strlen(exec6) * sizeof(char) - 1);
         if (file_contain(add_n(exec6), fp) == EXIT_SUCCESS) {
 
             if(exec_run(del_n(exec3)) != 0)
@@ -610,7 +610,7 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec9 = (char *) malloc(255);
         snprintf(exec9, 255,
-                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
+                 "%s -I PREROUTING -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
                  CLASS_IPTABLES_MANGLE_CMD_6, obj->data->iface_in, obj->data->mac_src_addr);
         exec9 = realloc(exec9, strlen(exec9) * sizeof(char));
         if (file_contain(add_n(exec9), fp) == EXIT_SUCCESS) {
@@ -625,7 +625,7 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec10 = (char *) malloc(257);
         snprintf(exec10, 257,
-                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
+                 "%s -I PREROUTING -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
                  CLASS_IPTABLES_MANGLE_CMD_6, obj->data->iface_in, obj->data->mac_src_addr);
         exec10 = realloc(exec10, strlen(exec10) * sizeof(char));
         if (file_contain(add_n(exec10), fp) == EXIT_SUCCESS) {
