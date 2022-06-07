@@ -484,10 +484,12 @@ int qos_addClass(const struct qos_class *param) {
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
         if (file_contain(add_n(exec1), fp) == EXIT_SUCCESS) {
+
             if(exec_run(del_n(exec1)) != 0)
                 log_loc("FAIL: system exec1");
             else
                 log_loc("SUCCESS: system exec1");
+
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
             file_open(CLASS_FW_FILENAME, "r");
@@ -498,10 +500,12 @@ int qos_addClass(const struct qos_class *param) {
                  obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
+
             if(exec_run(del_n(exec2)) != 0)
                 log_loc("FAIL: system exec2");
             else
                 log_loc("SUCCESS: addClass exec2");
+
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
             file_open(CLASS_FW_FILENAME, "r");
@@ -512,10 +516,12 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->chain_name, obj->data->iface_in);
         exec3 = realloc(exec3, strlen(exec3) * sizeof(char));
         if (file_contain(add_n(exec3), fp) == EXIT_SUCCESS) {
+
             if(exec_run(del_n(exec3)) != 0)
                 log_loc("FAIL: system exec3");
             else
                 log_loc("SUCCESS: addClass exec3");
+
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
             file_open(CLASS_FW_FILENAME, "r");
@@ -527,10 +533,12 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec4 = realloc(exec4, strlen(exec4) * sizeof(char));
         if (file_contain(add_n(exec4), fp) == EXIT_SUCCESS) {
+
             if (exec_run(del_n(exec4)) != 0)
                 log_loc("FAIL: system exec4");
             else
                 log_loc("SUCCESS: addClass exec4");
+
             ex4 = 1;
         }
 
@@ -540,10 +548,12 @@ int qos_addClass(const struct qos_class *param) {
                  CLASS_IPTABLES_MANGLE_CMD, obj->data->iface_in, obj->data->mac_src_addr);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
+
             if (exec_run(del_n(exec5)) != 0)
                 log_loc("FAIL: system exec5");
             else
                 log_loc("SUCCESS: addClass exec5");
+
             ex5 = 1;
         }
 
@@ -666,10 +676,12 @@ int qos_removeAllClasses() {
         */
         //revert_iptables(fname);
 
+        /*
         if (fork() == 0) {
             log_loc("INFO: removeAllClasses resetDmcli fork");
             reset_dmcli(id);
         }
+        */
 
         log_loc("INFO: removeAllClasses done");
 

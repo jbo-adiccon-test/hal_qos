@@ -311,7 +311,7 @@ void duration_check() {
 
                 // Call checker routine to controll time
                 if (time_handler(fname) == EXIT_SUCCESS) {
-                    reset_dmcli(id);
+                    //reset_dmcli(id);
                     char *str = malloc(512);
                     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id,
                              ".Enable bool \"false\"");
