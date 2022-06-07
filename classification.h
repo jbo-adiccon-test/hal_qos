@@ -26,6 +26,7 @@
 #include <signal.h>
 #include <time.h>
 #include <unistd.h>
+#include "timehandler.h"
 
 #define CLASS_MAC_SIZE 18
 #define CLASS_CHAIN_NAME_SIZE 16
@@ -44,47 +45,46 @@ struct qos_class
     char iface_in[IFNAMSIZ];
     // Output interface
     char iface_out[IFNAMSIZ];
-    // Source IP
-    char ip_src_addr[INET6_ADDRSTRLEN];
-    // Source IP mask
-    int ip_src_mask;
-    // Destination IP
-    char ip_dst_addr[INET6_ADDRSTRLEN];
-    // Destination IP mask
-    int ip_dst_mask;
-    // Protocol
-    int protocol;
-    // Start of source port range 
-    int port_src_range_start;
-    // End of source port range
-    int port_src_range_end;
-    // Start of destination port range
-    int port_dst_range_start;
-    // End of destination port range
-    int port_dst_range_end;
     // Source mac
     char mac_src_addr[CLASS_MAC_SIZE];
-    // --tcp-flags SYN,ACK,FIN,RST ACK except PSH
-    int tcp_flags;
-    // --tcp-flags ALL PSH
-    int tcp_psh;
 
     char duration[64];
 
     char alias[255];
 };
 
+/**
+ * A Type to alloc the qos class in an type
+ */
+typedef struct {
+    const struct qos_class *data;
+    size_t size;
+    char *str;
+} qos_struct;
+
 int qos_addClass(const struct qos_class *param);
+
 int qos_removeAllClasses();
-int qos_removeOneClass();
+int qos_removeOneClass(uint id);
 
+int qos_DurationClass(const qos_struct *obj);
 
-struct interval {
-    time_t cur, end;
-    double diff_t;
-};
-typedef struct interval runtime;
+void log_loc(char *str);
 
+int file_write_text(char *filename, char *mode, char *text, char *delim);
+int file_write(char *filename, char *mode, char *line);
+int file_touch(char *filename);
+int file_remove(const char *filename);
+int file_close(FILE *fp);
+FILE* file_open(char *filename, char *mode);
+int file_contain(char *comp, FILE *fp);
+int file_del_text(char *filename, char *text, char *delim);
+char * file_read_all(char *filename);
 
-void dur_daemon(const char *fin);
+int revert_iptables(char *fname);
+
+char* add_n(char *line);
+char* del_n(char *line);
+int file_del(char *filename, char *text);
+int exec_run(char *str);
 #endif

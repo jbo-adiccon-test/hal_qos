@@ -1,6 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/hal_qos.dir/classification.c.o"
   "CMakeFiles/hal_qos.dir/queue.c.o"
+  "CMakeFiles/hal_qos.dir/timehandler.c.o"
   "hal_qos"
   "hal_qos.pdb"
 )
