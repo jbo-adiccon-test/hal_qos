@@ -294,7 +294,7 @@ int revert_iptables(char *fname) {
         if (line[0] == 'e')
             continue;
 
-        if (line[3] == '6')
+        if (line[2] == '6')
             line[21] = 'D';
         else
             line[20] = 'D';
