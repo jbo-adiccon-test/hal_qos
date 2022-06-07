@@ -294,8 +294,11 @@ int revert_iptables(char *fname) {
         if (line[0] == 'e')
             continue;
 
-        // Change to delete iptables
-        line[20] = 'D';
+        if (line[3] == '6')
+            line[21] = 'D';
+        else
+            line[20] = 'D';
+
         if (exec_run(del_n(line)) == 0) {
             log_loc("SUCCESS: revertIptables Run iptables Revert:");
             log_loc(del_n(line));
