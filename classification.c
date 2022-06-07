@@ -561,7 +561,7 @@ int qos_addClass(const struct qos_class *param) {
         char *exec6 = (char *) malloc(255);
         snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
-        exec6 = realloc(exec6, strlen(exec6) * sizeof(char));
+        exec6 = realloc(exec6, strlen(exec6) * sizeof(char) + 1);
         if (file_contain(add_n(exec6), fp) == EXIT_SUCCESS) {
 
             if(exec_run(del_n(exec3)) != 0)
