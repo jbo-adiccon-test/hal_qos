@@ -1,4 +1,4 @@
-C:\Windows\system32\wsl.exe --distribution Ubuntu --exec /bin/zsh -c "export CLION_IDE=TRUE && export JETBRAINS_IDE=TRUE && cd /home/artemis/hal_qos/cmake-build-debug && /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G 'CodeBlocks - Unix Makefiles' /home/artemis/hal_qos"
--- Configuring done
--- Generating done
--- Build files have been written to: /home/artemis/hal_qos/cmake-build-debug
+WSL:  Configure Disable profile
+
+Cannot get compiler information:
+	Compiler command timed out: \usr\bin\cc -xc -g -std=gnu11 -fpch-preprocess -v -dD -E

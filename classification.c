@@ -558,9 +558,13 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
+        free(exec1);
+        free(exec2);
+        free(exec3);
+
         char *exec6 = (char *) malloc(255);
 
-        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
                  obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
 
         exec6 = realloc(exec6, strlen(exec6) * sizeof(char));
@@ -666,9 +670,6 @@ int qos_addClass(const struct qos_class *param) {
         }
         shmdt(procom);
 
-        free(exec1);
-        free(exec2);
-        free(exec3);
         free(exec4);
         free(exec5);
         free(exec6);
