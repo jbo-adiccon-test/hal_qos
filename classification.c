@@ -661,8 +661,8 @@ int qos_removeAllClasses() {
         if (fname[20] == '.')
             continue;
 
-        char *num = &ep->d_name[6];
-        int id = (int)atoi(num);
+        // char *num = &ep->d_name[6];
+        // int id = (int)atoi(num);
         /*
         FILE *fp = file_open(fname, "r");
         char *line = NULL;
