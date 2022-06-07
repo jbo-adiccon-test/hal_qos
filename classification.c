@@ -780,7 +780,7 @@ int qos_removeAllClasses() {
 
     closedir(dp);
 
-    revert_iptables(CLASS_FW_FILENAME);
+    //revert_iptables(CLASS_FW_FILENAME);
     remove(CLASS_FW_FILENAME);
 
     struct shm_data *procom;
