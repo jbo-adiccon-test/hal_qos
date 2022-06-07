@@ -15,6 +15,7 @@
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
 
 #define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
+#define CLASS_IPTABLES_MANGLE_CMD_6 "ip6tables -t mangle"
 #define LOG_FILE "/usr/ccsp/qos/log.txt"
 
 /*
@@ -475,7 +476,7 @@ int qos_addClass(const struct qos_class *param) {
 
         /// Alloc space for command
         char *exec1 = (char *) malloc(255);
-        int  ex4 = 0, ex5 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
+        int  ex4 = 0, ex5 = 0, ex9 = 0, ex10 = 0; //ex1 = 0, ex2 = 0, ex3 = 0;
 
         /// Set iptables command in exec
         snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
@@ -557,14 +558,92 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
-        file_close(fp);
+        char *exec6 = (char *) malloc(255);
+        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 obj->data->chain_name, obj->data->iface_out, obj->data->dscp_mark);
+        exec6 = realloc(exec6, strlen(exec6) * sizeof(char));
+        if (file_contain(add_n(exec6), fp) == EXIT_SUCCESS) {
 
-        ulong l = strlen(exec4) + strlen(exec5);
+            if(exec_run(del_n(exec3)) != 0)
+                log_loc("FAIL: system exec6");
+            else
+                log_loc("SUCCESS: addClass exec6");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec6));
+            file_open(CLASS_FW_FILENAME, "r");
+        }
+
+
+        char *exec7 = (char *) malloc(255);
+        snprintf(exec7, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 obj->data->chain_name, obj->data->iface_in, obj->data->dscp_mark);
+        exec7 = realloc(exec7, strlen(exec7) * sizeof(char));
+        if (file_contain(add_n(exec7), fp) == EXIT_SUCCESS) {
+
+            if(exec_run(del_n(exec7)) != 0)
+                log_loc("FAIL: system exec7");
+            else
+                log_loc("SUCCESS: addClass exec7");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec7));
+            file_open(CLASS_FW_FILENAME, "r");
+        }
+
+        char *exec8 = (char *) malloc(255);
+        snprintf(exec8, 255, "%s -I %s -o %s -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark",
+                 CLASS_IPTABLES_MANGLE_CMD_6, obj->data->chain_name, obj->data->iface_in);
+        exec8 = realloc(exec8, strlen(exec8) * sizeof(char));
+        if (file_contain(add_n(exec8), fp) == EXIT_SUCCESS) {
+
+            if(exec_run(del_n(exec8)) != 0)
+                log_loc("FAIL: system exec8");
+            else
+                log_loc("SUCCESS: addClass exec8");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec8));
+            file_open(CLASS_FW_FILENAME, "r");
+        }
+
+
+        char *exec9 = (char *) malloc(255);
+        snprintf(exec9, 255,
+                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
+                 CLASS_IPTABLES_MANGLE_CMD_6, obj->data->iface_in, obj->data->mac_src_addr);
+        exec9 = realloc(exec9, strlen(exec9) * sizeof(char));
+        if (file_contain(add_n(exec9), fp) == EXIT_SUCCESS) {
+
+            if(exec_run(del_n(exec9)) != 0)
+                log_loc("FAIL: system exec9");
+            else
+                log_loc("SUCCESS: addClass exec9");
+
+            ex9 = 1;
+        }
+
+        char *exec10 = (char *) malloc(257);
+        snprintf(exec10, 256,
+                 "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
+                 CLASS_IPTABLES_MANGLE_CMD_6, obj->data->iface_in, obj->data->mac_src_addr);
+        exec10 = realloc(exec10, strlen(exec10) * sizeof(char) + 1);
+        if (file_contain(add_n(exec10), fp) == EXIT_SUCCESS) {
+
+            if (exec_run(del_n(exec10)) != 0)
+                log_loc("FAIL: system exec10");
+            else
+                log_loc("SUCCESS: addClass exec10");
+
+            ex10 = 1;
+        }
+
+        ulong l = strlen(exec4) + strlen(exec5) + strlen(exec9) + strlen(exec10);
         char *concat = malloc((int) l + 2);
-        snprintf(concat, l + 2, "%s\n%s", exec4, exec5);
+        snprintf(concat, l + 4, "%s\n%s\n%s\n%s", exec4, exec5, exec9, exec10);
         obj->str = concat;
 
-        if ( ex4 == 1 && ex5 == 1 ) {
+        if ( ex4 == 1 && ex5 == 1 && ex9 == 1 && ex10 == 1) {
             log_loc("SUCCESS: AddClass All rules are ready to add...");
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
@@ -590,6 +669,11 @@ int qos_addClass(const struct qos_class *param) {
         free(exec3);
         free(exec4);
         free(exec5);
+        free(exec6);
+        free(exec7);
+        free(exec8);
+        free(exec9);
+        free(exec10);
         log_loc("SUCCESS: AddClass Make execs free");
 
         /// Integrate qos-firewall file into firewall
