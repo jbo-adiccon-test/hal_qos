@@ -76,25 +76,45 @@ u_int8_t struct_greater() {
     free(str);
 
     if (valid(tTime.act_t) == 0 && valid(tTime.tar_t) == 0) {
-        if (tTime.tar_t.tm_year > tTime.act_t.tm_year)
+        if (tTime.act_t.tm_year < tTime.tar_t.tm_year)
             return 1;
-        if (tTime.tar_t.tm_mon > tTime.act_t.tm_mon)
-            return 1;
-        if (tTime.tar_t.tm_mday > tTime.act_t.tm_mday)
-            return 1;
-        if (tTime.tar_t.tm_hour > tTime.act_t.tm_hour)
-            return 1;
-        if (tTime.tar_t.tm_min > tTime.act_t.tm_min)
-            return 1;
-        if (tTime.tar_t.tm_sec > tTime.act_t.tm_sec)
-            return 1;
-        //return 0;
+        else if (tTime.act_t.tm_year > tTime.tar_t.tm_year)
+            return 0;
+        else {
+            if (tTime.act_t.tm_mon < tTime.tar_t.tm_mon)
+                return 1;
+            else if (tTime.act_t.tm_mon > tTime.tar_t.tm_mon)
+                return 0;
+            else {
+                if (tTime.act_t.tm_mday < tTime.tar_t.tm_mday)
+                    return 1;
+                else if (tTime.act_t.tm_mday > tTime.tar_t.tm_mday)
+                    return 0;
+                else {
+                    if (tTime.act_t.tm_hour < tTime.tar_t.tm_hour)
+                        return 1;
+                    else if (tTime.act_t.tm_hour > tTime.tar_t.tm_hour)
+                        return 0;
+                    else {
+                        if (tTime.act_t.tm_min < tTime.tar_t.tm_min)
+                            return 1;
+                        else if (tTime.act_t.tm_min > tTime.tar_t.tm_min)
+                            return 0;
+                        else {
+                            if (tTime.act_t.tm_sec < tTime.tar_t.tm_sec)
+                                return 1;
+                            else {
+                                log_loc("INFO: StructGreater Time run down");
+                                return 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     } else {
         return 2;
     }
-
-    log_loc("INFO: StructGreater Time run down");
-    return 0;
 }
 
 /**

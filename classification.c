@@ -493,7 +493,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec1));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec2 = (char *) malloc(255);
@@ -509,7 +509,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec2));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec3 = (char *) malloc(255);
@@ -525,7 +525,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec3));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec4 = (char *) malloc(255);
@@ -571,7 +571,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec6));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
 
@@ -588,7 +588,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec7));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
         char *exec8 = (char *) malloc(255);
@@ -604,7 +604,7 @@ int qos_addClass(const struct qos_class *param) {
 
             file_close(fp);
             file_write(CLASS_FW_FILENAME, "a", add_n(exec8));
-            file_open(CLASS_FW_FILENAME, "r");
+            fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
 
@@ -624,10 +624,10 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         char *exec10 = (char *) malloc(257);
-        snprintf(exec10, 256,
+        snprintf(exec10, 257,
                  "%s -I prerouting_qos -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
                  CLASS_IPTABLES_MANGLE_CMD_6, obj->data->iface_in, obj->data->mac_src_addr);
-        exec10 = realloc(exec10, strlen(exec10) * sizeof(char) + 1);
+        exec10 = realloc(exec10, strlen(exec10) * sizeof(char));
         if (file_contain(add_n(exec10), fp) == EXIT_SUCCESS) {
 
             if (exec_run(del_n(exec10)) != 0)
@@ -639,8 +639,8 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         ulong l = strlen(exec4) + strlen(exec5) + strlen(exec9) + strlen(exec10);
-        char *concat = malloc((int) l + 2);
-        snprintf(concat, l + 4, "%s\n%s\n%s\n%s", exec4, exec5, exec9, exec10);
+        char *concat = malloc(l + 5);
+        snprintf(concat, l + 5, "%s\n%s\n%s\n%s", exec4, exec5, exec9, exec10);
         obj->str = concat;
 
         if ( ex4 == 1 && ex5 == 1 && ex9 == 1 && ex10 == 1) {
