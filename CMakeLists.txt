@@ -12,9 +12,3 @@ add_executable(hal_qos
         queue.h
         timehandler.c
         timehandler.h)
-
-add_executable(time_cpiler
-        time_test.c
-        timehandler.c
-        timehandler.h
-        )
