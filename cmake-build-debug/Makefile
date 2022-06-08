@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/limberg/hal-qos
+CMAKE_SOURCE_DIR = /home/artemis/hal_qos
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/limberg/hal-qos/cmake-build-debug
+CMAKE_BINARY_DIR = /home/artemis/hal_qos/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles /mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/artemis/hal_qos/cmake-build-debug/CMakeFiles /home/artemis/hal_qos/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/artemis/hal_qos/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -177,6 +177,33 @@ queue.c.s:
 	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/queue.c.s
 .PHONY : queue.c.s
 
+timehandler.o: timehandler.c.o
+
+.PHONY : timehandler.o
+
+# target to build an object file
+timehandler.c.o:
+	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.o
+.PHONY : timehandler.c.o
+
+timehandler.i: timehandler.c.i
+
+.PHONY : timehandler.i
+
+# target to preprocess a source file
+timehandler.c.i:
+	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.i
+.PHONY : timehandler.c.i
+
+timehandler.s: timehandler.c.s
+
+.PHONY : timehandler.s
+
+# target to generate assembly for a file
+timehandler.c.s:
+	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.s
+.PHONY : timehandler.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -192,6 +219,9 @@ help:
 	@echo "... queue.o"
 	@echo "... queue.i"
 	@echo "... queue.s"
+	@echo "... timehandler.o"
+	@echo "... timehandler.i"
+	@echo "... timehandler.s"
 .PHONY : help
 
 

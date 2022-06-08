@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /mnt/c/Users/limberg/hal-qos
+CMAKE_SOURCE_DIR = /home/artemis/hal_qos
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/limberg/hal-qos/cmake-build-debug
+CMAKE_BINARY_DIR = /home/artemis/hal_qos/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/hal_qos.dir/depend.make
@@ -59,43 +59,58 @@ include CMakeFiles/hal_qos.dir/flags.make
 
 CMakeFiles/hal_qos.dir/classification.c.o: CMakeFiles/hal_qos.dir/flags.make
 CMakeFiles/hal_qos.dir/classification.c.o: ../classification.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/hal_qos.dir/classification.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/hal_qos.dir/classification.c.o   -c /mnt/c/Users/limberg/hal-qos/classification.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/hal_qos.dir/classification.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/hal_qos.dir/classification.c.o   -c /home/artemis/hal_qos/classification.c
 
 CMakeFiles/hal_qos.dir/classification.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/hal_qos.dir/classification.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/limberg/hal-qos/classification.c > CMakeFiles/hal_qos.dir/classification.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/artemis/hal_qos/classification.c > CMakeFiles/hal_qos.dir/classification.c.i
 
 CMakeFiles/hal_qos.dir/classification.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/hal_qos.dir/classification.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/limberg/hal-qos/classification.c -o CMakeFiles/hal_qos.dir/classification.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/artemis/hal_qos/classification.c -o CMakeFiles/hal_qos.dir/classification.c.s
 
 CMakeFiles/hal_qos.dir/queue.c.o: CMakeFiles/hal_qos.dir/flags.make
 CMakeFiles/hal_qos.dir/queue.c.o: ../queue.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/hal_qos.dir/queue.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/hal_qos.dir/queue.c.o   -c /mnt/c/Users/limberg/hal-qos/queue.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/hal_qos.dir/queue.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/hal_qos.dir/queue.c.o   -c /home/artemis/hal_qos/queue.c
 
 CMakeFiles/hal_qos.dir/queue.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/hal_qos.dir/queue.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /mnt/c/Users/limberg/hal-qos/queue.c > CMakeFiles/hal_qos.dir/queue.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/artemis/hal_qos/queue.c > CMakeFiles/hal_qos.dir/queue.c.i
 
 CMakeFiles/hal_qos.dir/queue.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/hal_qos.dir/queue.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /mnt/c/Users/limberg/hal-qos/queue.c -o CMakeFiles/hal_qos.dir/queue.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/artemis/hal_qos/queue.c -o CMakeFiles/hal_qos.dir/queue.c.s
+
+CMakeFiles/hal_qos.dir/timehandler.c.o: CMakeFiles/hal_qos.dir/flags.make
+CMakeFiles/hal_qos.dir/timehandler.c.o: ../timehandler.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/hal_qos.dir/timehandler.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/hal_qos.dir/timehandler.c.o   -c /home/artemis/hal_qos/timehandler.c
+
+CMakeFiles/hal_qos.dir/timehandler.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/hal_qos.dir/timehandler.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/artemis/hal_qos/timehandler.c > CMakeFiles/hal_qos.dir/timehandler.c.i
+
+CMakeFiles/hal_qos.dir/timehandler.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/hal_qos.dir/timehandler.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/artemis/hal_qos/timehandler.c -o CMakeFiles/hal_qos.dir/timehandler.c.s
 
 # Object files for target hal_qos
 hal_qos_OBJECTS = \
 "CMakeFiles/hal_qos.dir/classification.c.o" \
-"CMakeFiles/hal_qos.dir/queue.c.o"
+"CMakeFiles/hal_qos.dir/queue.c.o" \
+"CMakeFiles/hal_qos.dir/timehandler.c.o"
 
 # External object files for target hal_qos
 hal_qos_EXTERNAL_OBJECTS =
 
 hal_qos: CMakeFiles/hal_qos.dir/classification.c.o
 hal_qos: CMakeFiles/hal_qos.dir/queue.c.o
+hal_qos: CMakeFiles/hal_qos.dir/timehandler.c.o
 hal_qos: CMakeFiles/hal_qos.dir/build.make
 hal_qos: CMakeFiles/hal_qos.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable hal_qos"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/artemis/hal_qos/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C executable hal_qos"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hal_qos.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -108,6 +123,6 @@ CMakeFiles/hal_qos.dir/clean:
 .PHONY : CMakeFiles/hal_qos.dir/clean
 
 CMakeFiles/hal_qos.dir/depend:
-	cd /mnt/c/Users/limberg/hal-qos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /mnt/c/Users/limberg/hal-qos /mnt/c/Users/limberg/hal-qos /mnt/c/Users/limberg/hal-qos/cmake-build-debug /mnt/c/Users/limberg/hal-qos/cmake-build-debug /mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/hal_qos.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/artemis/hal_qos/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/artemis/hal_qos /home/artemis/hal_qos /home/artemis/hal_qos/cmake-build-debug /home/artemis/hal_qos/cmake-build-debug /home/artemis/hal_qos/cmake-build-debug/CMakeFiles/hal_qos.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/hal_qos.dir/depend
 

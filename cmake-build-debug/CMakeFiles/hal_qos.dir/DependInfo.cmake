@@ -4,8 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/mnt/c/Users/limberg/hal-qos/classification.c" "/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/hal_qos.dir/classification.c.o"
-  "/mnt/c/Users/limberg/hal-qos/queue.c" "/mnt/c/Users/limberg/hal-qos/cmake-build-debug/CMakeFiles/hal_qos.dir/queue.c.o"
+  "/home/artemis/hal_qos/classification.c" "/home/artemis/hal_qos/cmake-build-debug/CMakeFiles/hal_qos.dir/classification.c.o"
+  "/home/artemis/hal_qos/queue.c" "/home/artemis/hal_qos/cmake-build-debug/CMakeFiles/hal_qos.dir/queue.c.o"
+  "/home/artemis/hal_qos/timehandler.c" "/home/artemis/hal_qos/cmake-build-debug/CMakeFiles/hal_qos.dir/timehandler.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
