@@ -435,19 +435,12 @@ int main() {
  * checks the data in classification struct from .h file. Then build the dscp_mark iptables in that kind:
  *
  * dmcli eRT addtable Device.QoS.Classification.
- * dmcli eRT setv Device.QoS.Classification.1.SourcePort int -1
- * dmcli eRT setv Device.QoS.Classification.1.SourcePortRangeMax int -1
- * dmcli eRT setv Device.QoS.Classification.1.DestPort int -1
- * dmcli eRT setv Device.QoS.Classification.1.DestPortRangeMax int -1
- * dmcli eRT setv Device.QoS.Classification.1.Protocol int -1
- *
- * dmcli eRT setv Device.QoS.Classification.1.TrafficClass int 2
  * dmcli eRT setv Device.QoS.Classification.1.ChainName string "postrouting_qos"
- *
  * dmcli eRT setv Device.QoS.Classification.1.IfaceOut string "erouter0"
  * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32
- * dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string "00:e0:4c:81:c8:40"
+ * dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string "9c:c9:eb:2a:01:0a"
  * dmcli eRT setv Device.QoS.Classification.1.IfaceIn string "brlan0"
+ * dmcli eRT setv Device.QoS.Classification.1.Duration string "16:50:00-08.06.2022"
  * dmcli eRT setv Device.QoS.Classification.1.Enable bool true
  *
  * The Parameter must be set
@@ -705,9 +698,9 @@ int qos_addClass(const struct qos_class *param) {
 }
 
 /**
- * Manifest a classification for a longer time.
+ * Manifest a classification for a longer time in classification structure /usr/ccsp/qos/class/.
  * @param obj
- * @return
+ * @return EXIT_SUCCESS
  */
 int qos_DurationClass(const qos_struct *obj) {
 
@@ -733,7 +726,8 @@ int qos_DurationClass(const qos_struct *obj) {
 }
 
 /**
- * Reverse the complete classification structure off dmcli
+ * Reverse the complete classification structure
+ * Main deletion done by Utopia firewall
  * @return
  */
 int qos_removeAllClasses() {
@@ -750,28 +744,6 @@ int qos_removeAllClasses() {
 
         if (fname[20] == '.')
             continue;
-
-        // char *num = &ep->d_name[6];
-        // int id = (int)atoi(num);
-        /*
-        FILE *fp = file_open(fname, "r");
-        char *line = NULL;
-        size_t len = 0;
-        getline(&line, &len, fp);
-        file_close(fp);
-
-        file_del(fname, line);
-        char *cont = file_read_all(fname);
-        file_del_text(CLASS_FW_FILENAME, cont, "\n");
-        */
-        //revert_iptables(fname);
-
-        /*
-        if (fork() == 0) {
-            log_loc("INFO: removeAllClasses resetDmcli fork");
-            reset_dmcli(id);
-        }
-        */
 
         log_loc("INFO: removeAllClasses done");
 
@@ -827,7 +799,7 @@ void log_loc(char *str) {
  * Remove a single classification
  * @param id
  * @return
- */
+ *
 int qos_removeOneClass(uint id) {
     char *str = malloc(256);
     snprintf(str, 256,"INFO: RemoveOneClass no. %i", id);
@@ -839,3 +811,4 @@ int qos_removeOneClass(uint id) {
 
     return EXIT_SUCCESS;
 }
+ */

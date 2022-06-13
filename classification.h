@@ -65,7 +65,7 @@ typedef struct {
 int qos_addClass(const struct qos_class *param);
 
 int qos_removeAllClasses();
-int qos_removeOneClass(uint id);
+//int qos_removeOneClass(uint id);
 
 int qos_DurationClass(const qos_struct *obj);
 

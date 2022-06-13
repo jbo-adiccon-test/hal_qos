@@ -32,6 +32,11 @@
 static int queue_exists =  0;
 static int index_wrr = 0;
 
+/**
+ * A function to remove the given Queue entry
+ * @param queue
+ * @return 0=SUCCESS, -1=FAILURE
+ */
 int qos_removeQueue(struct qos_queue *queue)
 {
     char buf[512] = {0};
@@ -57,6 +62,12 @@ int qos_removeQueue(struct qos_queue *queue)
     return 0;
 }
 
+/**
+ * A function to add a queue on a given index
+ * @param index
+ * @param queue
+ * @return 0=SUCCESS, -1=FAILURE
+ */
 int qos_addQueue(int index, struct qos_queue *queue)
 {
     char buf[512] = {0};
