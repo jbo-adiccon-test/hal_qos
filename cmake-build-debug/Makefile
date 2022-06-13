@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named time_cpiler
+
+# Build rule for target.
+time_cpiler: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 time_cpiler
+.PHONY : time_cpiler
+
+# fast build rule for target.
+time_cpiler/fast:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/build
+.PHONY : time_cpiler/fast
+
+#=============================================================================
 # Target rules for targets named hal_qos
 
 # Build rule for target.
@@ -177,12 +190,40 @@ queue.c.s:
 	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/queue.c.s
 .PHONY : queue.c.s
 
+time_test.o: time_test.c.o
+
+.PHONY : time_test.o
+
+# target to build an object file
+time_test.c.o:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/time_test.c.o
+.PHONY : time_test.c.o
+
+time_test.i: time_test.c.i
+
+.PHONY : time_test.i
+
+# target to preprocess a source file
+time_test.c.i:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/time_test.c.i
+.PHONY : time_test.c.i
+
+time_test.s: time_test.c.s
+
+.PHONY : time_test.s
+
+# target to generate assembly for a file
+time_test.c.s:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/time_test.c.s
+.PHONY : time_test.c.s
+
 timehandler.o: timehandler.c.o
 
 .PHONY : timehandler.o
 
 # target to build an object file
 timehandler.c.o:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/timehandler.c.o
 	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.o
 .PHONY : timehandler.c.o
 
@@ -192,6 +233,7 @@ timehandler.i: timehandler.c.i
 
 # target to preprocess a source file
 timehandler.c.i:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/timehandler.c.i
 	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.i
 .PHONY : timehandler.c.i
 
@@ -201,6 +243,7 @@ timehandler.s: timehandler.c.s
 
 # target to generate assembly for a file
 timehandler.c.s:
+	$(MAKE) -f CMakeFiles/time_cpiler.dir/build.make CMakeFiles/time_cpiler.dir/timehandler.c.s
 	$(MAKE) -f CMakeFiles/hal_qos.dir/build.make CMakeFiles/hal_qos.dir/timehandler.c.s
 .PHONY : timehandler.c.s
 
@@ -212,6 +255,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... time_cpiler"
 	@echo "... hal_qos"
 	@echo "... classification.o"
 	@echo "... classification.i"
@@ -219,6 +263,9 @@ help:
 	@echo "... queue.o"
 	@echo "... queue.i"
 	@echo "... queue.s"
+	@echo "... time_test.o"
+	@echo "... time_test.i"
+	@echo "... time_test.s"
 	@echo "... timehandler.o"
 	@echo "... timehandler.i"
 	@echo "... timehandler.s"

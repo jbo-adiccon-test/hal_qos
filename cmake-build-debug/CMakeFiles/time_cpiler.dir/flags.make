@@ -6,5 +6,5 @@ C_FLAGS = -g   -std=gnu11
 
 C_DEFINES = 
 
-C_INCLUDES = -I/home/artemis/hal_qos/. 
+C_INCLUDES = -I/mnt/c/Users/limberg/hal-qos/. 
 
