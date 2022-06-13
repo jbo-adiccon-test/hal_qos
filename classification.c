@@ -18,14 +18,6 @@
 #define CLASS_IPTABLES_MANGLE_CMD_6 "ip6tables -t mangle"
 #define LOG_FILE "/usr/ccsp/qos/log.txt"
 
-/*
-enum class_table
-{
-    IPTABLES_IPV4 = (1 << 0),
-    IPTABLES_IPV6 = (1 << 1),
-};
-*/
-
 /**
  * A simple, quiet indicator for run a command status after execution
  * @param str
@@ -316,7 +308,7 @@ int revert_iptables(char *fname) {
  * A function to delete a single line of a file
  * @param filename
  * @param text
- * @return
+ * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int file_del(char *filename, char *text) {
     FILE *fp = file_open(filename, "r");
@@ -353,7 +345,7 @@ int file_del(char *filename, char *text) {
  * @param filename
  * @param text
  * @param delim
- * @return
+ * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int file_del_text(char *filename, char *text, char *delim){
     if (text == NULL)

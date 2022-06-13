@@ -56,8 +56,6 @@ struct tm get_act_time(struct tm *act) {
     time_t raw;
     time(&raw);
     *act = *localtime(&raw);
-    //mktime(&tTime.act_t);
-    //printf("%s", asctime(&tTime.act_t));
     (*act).tm_mon = (*act).tm_mon + 1;
     (*act).tm_year = (*act).tm_year + 1900;
     return *act;
@@ -120,7 +118,7 @@ u_int8_t struct_greater() {
 /**
  * Checks for validation of substring that is going to be integrated in tTime
  * @param tm
- * @return
+ * @return 0 for SUCCESS validation, 1 for FAIL, 2 for FAIL because no validation
  */
 u_int8_t valid(struct tm tm) {
     if (
@@ -145,7 +143,7 @@ u_int8_t valid(struct tm tm) {
 /**
  * Translate the string out of a file into a tm format
  * @param str
- * @return
+ * @return Target time as struct, if data wrong returns act time
  */
 struct tm strtotm(const char *str) {
     char *ptr;
@@ -210,7 +208,7 @@ void reset_dmcli(uint id) {
 /**
  * Checks time from a file for obsulation
  * @param fname
- * @return
+ * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int time_handler(char *fname) {
     FILE *fp = file_open(fname, "r");
@@ -248,19 +246,8 @@ int time_handler(char *fname) {
             // compare tTime
             if (struct_greater() == 0) { // check for oldness
                 file_close(fp);
-                // file_del(fname, s_line);
-                // revert_iptables(fname);
-                // char *content = file_read_all(fname);
-                // file_remove(fname);
-                // file_del_text(CLASS_FW_FILENAME,content,"\n");
-
-                //file_remove(fname);
-                //revert_iptables(CLASS_FW_FILENAME);
-                //file_remove(CLASS_FW_FILENAME);
 
                 log_loc("INFO: timeHandler deactivate:");
-                //if (content != NULL)
-                //    log_loc(content);
 
                 free(line);
                 free(s_line);
@@ -309,12 +296,6 @@ void duration_check() {
             get_act_time(&tTime.act_t);
             DIR *dp;
             struct dirent *ep;
-
-            //log_loc("INFO: Time checker status:");
-            //if (tTime.parent == true)
-            //    log_loc("TRUE");
-            //else
-            //    log_loc("FALSE");
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
                 log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
