@@ -407,12 +407,14 @@ int main() {
     strcpy(test_class2->iface_in, "brlan1");
     test_class2->dscp_mark = 32;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
+    strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
     qos_removeAllClasses();
     strcpy(test_class1->duration, "20:25:59-27.05.2022");
+    strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
@@ -709,8 +711,15 @@ int qos_DurationClass(const qos_struct *obj) {
     char *clas_file = malloc(strlen(obj->str) + 32);
 
     /// Checks for an infite classification or with duration
+/** The following is temporary excluded
     if (*obj->data->duration != '\0') {
         snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
+    } else {
+        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", "inf", obj->str);
+    }
+*/
+    if (*obj->data->expiration != '\0') {
+        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->expiration, obj->str);
     } else {
         snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", "inf", obj->str);
     }
