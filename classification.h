@@ -49,7 +49,8 @@ struct qos_class
     char mac_src_addr[CLASS_MAC_SIZE];
 
     char duration[64];
-
+    char expiration[64];
+    
     char alias[255];
 };
 
