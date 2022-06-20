@@ -11,4 +11,4 @@ add_executable(hal_qos
         queue.c
         queue.h
         timehandler.c
-        timehandler.h)
+        timehandler.h datastruct_params.h)
