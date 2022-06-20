@@ -210,7 +210,7 @@ void reset_dmcli(uint id) {
 /**
  * Checks time from a file for obsulation
  * @param fname
- * @return
+ * @return EXIT_SUCCESS, EXIT_FAILURE
  */
 int time_handler(char *fname) {
     FILE *fp = file_open(fname, "r");
@@ -309,12 +309,6 @@ void duration_check() {
             get_act_time(&tTime.act_t);
             DIR *dp;
             struct dirent *ep;
-
-            //log_loc("INFO: Time checker status:");
-            //if (tTime.parent == true)
-            //    log_loc("TRUE");
-            //else
-            //    log_loc("FALSE");
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
                 log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
