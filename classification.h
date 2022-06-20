@@ -29,7 +29,6 @@
 #include "timehandler.h"
 
 #define CLASS_MAC_SIZE 18
-#define CLASS_CHAIN_NAME_SIZE 16
 
 struct qos_class
 {
