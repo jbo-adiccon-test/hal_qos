@@ -47,10 +47,8 @@ struct qos_class
     char iface_out[IFNAMSIZ];
     // Source mac
     char mac_src_addr[CLASS_MAC_SIZE];
-
-    char duration[64];
     char expiration[64];
-    
+   
     char alias[255];
 };
 
@@ -68,7 +66,7 @@ int qos_addClass(const struct qos_class *param);
 int qos_removeAllClasses();
 int qos_removeOneClass(uint id);
 
-int qos_DurationClass(const qos_struct *obj);
+int qos_ExpirationClass(const qos_struct *obj);
 
 void log_loc(char *str);
 

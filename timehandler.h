@@ -48,7 +48,7 @@ u_int8_t valid(struct tm tm);
 
 struct tm strtotm(const char *str);
 
-void duration_check();
+void expiration_check();
 
 void reset_dmcli(uint id);
 
