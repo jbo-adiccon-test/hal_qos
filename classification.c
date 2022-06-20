@@ -441,7 +441,7 @@ int qos_addClass(const struct qos_class *param) {
 
     log_loc("SUCCESS: AddClass Entry AddClass");
 
-    // Check for used Data
+    /// Check for used Data
     if (
             obj->data->dscp_mark != 0 &&
             obj->data->mac_src_addr[0] != '\0'
@@ -539,6 +539,7 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
+        /// Deallocate memory
         free(exec1);
         free(exec2);
         free(exec3);
@@ -625,6 +626,7 @@ int qos_addClass(const struct qos_class *param) {
             ex10 = 1;
         }
 
+        /// Organize String for class
         ulong l = strlen(exec4) + strlen(exec5) + strlen(exec9) + strlen(exec10);
         char *concat = malloc(l + 5);
         snprintf(concat, l + 5, "%s\n%s\n%s\n%s", exec4, exec5, exec9, exec10);
@@ -638,6 +640,7 @@ int qos_addClass(const struct qos_class *param) {
         qos_DurationClass(obj);
         log_loc("SUCCESS: AddClass make Class persistent");
 
+        /// IPC shared Memory
         struct shm_data *procom;
         int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
         procom = (struct shm_data *) shmat(shmid, (void *) 0, 0);
@@ -651,6 +654,7 @@ int qos_addClass(const struct qos_class *param) {
         }
         shmdt(procom);
 
+        /// Deallocate memory
         free(exec4);
         free(exec5);
         free(exec6);
