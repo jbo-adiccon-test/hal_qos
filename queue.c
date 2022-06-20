@@ -22,14 +22,7 @@
 #include "stdlib.h"
 #include "queue.h"
 
-#define QUEUE_DEFAULT_BANDWIDTH 2
-#define QUEUE_TOTAL_WEIGHT 12
-#define QUEUE_TRAFFIC_CLASS_MASK 0xFF
-#define QUEUE_MAX 8
-#define QUEUE_DEFAULT_CEIL 20
-#define QUEUE_DEFAULT_BE_RATE 1
-
-static int queue_exists =  0;
+static int queue_exists = 0;
 static int index_wrr = 0;
 
 /**
