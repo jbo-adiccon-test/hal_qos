@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/time_cpiler.dir/time_test.c.o CMakeFiles/time_cpiler.dir/timehandler.c.o  -o time_cpiler 
