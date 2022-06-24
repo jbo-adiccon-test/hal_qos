@@ -397,10 +397,10 @@ int main() {
     qos_removeAllClasses();
 
     test_class1->id = 1;
-    test_class1->dscp_mark = 32;
+    test_class1->dscp_mark = 24;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
     
-    test_class2->dscp_mark = 32;
+    test_class2->dscp_mark = 24;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
     strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
