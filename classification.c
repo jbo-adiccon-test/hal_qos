@@ -509,6 +509,23 @@ int qos_addClass(const struct qos_class *param) {
             fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
+        char *exec11 = (char *) malloc(257);
+        snprintf(exec11, 256,
+                 "%s -I %s -i %s -m mac --mac-source %s -j DSCP --set-dscp 24",
+                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+        exec11 = realloc(exec11, strlen(exec11) * sizeof(char) + 1);
+        if (file_contain(add_n(exec11), fp) == EXIT_SUCCESS) {
+
+            if (exec_run(del_n(exec11)) != 0)
+                log_loc("FAIL: system exec5");
+            else
+                log_loc("SUCCESS: addClass exec5");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec11));
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
+
         char *exec4 = (char *) malloc(255);
         snprintf(exec4, 255,
                  "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
@@ -539,10 +556,14 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
+
+
+
         /// Deallocate memory
         free(exec1);
         free(exec2);
         free(exec3);
+        free(exec11);
 
         char *exec6 = (char *) malloc(255);
 
@@ -595,6 +616,24 @@ int qos_addClass(const struct qos_class *param) {
             fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
+
+
+        char *exec12 = (char *) malloc(257);
+        snprintf(exec12, 256,
+                 "%s -I %s -i %s -m mac --mac-source %s -j DSCP --set-dscp 24",
+                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+        exec12 = realloc(exec12, strlen(exec12) * sizeof(char) + 1);
+        if (file_contain(add_n(exec12), fp) == EXIT_SUCCESS) {
+
+            if (exec_run(del_n(exec12)) != 0)
+                log_loc("FAIL: system exec12");
+            else
+                log_loc("SUCCESS: addClass exec12");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec12));
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
 
         char *exec9 = (char *) malloc(255);
         snprintf(exec9, 255,
@@ -662,6 +701,7 @@ int qos_addClass(const struct qos_class *param) {
         free(exec8);
         free(exec9);
         free(exec10);
+        free(exec12);
         log_loc("SUCCESS: AddClass Make execs free");
 
         /// Integrate qos-firewall file into firewall
