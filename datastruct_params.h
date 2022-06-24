@@ -19,4 +19,7 @@
 #define WAN_IFACE           "erouter0"
 #define LAN_IFACE           "brlan0"
 
+#define IP4_FIRE_MARK       4444
+#define IP6_FIRE_MARK       4444
+
 #endif //HAL_QOS_DATASTRUCT_PARAMS_H

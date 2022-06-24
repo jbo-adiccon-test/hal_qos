@@ -460,8 +460,8 @@ int qos_addClass(const struct qos_class *param) {
         int  ex4 = 0, ex5 = 0, ex9 = 0, ex10 = 0;
 
         /// Set iptables command in exec
-        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
-                 IP4POSTROUTING, WAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 IP4POSTROUTING, WAN_IFACE, IP4_FIRE_MARK, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
@@ -478,8 +478,8 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         char *exec2 = (char *) malloc(255);
-        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
-                 IP4POSTROUTING, LAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 IP4POSTROUTING, LAN_IFACE, IP4_FIRE_MARK, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
 
@@ -526,8 +526,8 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec5 = (char *) malloc(257);
         snprintf(exec5, 256,
-                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
-                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark %d",
+                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr, IP4_FIRE_MARK);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
 
@@ -546,8 +546,8 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec6 = (char *) malloc(255);
 
-        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
-                 IP6POSTROUTING, WAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 IP6POSTROUTING, WAN_IFACE, IP6_FIRE_MARK, obj->data->dscp_mark);
 
         //exec6 = realloc(exec6, strlen(exec6) * sizeof(char));
 
@@ -564,8 +564,8 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         char *exec7 = (char *) malloc(255);
-        snprintf(exec7, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
-                 IP6POSTROUTING, LAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec7, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 IP6POSTROUTING, LAN_IFACE, IP6_FIRE_MARK, obj->data->dscp_mark);
         exec7 = realloc(exec7, strlen(exec7) * sizeof(char));
         if (file_contain(add_n(exec7), fp) == EXIT_SUCCESS) {
 
@@ -613,8 +613,8 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec10 = (char *) malloc(257);
         snprintf(exec10, 257,
-                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
-                 CLASS_IPTABLES_MANGLE_CMD_6, IP6PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark %d",
+                 CLASS_IPTABLES_MANGLE_CMD_6, IP6PREROUTING, LAN_IFACE, obj->data->mac_src_addr, IP6_FIRE_MARK);
         exec10 = realloc(exec10, strlen(exec10) * sizeof(char));
         if (file_contain(add_n(exec10), fp) == EXIT_SUCCESS) {
 
