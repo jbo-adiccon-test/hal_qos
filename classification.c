@@ -397,10 +397,10 @@ int main() {
     qos_removeAllClasses();
 
     test_class1->id = 1;
-    test_class1->dscp_mark = 32;
+    test_class1->dscp_mark = 24;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
     
-    test_class2->dscp_mark = 32;
+    test_class2->dscp_mark = 24;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
     strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
@@ -425,7 +425,7 @@ int main() {
  * dmcli eRT addtable Device.QoS.Classification.
  * dmcli eRT setv Device.QoS.Classification.1.ChainName string "postrouting_qos"
  * dmcli eRT setv Device.QoS.Classification.1.IfaceOut string "erouter0"
- * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32
+ * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 36
  * dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string "9c:c9:eb:2a:01:0a"
  * dmcli eRT setv Device.QoS.Classification.1.IfaceIn string "brlan0"
  * dmcli eRT setv Device.QoS.Classification.1.Duration string "16:50:00-08.06.2022"
@@ -460,8 +460,8 @@ int qos_addClass(const struct qos_class *param) {
         int  ex4 = 0, ex5 = 0, ex9 = 0, ex10 = 0;
 
         /// Set iptables command in exec
-        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
-                 IP4POSTROUTING, WAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec1, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 IP4POSTROUTING, WAN_IFACE, IP4_FIRE_MARK, obj->data->dscp_mark);
         /// Realloc space
         exec1 = realloc(exec1, strlen(exec1) * sizeof(char));
 
@@ -478,8 +478,8 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         char *exec2 = (char *) malloc(255);
-        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
-                 IP4POSTROUTING, LAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec2, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD,
+                 IP4POSTROUTING, LAN_IFACE, IP4_FIRE_MARK, obj->data->dscp_mark);
         exec2 = realloc(exec2, strlen(exec2) * sizeof(char));
         if (file_contain(add_n(exec2), fp) == EXIT_SUCCESS) {
 
@@ -509,6 +509,23 @@ int qos_addClass(const struct qos_class *param) {
             fp = file_open(CLASS_FW_FILENAME, "r");
         }
 
+        char *exec11 = (char *) malloc(257);
+        snprintf(exec11, 256,
+                 "%s -I %s -i %s -m mac --mac-source %s -j DSCP --set-dscp %d",
+                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr, obj->data->dscp_mark);
+        exec11 = realloc(exec11, strlen(exec11) * sizeof(char) + 1);
+        if (file_contain(add_n(exec11), fp) == EXIT_SUCCESS) {
+
+            if (exec_run(del_n(exec11)) != 0)
+                log_loc("FAIL: system exec5");
+            else
+                log_loc("SUCCESS: addClass exec5");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec11));
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
+
         char *exec4 = (char *) malloc(255);
         snprintf(exec4, 255,
                  "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
@@ -526,8 +543,8 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec5 = (char *) malloc(257);
         snprintf(exec5, 256,
-                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
-                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark %d",
+                 CLASS_IPTABLES_MANGLE_CMD, IP4PREROUTING, LAN_IFACE, obj->data->mac_src_addr, IP4_FIRE_MARK);
         exec5 = realloc(exec5, strlen(exec5) * sizeof(char) + 1);
         if (file_contain(add_n(exec5), fp) == EXIT_SUCCESS) {
 
@@ -539,15 +556,19 @@ int qos_addClass(const struct qos_class *param) {
             ex5 = 1;
         }
 
+
+
+
         /// Deallocate memory
         free(exec1);
         free(exec2);
         free(exec3);
+        free(exec11);
 
         char *exec6 = (char *) malloc(255);
 
-        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
-                 IP6POSTROUTING, WAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec6, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 IP6POSTROUTING, WAN_IFACE, IP6_FIRE_MARK, obj->data->dscp_mark);
 
         //exec6 = realloc(exec6, strlen(exec6) * sizeof(char));
 
@@ -564,8 +585,8 @@ int qos_addClass(const struct qos_class *param) {
         }
 
         char *exec7 = (char *) malloc(255);
-        snprintf(exec7, 255, "%s -I %s -o %s -m mark --mark 4444 -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
-                 IP6POSTROUTING, LAN_IFACE, obj->data->dscp_mark);
+        snprintf(exec7, 255, "%s -I %s -o %s -m mark --mark %d -j DSCP --set-dscp %d", CLASS_IPTABLES_MANGLE_CMD_6,
+                 IP6POSTROUTING, LAN_IFACE, IP6_FIRE_MARK, obj->data->dscp_mark);
         exec7 = realloc(exec7, strlen(exec7) * sizeof(char));
         if (file_contain(add_n(exec7), fp) == EXIT_SUCCESS) {
 
@@ -596,6 +617,24 @@ int qos_addClass(const struct qos_class *param) {
         }
 
 
+
+        char *exec12 = (char *) malloc(257);
+        snprintf(exec12, 256,
+                 "%s -I %s -i %s -m mac --mac-source %s -j DSCP --set-dscp %d",
+                 CLASS_IPTABLES_MANGLE_CMD_6, IP6PREROUTING, LAN_IFACE, obj->data->mac_src_addr, obj->data->dscp_mark);
+        exec12 = realloc(exec12, strlen(exec12) * sizeof(char) + 1);
+        if (file_contain(add_n(exec12), fp) == EXIT_SUCCESS) {
+
+            if (exec_run(del_n(exec12)) != 0)
+                log_loc("FAIL: system exec12");
+            else
+                log_loc("SUCCESS: addClass exec12");
+
+            file_close(fp);
+            file_write(CLASS_FW_FILENAME, "a", add_n(exec12));
+            fp = file_open(CLASS_FW_FILENAME, "r");
+        }
+
         char *exec9 = (char *) malloc(255);
         snprintf(exec9, 255,
                  "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j CONNMARK --save-mark",
@@ -613,8 +652,8 @@ int qos_addClass(const struct qos_class *param) {
 
         char *exec10 = (char *) malloc(257);
         snprintf(exec10, 257,
-                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark 4444",
-                 CLASS_IPTABLES_MANGLE_CMD_6, IP6PREROUTING, LAN_IFACE, obj->data->mac_src_addr);
+                 "%s -I %s -i %s -m state --state NEW -m mac --mac-source %s -j MARK --set-mark %d",
+                 CLASS_IPTABLES_MANGLE_CMD_6, IP6PREROUTING, LAN_IFACE, obj->data->mac_src_addr, IP6_FIRE_MARK);
         exec10 = realloc(exec10, strlen(exec10) * sizeof(char));
         if (file_contain(add_n(exec10), fp) == EXIT_SUCCESS) {
 
@@ -662,6 +701,7 @@ int qos_addClass(const struct qos_class *param) {
         free(exec8);
         free(exec9);
         free(exec10);
+        free(exec12);
         log_loc("SUCCESS: AddClass Make execs free");
 
         /// Integrate qos-firewall file into firewall
