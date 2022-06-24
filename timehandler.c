@@ -190,7 +190,7 @@ void reset_dmcli(uint id) {
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".IfaceOut string \"\"");
     exec_run(str);
     strcpy(str, "");
-    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".Duration string \"\"");
+    snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".X_DT_Expiration string \"\"");
     exec_run(str);
     strcpy(str, "");
     snprintf(str, 512, "%s%i%s", "dmcli eRT setv Device.QoS.Classification.", id, ".SourceMACAddress string \"\"");
@@ -271,7 +271,7 @@ int time_handler(char *fname) {
 /**
  * fork to handle deprecated time entries
  */
-void duration_check() {
+void expiration_check() {
 
     struct shm_data *procom;
     int shmid = shmget(0x1234, 1024, 0666 | IPC_CREAT);
@@ -298,7 +298,7 @@ void duration_check() {
             struct dirent *ep;
 
             if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-                log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
+                log_loc("FAIL: ExpirationChecker No class DIR in /usr/ccsp/qos/class/");
 
             while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
                 char *fname = malloc(512);
@@ -312,7 +312,7 @@ void duration_check() {
                 char *num = &ep->d_name[6];
                 uint id = (uint) atoi(num);
 
-                log_loc("INFO: Duration Checker run:");
+                log_loc("INFO: Expiration Checker run:");
                 log_loc(fname);
 
                 // Call checker routine to controll time
@@ -332,7 +332,7 @@ void duration_check() {
 
     } else {
         procom->check = true;
-        log_loc("SUCCESS: DurationChecker Time check active");
+        log_loc("SUCCESS: ExpirationChecker Time check active");
     }
     shmdt(procom);
 }

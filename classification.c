@@ -399,16 +399,16 @@ int main() {
     test_class1->id = 1;
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-    //strcpy(test_class1->duration, "22:59:00-28.05.2022");
-
+    
     test_class2->dscp_mark = 32;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
+    strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
 
     qos_removeAllClasses();
-    strcpy(test_class1->duration, "20:25:59-27.05.2022");
+    strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
     if (qos_addClass(test_class1) == -1)
         return EXIT_FAILURE;
@@ -637,7 +637,7 @@ int qos_addClass(const struct qos_class *param) {
             file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
         }
 
-        qos_DurationClass(obj);
+        qos_ExpirationClass(obj);
         log_loc("SUCCESS: AddClass make Class persistent");
 
         /// IPC shared Memory
@@ -649,8 +649,8 @@ int qos_addClass(const struct qos_class *param) {
 
         // If there is no checker active
         if (procom->check != true) {
-            log_loc("SUCCESS: AddClass Duration checker start");
-            duration_check();
+            log_loc("SUCCESS: AddClass Expiration checker start");
+            expiration_check();
         }
         shmdt(procom);
 
@@ -691,16 +691,16 @@ int qos_addClass(const struct qos_class *param) {
  * @param obj
  * @return EXIT_SUCCESS
  */
-int qos_DurationClass(const qos_struct *obj) {
+int qos_ExpirationClass(const qos_struct *obj) {
 
     char *fname = malloc(256);
     snprintf(fname, 255, CLASS_PERSITENT_FILENAME"/class_%i", obj->data->id);
 
     char *clas_file = malloc(strlen(obj->str) + 32);
 
-    /// Checks for an infite classification or with duration
-    if (*obj->data->duration != '\0') {
-        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->duration, obj->str);
+    /// Checks for an infite classification or with expiration
+    if (*obj->data->expiration != '\0') {
+        snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", obj->data->expiration, obj->str);
     } else {
         snprintf(clas_file, strlen(obj->str) + 32, "end: %s\n%s", "inf", obj->str);
     }
@@ -708,7 +708,7 @@ int qos_DurationClass(const qos_struct *obj) {
     file_touch(fname);
     file_write_text(fname, "a", clas_file, "\n");
 
-    log_loc("SUCCESS: DurationClass Make duration in class_%i persistent");
+    log_loc("SUCCESS: ExpirationClass Make expiration in class_%i persistent");
     free(clas_file);
 
     return EXIT_SUCCESS;
@@ -725,7 +725,7 @@ int qos_removeAllClasses() {
     struct dirent *ep;
 
     if (!(dp = opendir(CLASS_PERSITENT_FILENAME)))
-        log_loc("FAIL: DurationChecker No class DIR in /usr/ccsp/qos/class/");
+        log_loc("FAIL: ExpirationChecker No class DIR in /usr/ccsp/qos/class/");
 
     while ((ep = readdir(dp)) != NULL) { // Get all entries in Dir
         char *fname = malloc(277);
