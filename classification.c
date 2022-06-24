@@ -399,9 +399,7 @@ int main() {
     test_class1->id = 1;
     test_class1->dscp_mark = 32;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
-
-    //strcpy(test_class1->duration, "22:59:00-28.05.2022");
-  
+    
     test_class2->dscp_mark = 32;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
     strcpy(test_class1->expiration, "20:25:59-27.05.2022");
