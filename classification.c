@@ -425,7 +425,7 @@ int main() {
  * dmcli eRT addtable Device.QoS.Classification.
  * dmcli eRT setv Device.QoS.Classification.1.ChainName string "postrouting_qos"
  * dmcli eRT setv Device.QoS.Classification.1.IfaceOut string "erouter0"
- * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 32
+ * dmcli eRT setv Device.QoS.Classification.1.DSCPMark int 24
  * dmcli eRT setv Device.QoS.Classification.1.SourceMACAddress string "9c:c9:eb:2a:01:0a"
  * dmcli eRT setv Device.QoS.Classification.1.IfaceIn string "brlan0"
  * dmcli eRT setv Device.QoS.Classification.1.Duration string "16:50:00-08.06.2022"
