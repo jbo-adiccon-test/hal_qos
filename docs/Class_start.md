@@ -130,3 +130,48 @@ When the string is ready, a reallocation follows. To avoid double entries, the f
     ip6tables -t mangle -I prerouting_qos -i $IFLAN -m mac --mac-source $PRIOMAC -j DSCP --set-dscp 36
     ip6tables -t mangle -I prerouting_qos -i $IFLAN -m state --state NEW -m mac --mac-source $PRIOMAC -j CONNMARK --save-mark
     ip6tables -t mangle -I prerouting_qos -i $IFLAN -m state --state NEW -m mac --mac-source $PRIOMAC -j MARK --set-mark 4444
+
+### Handle strings
+Obviously there are two kinds of iptables. The difference of IPv4 and IPv6 isn't interesting at the moment. More interesting is to spit in iptables for all classifications, means these are always the same. And the second kind which classification for real per MAC address. 
+This one we save into qos_struct->str. 
+
+    /// Organize String for class
+    ulong l = strlen(exec4) + strlen(exec5) + strlen(exec9) + strlen(exec10);
+    char *concat = malloc(l + 5);
+    snprintf(concat, l + 5, "%s\n%s\n%s\n%s", exec4, exec5, exec9, exec10);
+    obj->str = concat;
+
+    if ( ex4 == 1 && ex5 == 1 && ex9 == 1 && ex10 == 1) {
+        log_loc("SUCCESS: AddClass All rules are ready to add...");
+        file_write_text(CLASS_FW_FILENAME,"a",obj->str, "\n");
+    }
+
+After this firewall file will be written.  
+And a file for the classification information and expiration will be written containing the important iptables and expiration infos.
+
+    qos_ExpirationClass(obj);
+
+Now the time phase starts, read in the section for this.
+
+At the end, the real firewall linkage have to be done, for this add a line to utopia firewall.
+
+
+    /// Integrate qos-firewall file into firewall
+    fp = file_open(CLASS_FW_RELOAD_FILENAME, "r");
+    if (file_contain(CLASS_FW_FILENAME, fp) == EXIT_SUCCESS) {
+    file_close(fp);
+      if (file_write(CLASS_FW_RELOAD_FILENAME, "a", add_n(CLASS_FW_FILENAME)) == EXIT_FAILURE) {
+        log_loc("FAIL: AddClass set iptables rules via firewall");
+        return EXIT_FAILURE;
+      } else
+        log_loc("SUCCESS: AddClass Firewall Utopia entry done");
+      } else
+        log_loc("INFO: AddClass Firewall is set up before");
+
+      if (chmod(CLASS_FW_FILENAME, S_IRWXU | S_IRWXG | S_IRWXO) != 0)
+        log_loc("FAIL: Cannot change permissions");
+      } else {
+        log_loc("FAIL: AddClass Not right comps");
+    }
+
+It's really important to add the right permissions to the firewall file.
