@@ -2,23 +2,18 @@
 // Created by limberg on 12.01.2022.
 //
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-
 #include "classification.h"
+#include "datastruct_params.h"
 
+// filename hardcoded
 #define CLASS_FW_FILENAME "/tmp/qos_rules.sh"
-
 #define CLASS_FW_RELOAD_FILENAME "/etc/utopia/service.d/firewall_log_handle.sh"
 #define CLASS_PERSITENT_FILENAME "/usr/ccsp/qos/class"
-
-#define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
-#define CLASS_IPTABLES_MANGLE_CMD_6 "ip6tables -t mangle"
 #define LOG_FILE "/usr/ccsp/qos/log.txt"
 
-#include "datastruct_params.h"
+// template for iptable string
+#define CLASS_IPTABLES_MANGLE_CMD "iptables -t mangle"
+#define CLASS_IPTABLES_MANGLE_CMD_6 "ip6tables -t mangle"
 
 /**
  * A simple, quiet indicator for run a command status after execution
@@ -209,6 +204,11 @@ int file_write(char *filename, char *mode, char *line) {
     return EXIT_SUCCESS;
 }
 
+/**
+ * Adds a new line if there isn't at the end
+ * @param line
+ * @return line with \\n parameter
+ */
 char* add_n(char *line) {
     size_t len = strlen(line);
 
@@ -226,7 +226,7 @@ char* add_n(char *line) {
 /**
  * Delete the newline in the end of a string
  * @param line
- * @return
+ * @return line without \\n parameter
  */
 char* del_n(char *line) {
     size_t len = strlen(line);
@@ -246,7 +246,7 @@ char* del_n(char *line) {
  * @param mode
  * @param text
  * @param delim
- * @return
+ * @return EXIT_SUCCESS
  */
 int file_write_text(char *filename, char *mode, char *text, char *delim) {
     char *tmp = malloc(strlen(text)+1);
@@ -268,9 +268,10 @@ int file_write_text(char *filename, char *mode, char *text, char *delim) {
 }
 
 /**
- * A function to delete a bunch of iptable entries out of a file
+ * A function to delete a bunch of iptable entries out of a file.
+ * If its ipv6 ip6tables are used and ipv4 iptables are used.
  * @param fname
- * @return
+ * @return EXIT_SUCCESS; EXIT_FAILURE if filepointer fails
  */
 int revert_iptables(char *fname) {
     log_loc("INFO: RevertIptables init");
@@ -311,7 +312,7 @@ int revert_iptables(char *fname) {
  * A function to delete a single line of a file
  * @param filename
  * @param text
- * @return EXIT_SUCCESS, EXIT_FAILURE
+ * @return EXIT_SUCCESS, EXIT_FAILURE if filepointer fails
  */
 int file_del(char *filename, char *text) {
     FILE *fp = file_open(filename, "r");
@@ -348,7 +349,7 @@ int file_del(char *filename, char *text) {
  * @param filename
  * @param text
  * @param delim
- * @return EXIT_SUCCESS, EXIT_FAILURE
+ * @return EXIT_SUCCESS, EXIT_FAILURE if filepointer fails
  */
 int file_del_text(char *filename, char *text, char *delim){
     if (text == NULL)
@@ -397,10 +398,10 @@ int main() {
     qos_removeAllClasses();
 
     test_class1->id = 1;
-    test_class1->dscp_mark = 24;
+    test_class1->dscp_mark = 36;
     strcpy(test_class1->mac_src_addr, "00:e0:4c:81:c8:41");
     
-    test_class2->dscp_mark = 24;
+    test_class2->dscp_mark = 36;
     strcpy(test_class2->mac_src_addr, "00:e0:4c:81:c8:45");
     strcpy(test_class1->expiration, "20:25:59-27.05.2022");
 
@@ -757,7 +758,7 @@ int qos_ExpirationClass(const qos_struct *obj) {
 /**
  * Reverse the complete classification structure
  * Main deletion done by Utopia firewall
- * @return
+ * @return EXIT_SUCCESS
  */
 int qos_removeAllClasses() {
     log_loc("INFO: removeAllClasses");

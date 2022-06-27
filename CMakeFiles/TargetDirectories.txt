@@ -1,3 +1,0 @@
-/home/tester/devprio/hal_qos/CMakeFiles/hal_qos.dir
-/home/tester/devprio/hal_qos/CMakeFiles/edit_cache.dir
-/home/tester/devprio/hal_qos/CMakeFiles/rebuild_cache.dir

@@ -28,6 +28,11 @@
 #include <unistd.h>
 #include "timehandler.h"
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+
 #define CLASS_MAC_SIZE 18
 
 struct qos_class
