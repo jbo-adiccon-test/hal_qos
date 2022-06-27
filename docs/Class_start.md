@@ -1,9 +1,9 @@
 # Intro: 
 
-This is an in information how to add an new classification and how it works. This description shows parts of the API and the functionality of the code.
+This is an in information how to add a new classification and how it works. This description shows parts of the API and the functionality of the code.
 
 # What do we need?
-Simply said, there have to be an RDK workaround and a ccsp-qos modul. Which combines the ccsp-qos core modul and the hal layer to one program in RDK. To make it possible to develope switchable hal layers there is an API from ccsp-qos.  
+Simply said, there have to be an RDK workaround and a ccsp-qos module. Which combines the ccsp-qos core module and the hal layer to one program in RDK. To make it possible to develop switchable hal layers there is an API from ccsp-qos.  
 
 
     #define CLASS_MAC_SIZE 18
