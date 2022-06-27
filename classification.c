@@ -196,8 +196,6 @@ int file_write(char *filename, char *mode, char *line) {
         return EXIT_FAILURE;
     }
 
-
-
     log_loc("SUCCESS: FileWrite File has been written");
     log_loc(line);
 
@@ -332,9 +330,7 @@ int file_del(char *filename, char *text) {
     }
 
     file_close(fp);
-
     file_remove(filename);
-
     rename(CLASS_PERSITENT_FILENAME"/.tmp", filename);
 
     log_loc("INFO: DelLine in File:");
